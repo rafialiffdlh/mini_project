@@ -20,16 +20,16 @@ const Header: React.FC = () => {
 
             <ul className="flex-0 lg:flex-1 flex space-x-6">
               <li>
-                <Link href="">men</Link>
+                <Link href="">Home</Link>
               </li>
               <li>
-                <Link href="">women</Link>
+                <Link href="">Login</Link>
               </li>
               <li>
-                <Link href="">bags</Link>
+                <Link href="">Login</Link>
               </li>
               <li>
-                <Link href="">blogs</Link>
+                <Link href="">Singin</Link>
               </li>
             </ul>
 
