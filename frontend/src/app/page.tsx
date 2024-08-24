@@ -1,9 +1,15 @@
 import Image from "next/image";
-import Header from "../components/Header";
-import EventCard from "../components/EventCard";
+import Header from "@/components/Header";
+import Banner from "@/components/Banner";
+import Footer from "@/components/Footer";
 
-export default function Home() {
+const Home = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24"></main>
+    <main className="">
+      <Header></Header>
+      <Banner></Banner>
+    </main>
   );
-}
+};
+
+export default Home;
