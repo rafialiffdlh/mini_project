@@ -5,15 +5,16 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import "./Banner.css";
 
 const Banner = () => {
   return (
-    <div className="md:mt-24 mt-14 mx-auto max-w-7xl">
+    <div className="md:mt-40 mt-20 mx-auto max-w-7xl">
       <Swiper
         spaceBetween={30}
         centeredSlides={true}
         autoplay={{
-          delay: 6500,
+          delay: 1000,
           disableOnInteraction: false,
         }}
         pagination={{
@@ -21,25 +22,25 @@ const Banner = () => {
         }}
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper"
+        className="mySwiper rounded-lg"
       >
-        <SwiperSlide>
+        <SwiperSlide className="rounded-lg overflow-hidden">
           <img
-            src="https://static.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/65/2023/10/27/maxresdefault-2-4010764341.jpg"
+            src="https://loket-production-sg.s3.ap-southeast-1.amazonaws.com/images/ss/1690260495_PraZyu.jpg"
             alt=""
             className="w-full"
           />
         </SwiperSlide>
-        <SwiperSlide>
+        <SwiperSlide className="rounded-lg overflow-hidden">
           <img
-            src="https://png.pngtree.com/thumb_back/fw800/background/20240109/pngtree-a-compelling-movie-poster-background-image_15605697.jpg"
+            src="https://loket-production-sg.s3.ap-southeast-1.amazonaws.com/images/ss/1719380523_gdfP65.jpg"
             alt=""
             className="w-full"
           />
         </SwiperSlide>
-        <SwiperSlide>
+        <SwiperSlide className="rounded-lg overflow-hidden">
           <img
-            src="https://akcdn.detik.net.id/visual/2022/06/07/film-ivanna-2022_169.jpeg?w=650"
+            src="https://loket-production-sg.s3.ap-southeast-1.amazonaws.com/images/ss/1721803506_tkCKPu.jpg"
             alt=""
             className="w-full"
           />
