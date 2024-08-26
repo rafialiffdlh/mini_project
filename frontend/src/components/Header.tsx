@@ -5,22 +5,21 @@ import React from "react";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
-
   return (
     <div className="fixed left-0 right-0 max-w-7xl mx-auto -top-2 md:-top-0 z-50 shadow-xl">
-      <div className="flex items-center bg-[#A6E3E9] justify-between px-8 pt-4 md:pt-0 md:pb-0">
+      <div className="flex items-center bg-[#1B1B1B] justify-between px-4 pt-4 pb-2 md:pt-0 md:pb-0">
         <Link href={"/"}>
           <img
-            className="md:w-0 w-5 cursor-pointer"
-            src="https://i.ibb.co/tBtY92n/Colorful-Modern-Stream-C-Free-Logo.png"
+            className="md:w-16 w-10 cursor-pointer"
+            src="images/logo xx.png"
             alt=""
           />
         </Link>
         {pathname === "/" && (
-          <div className="flex flex-1 items-center">
-            <div className="relative flex items-center mr-4">
+          <div className="flex gap-4 items-center">
+            <div className="relative flex items-center">
               <svg
-                className="w-4 absolute mx-3 h-4 text-gray-500"
+                className="w-4 absolute mx-3 h-4 text-gray-500 dark:text-gray-400"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -36,22 +35,20 @@ const Header: React.FC = () => {
               </svg>
               <input
                 type="search"
-                className="block md:w-[400px] px-2 py-2 pl-10 text-black rounded-md"
+                className="block md:w-[600px] px-2 py-2 pl-10 text-sm text-black outline-none rounded-md shadow-md"
                 placeholder="Search Film.."
                 required
               />
             </div>
-            <select className="bg-[#3B3B3B] w-[108px] md:block hidden text-xs text-white outline-none px-2 py-[10px] rounded-md">
-              <option className="">Romantis</option>
-              <option>Komedi</option>
-              <option>Horor</option>
-              <option>Drama</option>
-            </select>
           </div>
         )}
-        <label className="cursor-pointer hover-light-effect">
+
+        <label
+          htmlFor="my-drawer-4"
+          className="cursor-pointer hover-light-effect"
+        >
           <svg
-            className="fill-current text-[#E3FDFD]"
+            className="fill-current text-[#FCCB08] "
             xmlns="http://www.w3.org/2000/svg"
             width="32"
             height="32"
@@ -61,9 +58,32 @@ const Header: React.FC = () => {
           </svg>
         </label>
       </div>
-      <div className="hidden md:block">
-        <div className="flex text-white text-xs justify-between items-center py-3 px-3 bg-[#A6E3E9]"></div>
-      </div>
+      {pathname === "/" && (
+        <div className="hidden md:block">
+          <div className="flex text-white text-lg justify-center items-center py-3 px-3 bg-[#1B1B1B]">
+            <ul className="flex items-center gap-8">
+              <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                Romantis
+              </li>
+              <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                Drama
+              </li>
+              <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                Horor
+              </li>
+              <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                Komedi
+              </li>
+              <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                Fantasi
+              </li>
+              <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                Sejarah
+              </li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
