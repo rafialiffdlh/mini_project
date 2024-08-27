@@ -10,7 +10,7 @@ export class AuthRouter {
 
   private routes(): void {
     this.router.post("/login", this.authController.login);
-    this.router.post("/lregister", this.authController.register);
+    this.router.post("/register", this.authController.register);
   }
   public getRouter(): Router {
     return this.router;
