@@ -17,7 +17,7 @@ const Card: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 py-6 md:py-12">
+    <div className="bg-gray-100 px-2 py-6 md:py-12">
       <div className="md:mt-4 mt-0 mx-auto max-w-7xl">
         <h2 className="text-2xl font-semibold mb-8 text-center">
           Event Pilihan

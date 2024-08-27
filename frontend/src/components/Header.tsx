@@ -44,21 +44,17 @@ const Header: React.FC = () => {
             </div>
           )}
 
-          <label
-            htmlFor="my-drawer-4"
-            className="cursor-pointer hover-light-effect"
+          <svg
+            className="fill-current text-[#FCCB08] "
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 512 512"
           >
-            <svg
-              className="fill-current text-[#FCCB08] "
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
-            </svg>
-          </label>
+            <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+          </svg>
         </div>
+
         {pathname === "/" && (
           <div className="hidden md:block">
             <div className="flex text-white text-lg justify-center items-center py-3 px-3">
