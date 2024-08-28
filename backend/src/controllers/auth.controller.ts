@@ -1,3 +1,6 @@
+import { AuthService } from "../services/auth.service";
+import { Request, Response, NextFunction } from "express";
+
 export class AuthController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
