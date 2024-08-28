@@ -1,10 +1,43 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import MenuBar from "../menu/menubar";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      document.removeEventListener("click", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 shadow-xl">
       <div className="bg-[#1B1B1B]">
@@ -45,7 +78,8 @@ const Header: React.FC = () => {
           )}
 
           <svg
-            className="fill-current text-[#FCCB08] "
+            onClick={toggleDropdown}
+            className="fill-current text-[#FCCB08] cursor-pointer"
             xmlns="http://www.w3.org/2000/svg"
             width="32"
             height="32"
@@ -82,6 +116,13 @@ const Header: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Dropdown Menu */}
+      <MenuBar
+        isDropdownOpen={isDropdownOpen}
+        closeDropdown={closeDropdown}
+        dropdownRef={dropdownRef}
+      />
     </div>
   );
 };
