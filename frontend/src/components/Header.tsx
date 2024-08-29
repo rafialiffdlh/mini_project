@@ -117,7 +117,6 @@ const Header: React.FC = () => {
         )}
       </div>
 
-      {/* Dropdown Menu */}
       <MenuBar
         isDropdownOpen={isDropdownOpen}
         closeDropdown={closeDropdown}

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-
+import Contact from "./contact";
 interface MenuBarProps {
   isDropdownOpen: boolean;
   closeDropdown: () => void;
@@ -24,7 +24,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
         <h2 className="text-xl font-semibold">Menu</h2>
 
         <div className="flex gap-4">
-          <Link href="/sign-in">
+          <Link href="/menu/sign-in">
             <button
               onClick={closeDropdown}
               className="bg-white text-black font-semibold py-2 px-4 rounded"
@@ -32,7 +32,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
               Sign In
             </button>
           </Link>
-          <Link href="/sign-up">
+          <Link href="/menu/sign-up">
             <button
               onClick={closeDropdown}
               className="bg-white text-black font-semibold py-2 px-4 rounded"
@@ -47,37 +47,13 @@ const MenuBar: React.FC<MenuBarProps> = ({
             onClick={closeDropdown}
             className="cursor-pointer hover:text-[#FCCB08] duration-150"
           >
-            Home
+            <Link href="/about-us">About Us</Link>
           </li>
           <li
             onClick={closeDropdown}
             className="cursor-pointer hover:text-[#FCCB08] duration-150"
           >
-            Cinemas
-          </li>
-          <li
-            onClick={closeDropdown}
-            className="cursor-pointer hover:text-[#FCCB08] duration-150"
-          >
-            Privilege
-          </li>
-          <li
-            onClick={closeDropdown}
-            className="cursor-pointer hover:text-[#FCCB08] duration-150"
-          >
-            Movie Library
-          </li>
-          <li
-            onClick={closeDropdown}
-            className="cursor-pointer hover:text-[#FCCB08] duration-150"
-          >
-            About Us
-          </li>
-          <li
-            onClick={closeDropdown}
-            className="cursor-pointer hover:text-[#FCCB08] duration-150"
-          >
-            Contact
+            <Link href="/contact">Contact</Link>
           </li>
         </ul>
       </div>
