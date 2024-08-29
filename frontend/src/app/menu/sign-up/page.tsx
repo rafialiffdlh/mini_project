@@ -66,7 +66,7 @@ const SignUp: React.FC = () => {
             <span>Google</span>
           </button>
           <button className="bg-gray-700 text-white py-2 px-4 rounded-md flex items-center justify-center w-full md:w-auto">
-            <span>Apple</span>
+            <span>Facebook</span>
           </button>
         </div>
       </div>
