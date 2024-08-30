@@ -27,7 +27,6 @@ const Card: React.FC = () => {
             ref={scrollContainerRef}
             className="flex overflow-x-auto space-x-4 pb-4 scrollbar-hide"
           >
-            {/* Event Card */}
             <div className="bg-white shadow-lg rounded-lg overflow-hidden flex-none w-64">
               <img
                 src="https://cdn1-production-images-kly.akamaized.net/ekI52FZFaRdHP7TyD4z8YP6vmw8=/1200x900/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/4871366/original/058485700_1719041559-_JKT__BRMS_1x1.JPG"
@@ -41,7 +40,7 @@ const Card: React.FC = () => {
                 </p>
               </div>
             </div>
-            {/* Repeat for more cards */}
+
             <div className="bg-white shadow-lg rounded-lg overflow-hidden flex-none w-64">
               <img
                 src="https://bankbjb.co.id/files/2024/05/465ea52a-5155-4391-9c81-a74e650945d6.jpg"

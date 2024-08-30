@@ -3,7 +3,7 @@ import React from "react";
 
 const SignUp: React.FC = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-900 p-4 md:p-8">
+    <div className="flex flex-col justify-center items-center h-screen bg-gray-900 p-4 md:p-8">
       <div
         className="md:w-1/2 flex flex-col justify-center items-center p-6 md:p-8 bg-gray-800 rounded-lg relative"
         style={{
@@ -17,7 +17,7 @@ const SignUp: React.FC = () => {
         </h2>
         <p className="text-gray-400 mb-4 text-sm md:text-base relative">
           Already have an account?{" "}
-          <a href="#" className="text-blue-400">
+          <a href="/menu/sign-in" className="text-blue-400">
             Log in
           </a>
         </p>
@@ -52,7 +52,7 @@ const SignUp: React.FC = () => {
             <input type="checkbox" id="terms" className="mr-2" />
             <label htmlFor="terms" className="text-gray-400 text-xs md:text-sm">
               I agree to the{" "}
-              <a href="#" className="text-blue-400">
+              <a href="" className="text-blue-400">
                 Terms & Conditions
               </a>
             </label>
@@ -61,12 +61,9 @@ const SignUp: React.FC = () => {
             Create account
           </button>
         </form>
-        <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full relative">
+        <div className="flex flex-col justify-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full relative">
           <button className="bg-gray-700 text-white py-2 px-4 rounded-md flex items-center justify-center w-full md:w-auto">
             <span>Google</span>
-          </button>
-          <button className="bg-gray-700 text-white py-2 px-4 rounded-md flex items-center justify-center w-full md:w-auto">
-            <span>Facebook</span>
           </button>
         </div>
       </div>
