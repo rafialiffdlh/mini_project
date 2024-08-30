@@ -9,7 +9,7 @@ import "./Banner.css";
 
 const Banner = () => {
   return (
-    <div className="md:mt-40 px-2 mt-20 mx-auto max-w-7xl">
+    <div className="md:mt-40 py-4 px-2 mt-20 mx-auto max-w-7xl">
       <Swiper
         spaceBetween={30}
         centeredSlides={true}
@@ -22,27 +22,27 @@ const Banner = () => {
         }}
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper rounded-xl"
+        className="mySwiper  rounded-xl "
       >
-        <SwiperSlide className="rounded-xl overflow-hidden">
+        <SwiperSlide className="rounded-xl overflow-hidden ">
           <img
             src="https://loket-production-sg.s3.ap-southeast-1.amazonaws.com/images/ss/1690260495_PraZyu.jpg"
             alt=""
-            className=""
+            className="min-h-36"
           />
         </SwiperSlide>
         <SwiperSlide className="rounded-lg overflow-hidden">
           <img
             src="https://loket-production-sg.s3.ap-southeast-1.amazonaws.com/images/ss/1719380523_gdfP65.jpg"
             alt=""
-            className=""
+            className="min-h-40"
           />
         </SwiperSlide>
         <SwiperSlide className="rounded-lg overflow-hidden">
           <img
             src="https://loket-production-sg.s3.ap-southeast-1.amazonaws.com/images/ss/1721803506_tkCKPu.jpg"
             alt=""
-            className=""
+            className="min-h-40"
           />
         </SwiperSlide>
       </Swiper>
