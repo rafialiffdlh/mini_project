@@ -131,22 +131,22 @@ const Header: React.FC = () => {
         {isDropdownOpen && (
           <div className="md:hidden bg-[#1B1B1B] text-white">
             <div className="flex flex-col items-center py-3 px-3">
-              <ul className="flex flex-col items-center gap-4">
-                <li>
-                  <Link href="/menu/sign-up">
-                    <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black w-full">
-                      Sign Up
-                    </button>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/menu/sign-in">
-                    <button className="bg-[#0070C9] text-white font-semibold py-2 px-4 rounded hover:bg-[#005A9E] w-full">
-                      Sign In
-                    </button>
-                  </Link>
-                </li>
-              </ul>
+              <div className="flex gap-4 w-full justify-center">
+                <Link href="/menu/sign-up">
+                  <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black">
+                    Sign Up
+                  </button>
+                </Link>
+                <Link href="/menu/sign-in">
+                  <button className="bg-[#0070C9] text-white font-semibold py-2 px-4 rounded hover:bg-[#005A9E]">
+                    Sign In
+                  </button>
+                </Link>
+              </div>
+              <Link href="/menu/contact">
+                <div className="py-3" />
+                Contact
+              </Link>
             </div>
           </div>
         )}
