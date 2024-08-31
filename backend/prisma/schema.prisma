@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model category {
+  id     Int      @id @default(autoincrement())
+  name   String?  @db.VarChar(20)
+  events events[]
+}
+
+model event_venue {
+  id       Int       @id @default(autoincrement())
+  event_id Int
+  venue_id Int
+  events   events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_venue_ibfk_1")
+  venues   venues    @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_venue_ibfk_2")
+  tickets  tickets[]
+
+  @@index([event_id], map: "event_id")
+  @@index([venue_id], map: "venue_id")
+}
+
+model events {
+  id          Int           @id @default(autoincrement())
+  title       String        @db.Text
+  category_id Int
+  duration    Int
+  event_date  DateTime      @db.Date
+  image_src   String?       @db.VarChar(255)
+  description String?       @db.Text
+  event_venue event_venue[]
+  category    category      @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "events_ibfk_1")
+
+  @@index([category_id], map: "category_id")
+}
+
+model location {
+  id       Int      @id @default(autoincrement())
+  fullName String?  @db.VarChar(50)
+  venues   venues[]
+}
+
+model purchases {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  ticket_id     Int
+  purchase_date DateTime? @default(dbgenerated("(now())")) @db.Timestamp(0)
+  users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchases_ibfk_1")
+  tickets       tickets   @relation(fields: [ticket_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchases_ibfk_2")
+
+  @@index([ticket_id], map: "ticket_id")
+  @@index([user_id], map: "user_id")
+}
+
+model ticket_type {
+  id        Int       @id @default(autoincrement())
+  maxNumber Int
+  rest      Int?
+  name      String?   @db.VarChar(50)
+  tickets   tickets[]
+}
+
+model tickets {
+  id           Int         @id @default(autoincrement())
+  detail_id    Int
+  seat_number  String      @db.Text
+  price        Decimal     @db.Decimal(10, 2)
+  purchased_at DateTime?   @db.Timestamp(0)
+  paidTicket   Boolean?
+  type_id      Int
+  purchases    purchases[]
+  event_venue  event_venue @relation(fields: [detail_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_1")
+  ticket_type  ticket_type @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_3")
+
+  @@index([detail_id], map: "detail_id")
+  @@index([type_id], map: "type_id")
+}
+
+model user_roles {
+  id      Int             @id @default(autoincrement())
+  user_id Int
+  role    user_roles_role?
+  users   users           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_role_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model users {
+  id           Int         @id @default(autoincrement())
+  name         String      @db.VarChar(50)
+  email        String      @unique(map: "email") @db.VarChar(50)
+  phone_number String      @unique(map: "phone_number") @db.VarChar(20)
+  registeredAt DateTime?   @default(dbgenerated("(now())")) @db.Timestamp(0)
+  password     String      @db.VarChar(50)
+  purchases    purchases[]
+  user_role    user_roles[]
+}
+
+model venues {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.Text
+  address     String        @db.Text
+  location_id Int
+  lat         String?       @db.VarChar(50)
+  lon         String?       @db.VarChar(50)
+  event_venue event_venue[]
+  location    location      @relation(fields: [location_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "venues_ibfk_1")
+
+  @@index([location_id], map: "location_id")
+}
+
+enum user_roles_role {
+  organizer
+  user
+}
