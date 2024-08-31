@@ -1,32 +1,30 @@
+import prisma from "@/prisma";
+import { Prisma } from "@prisma/client";
+import {} from "../config";
+import { compare, hash } from "bcrypt";
 import { Request } from "express";
-interface IUser {
-  id: number;
-  full_name: string;
-  email: string;
-  hashedPassword?: string;
-  phone_number: string;
-  gender?: string;
-  birth_date: Date;
-  created_at: Date;
-  updated_at?: Date;
-}
-
-interface IUserDetail {
-  id: number;
-  user_id: number;
-  role: userRole;
-}
-
-enum userRole {
-  "user",
-  "organizer",
-}
 
 export class AuthService {
   static async login(req: Request) {
     return null;
   }
   static async register(req: Request) {
+    const { name, email, password, phone_number } = req.body;
+    const hashPassword = await hash(password, 10);
+    const data: Prisma.usersCreateInput = {
+      name,
+      email,
+      password: hashPassword,
+      phone_number,
+    };
+
+    // if (req?.file) {
+    //   const image = req.file;
+    //   data.image = image.filename;
+    // }
+
+    await prisma.users.create({ data });
+
     return null;
   }
 }
