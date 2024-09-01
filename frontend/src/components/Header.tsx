@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
@@ -9,6 +9,38 @@ const Header: React.FC = () => {
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
+  };
+
+  const navBurger = useRef<HTMLButtonElement>(null);
+  const navMenu = useRef<HTMLDivElement>(null);
+  const navClose = useRef<HTMLButtonElement>(null);
+  const navBackdrop = useRef<HTMLDivElement>(null);
+
+  const handleNavBurger = () => {
+    if (navMenu.current) {
+      navMenu.current.classList.toggle("hidden");
+    }
+    // if (navBackdrop.current) {
+    //     navBackdrop.current.classList.toggle('hidden');
+    // }
+  };
+
+  const handleNavClose = () => {
+    if (navMenu.current) {
+      navMenu.current.classList.toggle("hidden");
+    }
+    // if (navBackdrop.current) {
+    //     navBackdrop.current.classList.toggle('hidden');
+    // }
+  };
+
+  const handleNavBackdrop = () => {
+    if (navMenu.current) {
+      navMenu.current.classList.toggle("hidden");
+    }
+    // if (navBackdrop.current) {
+    //     navBackdrop.current.classList.toggle('hidden');
+    // }
   };
 
   return (
@@ -112,17 +144,23 @@ const Header: React.FC = () => {
 
         {pathname === "/" && (
           <div className="hidden md:block">
-            <div className="flex text-white text-lg justify-center items-center py-3 px-3">
+            <div className="flex text-white text-lg justify-center py-3 ">
               <ul className="flex items-center gap-8">
-                <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                  Romantis
-                </li>
-                <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                  Drama
-                </li>
-                <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                  Horor
-                </li>
+                <Link href="/menu/contact">
+                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                    Hubungi Kami
+                  </li>
+                </Link>
+                <Link href="/menu/sign-up">
+                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                    Tentang KR
+                  </li>
+                </Link>
+                <Link href="/menu/sign-up">
+                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                    Horor
+                  </li>
+                </Link>
               </ul>
             </div>
           </div>
@@ -144,12 +182,69 @@ const Header: React.FC = () => {
                 </Link>
               </div>
               <Link href="/menu/contact">
-                <div className="py-3" />
-                Contact
+                <div className="mb-1">
+                  <a className="mybutton" href="mailto:rap@gmail.com"></a>
+                </div>
               </Link>
             </div>
           </div>
         )}
+      </div>
+      <div
+        ref={navMenu}
+        className="hidden navbar-menu fixed top-0 left-0 bottom-0 w-5/6 max-w-sm z-50"
+      >
+        <div
+          ref={navBackdrop}
+          onClick={handleNavBackdrop}
+          className="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"
+        />
+        <nav className="relative flex flex-col py-6 px-6 w-full h-full bg-white border-r overflow-y-auto">
+          <div className="flex items-center justify-between mb-8">
+            <button
+              onClick={handleNavClose}
+              ref={navClose}
+              className="navbar-close"
+            >
+              <svg
+                className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <div>
+            <ul>
+              <li className="mb-1">
+                <a
+                  className="block p-4 text-sm font-medium text-gray-900 hover:bg-gray-50 rounded"
+                  href="#about"
+                >
+                  About
+                </a>
+              </li>
+              <li className="mb-1">
+                <a className="myButton" href="mailto:r@gmail.com">
+                  Contact Us
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="mt-auto">
+            <p className="mt-6 mb-4 text-sm text-center text-gray-500">
+              <span>© {new Date().getFullYear()} All rights reserved.</span>
+            </p>
+          </div>
+        </nav>
       </div>
     </div>
   );
