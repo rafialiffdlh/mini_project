@@ -1,19 +1,20 @@
 interface IUser {
   id: number;
-  full_name: string;
+  name: string;
   email: string;
-  hashedPassword?: string;
+  password?: string;
   phone_number: string;
-  gender?: string;
-  birth_date: Date;
-  created_at: Date;
-  updated_at?: Date;
 }
 
 interface IUserDetail {
   id: number;
   user_id: number;
   role: userRole;
+  birth_date: Date;
+  created_at: Date;
+  updated_at?: Date;
+
+  gender?: string;
 }
 
 enum userRole {

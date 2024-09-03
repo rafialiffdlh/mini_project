@@ -96,7 +96,7 @@ model users {
   email        String      @unique(map: "email") @db.VarChar(50)
   phone_number String      @unique(map: "phone_number") @db.VarChar(20)
   registeredAt DateTime?   @default(dbgenerated("(now())")) @db.Timestamp(0)
-  password     String      @db.VarChar(50)
+  password     String      @db.VarChar(100)
   purchases    purchases[]
   user_role    user_roles[]
 }
