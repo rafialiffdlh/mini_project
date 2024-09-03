@@ -183,7 +183,9 @@ const Header: React.FC = () => {
               </div>
               <Link href="/menu/contact">
                 <div className="mb-1">
-                  <a className="mybutton" href="mailto:rap@gmail.com"></a>
+                  <a className="mybutton" href="mailto:rap@gmail.com">
+                    Contact
+                  </a>
                 </div>
               </Link>
             </div>

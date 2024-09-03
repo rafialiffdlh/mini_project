@@ -10,7 +10,6 @@ const Home = () => {
       <Header></Header>
       <Banner></Banner>
       <Card></Card>
-      <Banner2></Banner2>
     </main>
   );
 };
