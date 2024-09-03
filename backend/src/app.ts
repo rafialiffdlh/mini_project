@@ -23,6 +23,7 @@ export default class App {
   }
 
   private configure(): void {
+    this.app.use("/favicon.ico", express.static("/images/favicon.ico"));
     // this.app.use(cors());
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
@@ -52,6 +53,9 @@ export default class App {
   }
 
   private routes(): void {
+    this.app.get("/", (req: Request, res: Response) => {
+      res.redirect("/api/");
+    });
     this.app.get("/api", (req: Request, res: Response) => {
       res.send(`Hello, this is Mini Project API!`);
     });
