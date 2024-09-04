@@ -7,14 +7,17 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["./src/interfaces", "./node_modules/@types"],
+    "typeRoots": [
+      "./src/interfaces"
+      // , "./node_modules/@types"
+    ],
     "resolveJsonModule": true
-  },
+  }
   // "include": ["src/**/*"],
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
+  // "include": ["**/*.ts"],
+  // "exclude": ["node_modules"]
 }

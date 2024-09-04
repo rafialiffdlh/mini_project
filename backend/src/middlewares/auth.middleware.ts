@@ -1,6 +1,6 @@
-import { JWT_SECRET } from "@/config";
-import { ErrorHandler } from "@/helpers/response.helper";
-import { IUser } from "@/interfaces/user.interface";
+import { JWT_SECRET } from "../config";
+import { ErrorHandler } from "../helpers/response.helper";
+import { IUser } from "../interfaces/user.interface";
 import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 export const AuthMiddleware = (

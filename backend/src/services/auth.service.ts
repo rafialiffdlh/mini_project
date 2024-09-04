@@ -1,4 +1,4 @@
-import prisma from "@/prisma";
+import prisma from "../prisma";
 import { Prisma } from "@prisma/client";
 import { compare, hash } from "bcrypt";
 import { Request } from "express";
@@ -44,36 +44,43 @@ export class AuthService {
   }
 
   static async getProfile(req: Request) {
-    if (!req.user) {
-      throw new ErrorHandler("Unauthorized", 401);
+    try {
+      if (req.user) {
+        const { id } = req.user;
+        const user = (await prisma.users.findFirst({
+          where: { id: id },
+        })) as IUser;
+        if (!user) {
+          throw new ErrorHandler("User not found", 404);
+        }
+        delete user.password;
+        return user;
+      } else {
+        throw new ErrorHandler("Unauthorized", 401);
+      }
+    } catch (error) {
+      throw new ErrorHandler(error, 500);
     }
-    const id = req.user?.id;
-    const user = (await prisma.users.findFirst({
-      where: { id: id },
-    })) as IUser;
-    if (!user) {
-      throw new ErrorHandler("User not found", 404);
-    }
-    delete user.password;
-    return user;
   }
 
   static async updateProfile(req: Request) {
     const data = req.body as IUser;
-    if (!req.user) {
+    console.log(req);
+    if (req.user) {
+      const { id } = req.user;
+      const user = (await prisma.users.findFirst({
+        where: { id: id },
+      })) as IUser;
+      if (!user) {
+        throw new ErrorHandler("User not found", 404);
+      }
+
+      await prisma.users.update({
+        where: { id: id },
+        data: data,
+      });
+    } else {
       throw new ErrorHandler("Unauthorized", 401);
     }
-    const { id } = req.user;
-    const user = (await prisma.users.findFirst({
-      where: { id: id },
-    })) as IUser;
-    if (!user) {
-      throw new ErrorHandler("User not found", 404);
-    }
-
-    await prisma.users.update({
-      where: { id: id },
-      data: data,
-    });
   }
 }

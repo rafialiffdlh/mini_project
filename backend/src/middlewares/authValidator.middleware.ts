@@ -1,5 +1,5 @@
-import { ErrorHandler } from "@/helpers/response.helper";
-import { loginSchema, registerSchema } from "@/schemas/auth.schema";
+import { ErrorHandler } from "../helpers/response.helper";
+import { loginSchema, registerSchema } from "../schemas/auth.schema";
 import { Request, Response, NextFunction } from "express";
 import { z, ZodError } from "zod";
 

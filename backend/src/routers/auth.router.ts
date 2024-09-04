@@ -1,9 +1,8 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
-import validator from "validator";
-import { validateAuth } from "@/middlewares/authValidator.middleware";
-import { loginSchema, registerSchema } from "@/schemas/auth.schema";
-import { AuthMiddleware } from "@/middlewares/auth.middleware";
+import { validateAuth } from "../middlewares/authValidator.middleware";
+import { loginSchema, registerSchema } from "../schemas/auth.schema";
+import { AuthMiddleware } from "../middlewares/auth.middleware";
 
 export class AuthRouter {
   private router: Router = Router();

@@ -1,20 +1,14 @@
 /** @format */
 
 import { z } from "zod";
-import validator from "validator";
 export const registerSchema = z.object({
   name: z.string().min(5, {
     message: "Silahkan masukan nama lengkap anda",
   }),
-  phone_number: z
-    .string({ message: "Masukkan no handphone anda" })
-    .min(9, {
-      message:
-        "Harap masukkan nomor telepon yang valid mulai dengan 0 atau 62 dan minimum 9 digit.",
-    })
-    .refine(validator.isMobilePhone, {
-      message: "Nomor telepon tidak valid",
-    }),
+  phone_number: z.string({ message: "Masukkan no handphone anda" }).min(9, {
+    message:
+      "Harap masukkan nomor telepon yang valid mulai dengan 0 atau 62 dan minimum 9 digit.",
+  }),
   email: z.string().email().min(5, {
     message: "silahkan masukan email anda",
   }),
@@ -36,13 +30,10 @@ export const registerSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  phone_number: z
-    .string({ message: "Masukkan no handphone anda" })
-    .min(9, {
-      message:
-        "Harap masukkan nomor telepon yang valid mulai dengan 0 atau 62 dan minimum 9 digit.",
-    })
-    .refine(validator.isMobilePhone),
+  phone_number: z.string({ message: "Masukkan no handphone anda" }).min(9, {
+    message:
+      "Harap masukkan nomor telepon yang valid mulai dengan 0 atau 62 dan minimum 9 digit.",
+  }),
   password: z
     .string({ message: "Mohon masukan kata sandi Anda." })
     .min(6, {
