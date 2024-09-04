@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
+    "target": "es2016",
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
@@ -11,7 +11,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "typeRoots": ["./src/interfaces"],
+    "typeRoots": ["./src/interfaces", "./node_modules/@types"],
     "resolveJsonModule": true
   },
   // "include": ["src/**/*"],

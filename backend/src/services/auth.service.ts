@@ -1,9 +1,8 @@
-import prisma from "../prisma";
+import prisma from "@/prisma";
 import { Prisma } from "@prisma/client";
-import {} from "../config";
 import { compare, hash } from "bcrypt";
 import { Request } from "express";
-import { IUser } from "@/interfaces/user.interface";
+import { IUser } from "../interfaces/user.interface";
 import { ErrorHandler } from "../helpers/response.helper";
 import { generateToken } from "../libs/token.lib";
 
@@ -42,5 +41,39 @@ export class AuthService {
     await prisma.users.create({ data });
 
     return null;
+  }
+
+  static async getProfile(req: Request) {
+    if (!req.user) {
+      throw new ErrorHandler("Unauthorized", 401);
+    }
+    const id = req.user?.id;
+    const user = (await prisma.users.findFirst({
+      where: { id: id },
+    })) as IUser;
+    if (!user) {
+      throw new ErrorHandler("User not found", 404);
+    }
+    delete user.password;
+    return user;
+  }
+
+  static async updateProfile(req: Request) {
+    const data = req.body as IUser;
+    if (!req.user) {
+      throw new ErrorHandler("Unauthorized", 401);
+    }
+    const { id } = req.user;
+    const user = (await prisma.users.findFirst({
+      where: { id: id },
+    })) as IUser;
+    if (!user) {
+      throw new ErrorHandler("User not found", 404);
+    }
+
+    await prisma.users.update({
+      where: { id: id },
+      data: data,
+    });
   }
 }

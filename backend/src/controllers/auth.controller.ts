@@ -26,4 +26,28 @@ export class AuthController {
       next(error);
     }
   }
+
+  async profile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await AuthService.getProfile(req);
+      return res
+        .status(200)
+        .json({ message: "Get Profile Success", data, success: true });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async updateProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await AuthService.updateProfile(req);
+      return res
+        .status(200)
+        .json({ message: "Update Profile Success", data, success: true });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
 }

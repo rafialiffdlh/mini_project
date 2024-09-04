@@ -1,4 +1,4 @@
-interface IUser {
+export interface IUser {
   id: number;
   name: string;
   email: string;
@@ -6,7 +6,7 @@ interface IUser {
   phone_number: string;
 }
 
-interface IUserDetail {
+interface IUserDetail extends IUser {
   id: number;
   user_id: number;
   role: userRole;
@@ -21,4 +21,4 @@ enum userRole {
   "user",
   "organizer",
 }
-export { IUser, IUserDetail, userRole };
+export { IUserDetail, userRole };
