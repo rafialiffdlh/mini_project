@@ -7,10 +7,12 @@ import express, {
   NextFunction,
   Router,
 } from "express";
+import cors from "cors";
 import { PORT } from "./config";
 import { AuthRouter } from "./routers/auth.router";
 import { EventRouter } from "./routers/event.router";
-//   import { SampleRouter } from './routers/sample.router';
+import { PurchaseRouter } from "./routers/purchase.router";
+import { OrganizerRouter } from "./routers/organizer.router";
 
 export default class App {
   private app: Express;
@@ -24,7 +26,7 @@ export default class App {
 
   private configure(): void {
     this.app.use("/favicon.ico", express.static("/images/favicon.ico"));
-    // this.app.use(cors());
+    this.app.use(cors());
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
   }
@@ -63,6 +65,8 @@ export default class App {
     // this.app.use('/api/samples', sampleRouter.getRouter());
     this.app.use("/api/auth", new AuthRouter().getRouter());
     this.app.use("/api/event", new EventRouter().getRouter());
+    // this.app.use("/api/organizer", new OrganizerRouter().getRouter());
+    this.app.use("/api/purchase", new PurchaseRouter().getRouter());
   }
 
   public start(): void {

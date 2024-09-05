@@ -47,7 +47,7 @@ const SignIn: React.FC = () => {
       });
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <>
       <div className="flex flex-col justify-center items-center h-screen bg-gray-900 p-4 md:p-8">
         <div className="md:w-1/2 flex flex-col justify-center items-center p-6 md:p-8 bg-gray-800 rounded-lg relative bg-cover bg-center">
           <div className="absolute inset-0 bg-gray-800 opacity-80 md:hidden rounded-lg"></div>
@@ -60,7 +60,10 @@ const SignIn: React.FC = () => {
               Register
             </a>
           </p>
-          <form className="w-full max-w-xs md:max-w-sm relative">
+          <form
+            className="w-full max-w-xs md:max-w-sm relative"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
               <input
                 className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
@@ -130,7 +133,7 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-    </form>
+    </>
   );
 };
 
