@@ -80,12 +80,12 @@ const Header: React.FC = () => {
 
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/menu/sign-up">
+              <Link href="/sign-up">
                 <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black">
                   Sign Up
                 </button>
               </Link>
-              <Link href="/menu/sign-in">
+              <Link href="/sign-in">
                 <button className="bg-[#142954] text-white font-semibold py-2 px-4 rounded hover:bg-[#142954]">
                   Sign In
                 </button>
@@ -166,12 +166,12 @@ const Header: React.FC = () => {
           <div className="md:hidden bg-[#142954] text-white">
             <div className="flex flex-col items-center py-4 px-3">
               <div className="flex gap-4 w-full justify-center">
-                <Link href="/menu/sign-up">
+                <Link href="/sign-up">
                   <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black">
                     Sign Up
                   </button>
                 </Link>
-                <Link href="/menu/sign-in">
+                <Link href="/sign-in">
                   <button className="bg-[#0070C9] text-white font-semibold py-2 px-4 rounded hover:bg-[#005A9E]">
                     Sign In
                   </button>

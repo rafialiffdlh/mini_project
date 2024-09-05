@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 interface Event {
   title: string;
@@ -56,10 +56,13 @@ const Card: React.FC = () => {
     }
   };
 
-  const filteredEvents = events.filter((event) =>
-    event.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredEvents = useMemo(() => {
+    console.log(searchTerm);
 
+    return events.filter((event) =>
+      event.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm]);
   return (
     <div className="px-2 py-2">
       <div className="mx-auto max-w-7xl">
