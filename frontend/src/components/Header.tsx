@@ -2,6 +2,8 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import React, { useState, useRef } from "react";
+import Image from "next/image";
+import ProfileBarComponent from "./ProfileBar.component";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
@@ -48,10 +50,12 @@ const Header: React.FC = () => {
       <div className="bg-[#1B1B1B] py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto px-4 pt-4 pb-2 md:pt-0 md:pb-0">
           <Link href={"/"}>
-            <img
+            <Image
               className="md:w-16 w-10 cursor-pointer"
-              src="images/logo kr.png"
+              src="/images/logo kr.png"
               alt="Logo"
+              width={64}
+              height={64}
             />
           </Link>
 
@@ -95,6 +99,7 @@ const Header: React.FC = () => {
                   Sign In
                 </button>
               </Link>
+              <ProfileBarComponent />
             </div>
 
             <div className="md:hidden relative">
@@ -204,6 +209,7 @@ const Header: React.FC = () => {
         <nav className="relative flex flex-col py-6 px-6 w-full h-full bg-white border-r overflow-y-auto">
           <div className="flex items-center justify-between mb-8">
             <button
+              title="navClose"
               onClick={handleNavClose}
               ref={navClose}
               className="navbar-close"
