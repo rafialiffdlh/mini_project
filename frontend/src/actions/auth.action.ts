@@ -1,4 +1,3 @@
-/** @format */
 "use server";
 import { api } from "@/config/axios.config";
 import { loginSchema, registerSchema } from "@/schemas/auth.schema";
@@ -12,6 +11,7 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
       phone_number: values.phone_number,
       password: values.password,
       redirect: false,
+      redirectTo: "/",
     });
     return {
       message: "Login Berhasil",
@@ -43,7 +43,7 @@ export const actionRegister = async (
 
 export const actionLogOut = async () => {
   try {
-    return await signOut({ redirect: false, redirectTo: "/login" });
+    return await signOut({ redirect: false, redirectTo: "/menu/sign-in" });
     // return {
     //   message: "Logout Berhasil",
     // };
