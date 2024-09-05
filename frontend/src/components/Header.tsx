@@ -20,32 +20,23 @@ const Header: React.FC = () => {
     if (navMenu.current) {
       navMenu.current.classList.toggle("hidden");
     }
-    // if (navBackdrop.current) {
-    //     navBackdrop.current.classList.toggle('hidden');
-    // }
   };
 
   const handleNavClose = () => {
     if (navMenu.current) {
       navMenu.current.classList.toggle("hidden");
     }
-    // if (navBackdrop.current) {
-    //     navBackdrop.current.classList.toggle('hidden');
-    // }
   };
 
   const handleNavBackdrop = () => {
     if (navMenu.current) {
       navMenu.current.classList.toggle("hidden");
     }
-    // if (navBackdrop.current) {
-    //     navBackdrop.current.classList.toggle('hidden');
-    // }
   };
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 shadow-xl">
-      <div className="bg-[#1B1B1B] py-4">
+      <div className="bg-[#142954] py-4">
         <div className="flex items-center justify-between max-w-7xl mx-auto px-4 pt-4 pb-2 md:pt-0 md:pb-0">
           <Link href={"/"}>
             <img
@@ -91,7 +82,7 @@ const Header: React.FC = () => {
                 </button>
               </Link>
               <Link href="/menu/sign-in">
-                <button className="bg-[#0070C9] text-white font-semibold py-2 px-4 rounded hover:bg-[#005A9E]">
+                <button className="bg-[#142954] text-white font-semibold py-2 px-4 rounded hover:bg-[#142954]">
                   Sign In
                 </button>
               </Link>
@@ -144,21 +135,21 @@ const Header: React.FC = () => {
 
         {pathname === "/" && (
           <div className="hidden md:block">
-            <div className="flex text-white text-lg justify-center py-3 ">
+            <div className="flex text-white text-lg justify-center pr-32 py-1">
               <ul className="flex items-center gap-8">
                 <Link href="/menu/contact">
                   <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
                     Hubungi Kami
                   </li>
                 </Link>
-                <Link href="/menu/sign-up">
+                <Link href="/menu/about">
                   <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
                     Tentang KR
                   </li>
                 </Link>
                 <Link href="/menu/sign-up">
                   <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                    Horor
+                    Blog
                   </li>
                 </Link>
               </ul>
@@ -167,8 +158,8 @@ const Header: React.FC = () => {
         )}
 
         {isDropdownOpen && (
-          <div className="md:hidden bg-[#1B1B1B] text-white">
-            <div className="flex flex-col items-center py-3 px-3">
+          <div className="md:hidden bg-[#142954] text-white">
+            <div className="flex flex-col items-center py-4 px-3">
               <div className="flex gap-4 w-full justify-center">
                 <Link href="/menu/sign-up">
                   <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black">
@@ -182,7 +173,7 @@ const Header: React.FC = () => {
                 </Link>
               </div>
               <Link href="/menu/contact">
-                <div className="mb-1">
+                <div className="mb-1 py-5">
                   <a className="mybutton" href="mailto:rap@gmail.com">
                     Contact
                   </a>
@@ -223,28 +214,6 @@ const Header: React.FC = () => {
                 />
               </svg>
             </button>
-          </div>
-          <div>
-            <ul>
-              <li className="mb-1">
-                <a
-                  className="block p-4 text-sm font-medium text-gray-900 hover:bg-gray-50 rounded"
-                  href="#about"
-                >
-                  About
-                </a>
-              </li>
-              <li className="mb-1">
-                <a className="myButton" href="mailto:r@gmail.com">
-                  Contact Us
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div className="mt-auto">
-            <p className="mt-6 mb-4 text-sm text-center text-gray-500">
-              <span>© {new Date().getFullYear()} All rights reserved.</span>
-            </p>
           </div>
         </nav>
       </div>
