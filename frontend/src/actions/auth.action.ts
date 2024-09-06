@@ -22,7 +22,7 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
 };
 
 export const actionLogout = async () => {
-  return await signOut({ redirect: true, redirectTo: "/menu/sign-in" });
+  return await signOut({ redirect: false, redirectTo: "/sign-in" });
 };
 
 export const actionRegister = async (
@@ -43,7 +43,7 @@ export const actionRegister = async (
 
 export const actionLogOut = async () => {
   try {
-    return await signOut({ redirect: false, redirectTo: "/menu/sign-in" });
+    return await signOut({ redirect: false, redirectTo: "/sign-in" });
     // return {
     //   message: "Logout Berhasil",
     // };

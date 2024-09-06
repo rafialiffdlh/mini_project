@@ -26,6 +26,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
           const token = res.data.data;
           if (!token) throw new Error("Login error!");
           const user = jwtDecode(token) as User;
+          console.log(user);
           return user;
         } catch (error) {
           console.log(error);
@@ -57,7 +58,6 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         token.name = user.name;
         token.phone_number = user.phone_number;
         token.email = user.email;
-        // token.gender = user.gender;
         token.image = user.image;
       }
 

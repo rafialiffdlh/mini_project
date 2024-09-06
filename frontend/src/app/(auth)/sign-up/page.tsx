@@ -45,7 +45,7 @@ const SignUp: React.FC = () => {
         </h2>
         <p className="text-gray-400 mb-4 text-sm md:text-base relative">
           Already have an account?{" "}
-          <a href="/menu/sign-in" className="text-blue-400">
+          <a href="/sign-in" className="text-blue-400">
             Log in
           </a>
         </p>
