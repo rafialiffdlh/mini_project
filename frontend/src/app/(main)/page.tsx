@@ -7,9 +7,9 @@ import Banner2 from "@/components/Banner2";
 const Home = () => {
   return (
     <main className="">
-      <Header></Header>
-      <Banner></Banner>
-      <Card></Card>
+      <Header />
+      <Banner />
+      <Card />
     </main>
   );
 };

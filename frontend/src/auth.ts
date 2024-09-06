@@ -7,7 +7,7 @@ import google from "next-auth/providers/google";
 
 export const { signIn, signOut, handlers, auth } = NextAuth({
   pages: {
-    signIn: "/login",
+    signIn: "/sign-in",
   },
   session: {
     strategy: "jwt",
@@ -20,27 +20,14 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
           console.log(credentials);
           const validateFields = loginSchema.safeParse(credentials);
           if (!validateFields.success) throw new Error("Login Gagal");
-          let defaultLogin = false;
-          if (defaultLogin) {
-            const res = await api.get("/user", {
-              params: {
-                phone_number: credentials?.phone_number,
-                password: credentials?.password,
-              },
-            });
-            const user = res.data[0];
-            console.log(user);
-            delete user.password;
-            delete user.confirm_password;
-            return user;
-          } else {
-            const res = await api.post("/auth/login", credentials);
-            console.log(res.data.data);
-            const token = res.data.data;
-            if (!token) throw new Error("Login error!");
-            const user = jwtDecode(token) as User;
-            return user;
-          }
+
+          const res = await api.post("/auth/login", credentials);
+          console.log(res.data.data);
+          const token = res.data.data;
+          if (!token) throw new Error("Login error!");
+          const user = jwtDecode(token) as User;
+          console.log(user);
+          return user;
         } catch (error) {
           console.log(error);
           return null;
@@ -71,7 +58,6 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         token.name = user.name;
         token.phone_number = user.phone_number;
         token.email = user.email;
-        // token.gender = user.gender;
         token.image = user.image;
       }
 

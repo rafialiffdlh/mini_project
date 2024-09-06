@@ -1,11 +1,16 @@
 "use client";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
 import React, { useState, useRef } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import ProfileBarComponent from "./ProfileBar.component";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import ProfileBarComponent from "./header/ProfileBar.component";
+
+import SignBarComponent from "./header/SignBar.component";
 
 const Header: React.FC = () => {
+  const session = useSession();
+  console.log(session.data);
   const pathname = usePathname();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
@@ -80,17 +85,15 @@ const Header: React.FC = () => {
 
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/sign-up">
-                <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black">
-                  Sign Up
-                </button>
-              </Link>
-              <Link href="/sign-in">
-                <button className="bg-[#142954] text-white font-semibold py-2 px-4 rounded hover:bg-[#142954]">
-                  Sign In
-                </button>
-              </Link>
-              <ProfileBarComponent />
+              {session.data ? (
+                <ProfileBarComponent session={session} />
+              ) : (
+                <SignBarComponent />
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              {session.data?.user.email},{session.data?.user.id},
+              {session.data?.user.name},{session.data?.user.phone_number}
             </div>
 
             <div className="md:hidden relative">
@@ -118,7 +121,12 @@ const Header: React.FC = () => {
             </div>
 
             <div className="md:hidden">
-              <button onClick={toggleDropdown} className="text-white">
+              <button
+                title="tgDD"
+                type="button"
+                onClick={toggleDropdown}
+                className="text-white"
+              >
                 <svg
                   className="w-6 h-6"
                   fill="none"
@@ -171,16 +179,11 @@ const Header: React.FC = () => {
           <div className="md:hidden bg-[#142954] text-white">
             <div className="flex flex-col items-center py-4 px-3">
               <div className="flex gap-4 w-full justify-center">
-                <Link href="/sign-up">
-                  <button className="border border-white text-white font-semibold py-2 px-4 rounded hover:bg-white hover:text-black">
-                    Sign Up
-                  </button>
-                </Link>
-                <Link href="/sign-in">
-                  <button className="bg-[#0070C9] text-white font-semibold py-2 px-4 rounded hover:bg-[#005A9E]">
-                    Sign In
-                  </button>
-                </Link>
+                {session.data ? (
+                  <ProfileBarComponent session={session} />
+                ) : (
+                  <SignBarComponent />
+                )}
               </div>
               <Link href="/menu/contact">
                 <div className="mb-1 py-5">
