@@ -45,7 +45,7 @@ const SignUp: React.FC = () => {
         </h2>
         <p className="text-gray-400 mb-4 text-sm md:text-base relative">
           Already have an account?{" "}
-          <a href="/menu/sign-in" className="text-blue-400">
+          <a href="/sign-in" className="text-blue-400">
             Log in
           </a>
         </p>
@@ -109,13 +109,12 @@ const SignUp: React.FC = () => {
           </button>
         </form>
         <div className="flex flex-col justify-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full relative">
-          <button
-            className="bg-gray-700 text-white py-2 px-4 rounded-md flex items-center justify-center w-full md:w-auto"
-            type="submit"
-            disabled={form.formState.isSubmitting}
+          <a
+            href="/"
+            className="text-blue-400 text-center py-2 px-4 w-full md:w-auto flex items-center justify-center"
           >
-            <span>Google</span>
-          </button>
+            Back to Home
+          </a>
         </div>
       </div>
     </div>

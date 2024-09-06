@@ -56,7 +56,7 @@ const SignIn: React.FC = () => {
           </h2>
           <p className="text-gray-400 mb-4 text-sm md:text-base relative">
             Don&apos;t have an account yet?{" "}
-            <a href="/menu/sign-up" className="text-blue-400">
+            <a href="/sign-up" className="text-blue-400">
               Register
             </a>
           </p>
@@ -65,12 +65,6 @@ const SignIn: React.FC = () => {
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-              <input
-                className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
-                type="text"
-                placeholder="Full Name"
-                disabled
-              />
               <input
                 className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
                 type="text"
@@ -115,21 +109,13 @@ const SignIn: React.FC = () => {
             </button>
           </form>
           <div className="flex flex-col justify-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full relative">
-            <form action={dispatchGoogle}>
-              <button
-                type="submit"
-                className="bg-gray-700 text-white py-2 px-4 rounded-md flex items-center justify-center w-full md:w-auto"
-                disabled={form.formState.isSubmitting}
-              >
-                <span>Google</span>
-              </button>
-            </form>
-            <button
-              className="bg-gray-700 text-white py-2 px-4 rounded-md flex items-center justify-center w-full md:w-auto"
-              disabled={form.formState.isSubmitting}
+            <form action={dispatchGoogle}></form>
+            <a
+              href="/"
+              className="text-blue-400 text-center py-2 px-4 w-full md:w-auto flex items-center justify-center"
             >
-              <span>Facebook</span>
-            </button>
+              Back to Home
+            </a>
           </div>
         </div>
       </div>

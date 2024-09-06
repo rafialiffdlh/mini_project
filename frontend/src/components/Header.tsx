@@ -140,19 +140,24 @@ const Header: React.FC = () => {
 
         {pathname === "/" && (
           <div className="hidden md:block">
-            <div className="flex text-white text-lg justify-center pr-32 py-1">
+            <div className="flex text-white text-lg justify-center pr-40 py-1">
               <ul className="flex items-center gap-8">
-                <Link href="/menu/contact">
+                <Link href="/">
+                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
+                    Home
+                  </li>
+                </Link>
+                <Link href="/contact">
                   <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
                     Hubungi Kami
                   </li>
                 </Link>
-                <Link href="/menu/about">
+                <Link href="/about">
                   <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
                     Tentang KR
                   </li>
                 </Link>
-                <Link href="/menu/sign-up">
+                <Link href="/blog">
                   <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
                     Blog
                   </li>
