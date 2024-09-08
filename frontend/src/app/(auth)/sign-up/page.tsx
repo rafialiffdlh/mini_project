@@ -91,6 +91,7 @@ const SignUp: React.FC = () => {
               {...register("confirm_password")}
             />
           </div>
+
           <div className="mb-4 flex items-center">
             <input type="checkbox" id="terms" className="mr-2" />
             <label htmlFor="terms" className="text-gray-400 text-xs md:text-sm">

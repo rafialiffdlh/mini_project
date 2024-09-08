@@ -9,7 +9,7 @@ import "./Banner.css";
 
 const Banner = () => {
   return (
-    <div className="md:mt-28 py-7 px-2 mt-20 mx-auto max-w-7xl">
+    <div className="px-2 mt-8 mx-auto max-w-screen-xl">
       <Swiper
         spaceBetween={30}
         centeredSlides={true}
@@ -22,7 +22,7 @@ const Banner = () => {
         }}
         navigation={true}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper  rounded-xl "
+        className="mySwiper rounded-xl "
       >
         <SwiperSlide className="rounded-xl overflow-hidden ">
           <img
