@@ -1,16 +1,17 @@
 "use client";
 import React, { useState, useRef } from "react";
+import { FiMenu } from "react-icons/fi";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileBarComponent from "./header/ProfileBar.component";
-
 import SignBarComponent from "./header/SignBar.component";
+import { IoCloseOutline } from "react-icons/io5";
+import clsx from "clsx";
 
 const Header: React.FC = () => {
   const session = useSession();
-  console.log(session.data);
   const pathname = usePathname();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
@@ -18,34 +19,62 @@ const Header: React.FC = () => {
     setDropdownOpen(!isDropdownOpen);
   };
 
-  const navBurger = useRef<HTMLButtonElement>(null);
-  const navMenu = useRef<HTMLDivElement>(null);
-  const navClose = useRef<HTMLButtonElement>(null);
-  const navBackdrop = useRef<HTMLDivElement>(null);
-
-  const handleNavBurger = () => {
-    if (navMenu.current) {
-      navMenu.current.classList.toggle("hidden");
-    }
-  };
-
-  const handleNavClose = () => {
-    if (navMenu.current) {
-      navMenu.current.classList.toggle("hidden");
-    }
-  };
-
-  const handleNavBackdrop = () => {
-    if (navMenu.current) {
-      navMenu.current.classList.toggle("hidden");
-    }
-  };
+  const [isSideMenuOpen, setMenu] = useState(false);
+  const navlinks = [
+    {
+      label: "Tentang Loket",
+      link: "/about",
+    },
+    {
+      label: "Mulai jadi Event Creator",
+      link: "#",
+    },
+    {
+      label: "Biaya",
+      link: "#",
+    },
+    {
+      label: "Blog",
+      link: "#",
+    },
+    {
+      label: "Hubungi Kami",
+      link: "/contact",
+    },
+    {
+      label: "Loket Screen",
+      link: "#",
+    },
+  ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 shadow-xl">
-      <div className="bg-[#142954] py-4">
+    <div className="mx-auto max-w-full">
+      <div className="hidden bg-[#003899] text-white md:flex justify-end px-[30px] py-2 gap-5 text-[12px]">
+        <div className=" mx-auto space-x-4">
+          <a href="/about" className="ml-2">
+            Tentang Loket
+          </a>
+          <a href="#" className="ml-2">
+            Mulai Jadi Event Creator
+          </a>
+          <a href="#" className="ml-2">
+            Biaya
+          </a>
+          <a href="#" className="ml-2">
+            Blog
+          </a>
+          <a href="#" className="ml-2">
+            Hubungi Kami
+          </a>
+          <a href="#" className="ml-2">
+            Loket Screen
+          </a>
+        </div>
+      </div>
+
+      <div className="bg-[#142954] py-3">
         <div className="flex items-center justify-between max-w-7xl mx-auto px-4 pt-4 pb-2 md:pt-0 md:pb-0">
-          <Link href={"/"}>
+          <Link href="/">
             <Image
               className="md:w-16 w-10 cursor-pointer"
               src="/images/logo kr.png"
@@ -55,33 +84,33 @@ const Header: React.FC = () => {
             />
           </Link>
 
-          {pathname === "/" && (
-            <div className="hidden md:flex gap-4 items-center">
-              <div className="relative flex items-center">
-                <svg
-                  className="w-4 absolute mx-3 h-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                  />
-                </svg>
-                <input
-                  type="search"
-                  className="block md:w-[600px] px-2 py-2 pl-10 text-sm text-black outline-none rounded-md shadow-md"
-                  placeholder="Search Film.."
-                  required
-                />
-              </div>
+          <div className="hidden md:flex gap-4 items-center">
+            <div className="relative  flex items-center">
+              <input
+                className="xl:w-[500px] pl-5 lg:w-[400px]  md:w-[200px] px-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
+                placeholder="Search Film.."
+                required
+              />
             </div>
-          )}
+          </div>
+          <div className="hidden lg:flex gap-5 text-white ml-8 lg:ml-0 lg:mr-24">
+            <div className="content-center flex items-center gap-1">
+              <img
+                src="https://assets.loket.com/web/assets/img/ic_schedule.svg"
+                alt=""
+                className="w-[21px]"
+              />
+              <a href="">Buat Event</a>
+            </div>
+            <div className="content-center flex items-center gap-1">
+              <img
+                src="https://assets.loket.com/web/assets/img/ic_explore_compass.svg"
+                alt=""
+                className="w-[21px]"
+              />
+              <a href="">Jelajah</a>
+            </div>
+          </div>
 
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4">
@@ -92,140 +121,85 @@ const Header: React.FC = () => {
               )}
             </div>
             <div className="md:hidden relative">
-              <svg
-                className="w-6 h-6 absolute left-2 top-2 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                />
-              </svg>
               <input
                 type="search"
-                className="block w-[200px] pl-10 pr-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
+                className="block w-full max-w-[300px] sm:max-w-[250px] pl-10 pr-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
                 placeholder="Search.."
                 required
               />
             </div>
 
-            <div className="md:hidden">
-              <button
-                title="tgDD"
-                type="button"
-                onClick={toggleDropdown}
-                className="text-white"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16m-7 6h7"
-                  ></path>
-                </svg>
-              </button>
-            </div>
+            {/* Hamburger */}
+            <FiMenu
+              onClick={() => setMenu(true)}
+              className="text-3xl cursor-pointer lg:hidden text-white"
+            />
           </div>
         </div>
 
-        {pathname === "/" && (
-          <div className="hidden md:block">
-            <div className="flex text-white text-lg justify-center pr-40 py-1">
-              <ul className="flex items-center gap-8">
-                <Link href="/">
-                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                    Home
-                  </li>
-                </Link>
-                <Link href="/contact">
-                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                    Hubungi Kami
-                  </li>
-                </Link>
-                <Link href="/about">
-                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                    Tentang KR
-                  </li>
-                </Link>
-                <Link href="/blog">
-                  <li className="cursor-pointer hover:text-[#FCCB08] duration-150">
-                    Blog
-                  </li>
-                </Link>
-              </ul>
-            </div>
+        <div className="flex gap-3 py-2 px-5 md:px-36 bg-[#152955] mx-auto text-white text-xs overflow-x-auto whitespace-nowrap">
+          <div className="mx-auto space-x-4 ml-10">
+            <Link href="">#LoketMart</Link>
+            <Link href="">#Promo_Indodana</Link>
+            <Link href="">#LOKETScreen</Link>
+            <Link href="">#LOKET_Promo</Link>
+            <Link href="">#motoGP</Link>
+            <Link href="">#LoketAttraction</Link>
           </div>
-        )}
+        </div>
 
-        {isDropdownOpen && (
-          <div className="md:hidden bg-[#142954] text-white">
-            <div className="flex flex-col items-center py-4 px-3">
-              <div className="flex gap-4 w-full justify-center">
-                {session.data ? (
-                  <ProfileBarComponent session={session} />
-                ) : (
-                  <SignBarComponent />
-                )}
-              </div>
-              <Link href="/menu/contact">
-                <div className="mb-1 py-5">
-                  <a className="mybutton" href="mailto:rap@gmail.com">
-                    Contact
-                  </a>
-                </div>
+        {/* Sidebar mobile menu */}
+        <div
+          className={clsx(
+            "fixed h-full w-screen lg:hidden bg-black/50 backdrop-blur-sm top-0 right-0 -translate-x-full transition-all z-[9999]",
+            isSideMenuOpen && "translate-x-0"
+          )}
+        >
+          <section className="text-black bg-white flex-col absolute left-0 top-0 h-screen p-6 gap-6 z-50 w-72 flex">
+            <IoCloseOutline
+              onClick={() => setMenu(false)}
+              className="mt-2 mb-2 text-3xl cursor-pointer"
+            />
+            <div className="text-center mb-2">
+              <h3 className="text-lg font-semibold">Masuk ke Akunmu</h3>
+              <p className="text-sm text-gray-600">
+                Untuk menggunakan semua fitur di Loket
+              </p>
+            </div>
+            <div className="mb-4 flex justify-between gap-2">
+              <Link href="/sign-up" className="w-1/2">
+                <button className="w-full bg-blue-600 text-white py-2 rounded-md">
+                  Daftar
+                </button>
+              </Link>
+              <Link href="/sign-in" className="w-1/2">
+                <button className="w-full border border-blue-600 text-blue-600 py-2 rounded-md">
+                  Masuk
+                </button>
               </Link>
             </div>
-          </div>
-        )}
+            {navlinks.map((d, i) => (
+              <Link key={i} className="font-bold" href={d.link}>
+                {d.label}
+              </Link>
+            ))}
+          </section>
+        </div>
       </div>
-      <div
-        ref={navMenu}
-        className="hidden navbar-menu fixed top-0 left-0 bottom-0 w-5/6 max-w-sm z-50"
-      >
-        <div
-          ref={navBackdrop}
-          onClick={handleNavBackdrop}
-          className="navbar-backdrop fixed inset-0 bg-gray-800 opacity-25"
-        />
-        <nav className="relative flex flex-col py-6 px-6 w-full h-full bg-white border-r overflow-y-auto">
-          <div className="flex items-center justify-between mb-8">
-            <button
-              title="navClose"
-              onClick={handleNavClose}
-              ref={navClose}
-              className="navbar-close"
-            >
-              <svg
-                className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-500"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+
+      {isDropdownOpen && (
+        <div className="lg:hidden bg-[#142954] text-white">
+          <div className="flex flex-col items-center py-4 px-3">
+            <div className="flex gap-4 w-full justify-center">
+              {session.data ? (
+                <ProfileBarComponent session={session} />
+              ) : (
+                <SignBarComponent />
+              )}
+            </div>
           </div>
-        </nav>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

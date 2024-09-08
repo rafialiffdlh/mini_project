@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import Footer from "@/components/Footer";
 import { Inter } from "next/font/google";
+import Header from "@/components/Header";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 

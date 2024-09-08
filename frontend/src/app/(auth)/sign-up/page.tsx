@@ -152,6 +152,7 @@ const SignUp: React.FC = () => {
               <ErrorMessage errors={errors} name={"confirm_password"} />
             </div>
           </div>
+
           <div className="mb-4 flex items-center">
             <input
               type="checkbox"

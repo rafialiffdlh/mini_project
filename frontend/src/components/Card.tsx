@@ -29,48 +29,45 @@ const Card: React.FC = () => {
   );
 
   return (
-    <div className="px-2 py-2">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="text-2xl font-semibold mb-8 text-center">Movies</h2>
+    <div className="px-2 mt-8 mx-auto max-w-screen-xl">
+      <h2 className="text-2xl font-semibold mb-8 text-center">Movies</h2>
+      <div className="relative flex mt-8 justify-center mb-6">
+        <input
+          type="text"
+          placeholder="Search movies..."
+          className="w-full max-w-md px-4 py-2 border rounded-md shadow-md"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
 
-        <div className="relative flex justify-center mb-6">
-          <input
-            type="text"
-            placeholder="Search movies..."
-            className="w-full max-w-md px-4 py-2 border rounded-md shadow-md"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredMovies.length > 0 ? (
-            filteredMovies.map((movie) => (
-              <div
-                key={movie.id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden"
-              >
-                <img
-                  src={movie.poster}
-                  alt={movie.movie_name}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
-                  <p className="text-gray-600 mt-2">{movie.description}</p>
-                  <p className="text-gray-500 mt-2">
-                    Release Date: {movie.release_date}
-                  </p>
-                  <p className="text-gray-700 mt-2 font-semibold">
-                    Price: ${movie.price.toLocaleString()}
-                  </p>
-                </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {filteredMovies.length > 0 ? (
+          filteredMovies.map((movie) => (
+            <div
+              key={movie.id}
+              className="bg-white shadow-lg rounded-lg overflow-hidden"
+            >
+              <img
+                src={movie.poster}
+                alt={movie.movie_name}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
+                <p className="text-gray-600 mt-2">{movie.description}</p>
+                <p className="text-gray-500 mt-2">
+                  Release Date: {movie.release_date}
+                </p>
+                <p className="text-gray-700 mt-2 font-semibold">
+                  Price: ${movie.price.toLocaleString()}
+                </p>
               </div>
-            ))
-          ) : (
-            <p className="text-center">No movies found.</p>
-          )}
-        </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center">No movies found.</p>
+        )}
       </div>
     </div>
   );
