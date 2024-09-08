@@ -27,6 +27,9 @@ export const registerSchema = z.object({
         "Mohon masukan kata sandi anda sebagai Kata sandi minimal harus 6 karakter, berisi huruf dan angka",
     })
     .trim(),
+  role: z.enum(["User", "Organizer"], {
+    message: "silahkan pilih role anda terlebih dahulu",
+  }),
 });
 
 export const loginSchema = z.object({

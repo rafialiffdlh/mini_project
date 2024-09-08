@@ -7,12 +7,20 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFormState } from "react-dom";
 import { z } from "zod";
+import { ErrorMessage } from "@hookform/error-message";
 
 const SignIn: React.FC = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {},
   });
+
+  const [termCheck, setTermCheck] = React.useState(false);
+
+  const handleTermCheck = (checked: boolean) => {
+    setTermCheck(checked);
+  };
+
   const router = useRouter();
   const [errorMsgGoogle, dispatchGoogle] = useFormState(
     googleAuthenticate,
@@ -80,6 +88,9 @@ const SignIn: React.FC = () => {
                 {...register("phone_number")}
               />
             </div>
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"phone_number"} />
+            </div>
             <div className="mb-4 relative">
               <input
                 className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
@@ -88,8 +99,16 @@ const SignIn: React.FC = () => {
                 {...register("password")}
               />
             </div>
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"password"} />
+            </div>
             <div className="mb-4 flex items-center">
-              <input type="checkbox" id="terms" className="mr-2" />
+              <input
+                type="checkbox"
+                id="terms"
+                className="mr-2"
+                onChange={(e) => handleTermCheck(e.target.checked)}
+              />
               <label
                 htmlFor="terms"
                 className="text-gray-400 text-xs md:text-sm"
@@ -101,9 +120,9 @@ const SignIn: React.FC = () => {
               </label>
             </div>
             <button
-              className="bg-purple-600 text-white py-2 px-4 rounded-md w-full mb-4"
+              className="bg-purple-600 text-white py-2 px-4 rounded-md w-full mb-4 disabled:bg-slate-600 disabled:cursor-not-allowed disabled:text-gray-300"
               type="submit"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || !termCheck}
             >
               Login account
             </button>

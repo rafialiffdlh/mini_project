@@ -91,11 +91,6 @@ const Header: React.FC = () => {
                 <SignBarComponent />
               )}
             </div>
-            <div className="flex items-center gap-4">
-              {session.data?.user.email},{session.data?.user.id},
-              {session.data?.user.name},{session.data?.user.phone_number}
-            </div>
-
             <div className="md:hidden relative">
               <svg
                 className="w-6 h-6 absolute left-2 top-2 text-gray-500 dark:text-gray-400"

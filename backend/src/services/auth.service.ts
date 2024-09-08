@@ -1,30 +1,43 @@
 import prisma from "../prisma";
-import { Prisma } from "@prisma/client";
+import { gender, Prisma, user_roles_role } from "@prisma/client";
 import { compare, hash } from "bcrypt";
 import { Request } from "express";
-import { IUser } from "../interfaces/user.interface";
+import { IUser, userRole, IUserModel } from "../interfaces/user.interface";
 import { ErrorHandler } from "../helpers/response.helper";
 import { generateToken } from "../libs/token.lib";
 
 export class AuthService {
   static async login(req: Request) {
-    const { phone_number, password } = req.body;
-    const user = (await prisma.users.findFirst({
-      where: { phone_number: phone_number },
-    })) as IUser;
-    if (!user) {
+    const { phone_number, password, email } = req.body;
+    const data = await prisma.users.findFirst({
+      where: { OR: [{ phone_number: phone_number }, { email: email }] },
+
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone_number: true,
+        user_role: { select: { role: true } },
+        password: true,
+      },
+    });
+    if (!data) {
       throw new ErrorHandler("User not found", 404);
     }
-    const isMatch = await compare(password, String(user.password));
+    const isMatch = await compare(password, String(data.password));
     if (!isMatch) {
       throw new ErrorHandler("Password incorrect", 400);
     } else {
+      const user = {
+        ...data,
+        user_role: userRole[data.user_role[0].role || "user"],
+      } as IUser;
       delete user.password;
+      return generateToken(user);
     }
-    return generateToken(user);
   }
   static async register(req: Request) {
-    const { name, email, password, phone_number } = req.body;
+    const { name, email, password, phone_number, role } = req.body;
     const hashPassword = await hash(password, 10);
     const data: Prisma.usersCreateInput = {
       name,
@@ -38,7 +51,14 @@ export class AuthService {
     //   data.image = image.filename;
     // }
 
-    await prisma.users.create({ data });
+    const newData = await prisma.users.create({ data });
+
+    await prisma.user_roles.create({
+      data: {
+        user_id: newData.id,
+        role: role,
+      },
+    });
 
     return null;
   }
@@ -64,20 +84,30 @@ export class AuthService {
   }
 
   static async updateProfile(req: Request) {
-    const data = req.body as IUser;
+    const data = req.body as IUserModel;
+    delete data.user_roles;
     console.log(req);
     if (req.user) {
       const { id } = req.user;
-      const user = (await prisma.users.findFirst({
+      const exist = await prisma.users.count({
         where: { id: id },
-      })) as IUser;
-      if (!user) {
+      });
+      if (!exist) {
         throw new ErrorHandler("User not found", 404);
       }
-
+      const hashPassword = data.password
+        ? await hash(data.password, 10)
+        : undefined;
       await prisma.users.update({
         where: { id: id },
-        data: data,
+        data: {
+          name: data.name,
+          email: data.email,
+          password: hashPassword,
+          phone_number: data.phone_number,
+          birthDate: data.birthDate,
+          gender: (data.gender as unknown as gender) || undefined,
+        },
       });
     } else {
       throw new ErrorHandler("Unauthorized", 401);

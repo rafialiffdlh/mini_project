@@ -29,6 +29,9 @@ export const registerSchema = z
     email: z.string().email().min(5, {
       message: "silahkan masukan email anda",
     }),
+    role: z.enum(["User", "Organizer"], {
+      message: "silahkan pilih role anda",
+    }),
     password: z
       .string({ message: "Mohon masukan kata sandi Anda." })
       .min(6, {
