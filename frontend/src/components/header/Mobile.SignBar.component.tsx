@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import React from "react";
 
@@ -5,8 +6,7 @@ type Props = {};
 
 export default function MobileSignBarComponent({}: Props) {
   return (
-    <div>
-      {" "}
+    <>
       <div className="text-center mb-2">
         <h3 className="text-lg font-semibold">Masuk ke Akunmu</h3>
         <p className="text-sm text-gray-600">
@@ -25,6 +25,6 @@ export default function MobileSignBarComponent({}: Props) {
           </button>
         </Link>
       </div>
-    </div>
+    </>
   );
 }

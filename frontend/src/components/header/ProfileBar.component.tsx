@@ -17,6 +17,7 @@ export default function ProfileBarComponent({ session }: Props) {
     <div className="grid grid-cols-2 items-center">
       <div className="flex justify-center">
         <button
+          title="Cart"
           type="button"
           className="text-3xl text-white hover:text-gray-400"
         >

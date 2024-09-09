@@ -4,12 +4,10 @@ declare module "next-auth" {
     phone_number: string | undefined;
     email: string | undefined;
     name: string | undefined;
-    //   gender: 'Pria' | 'Perempuan' | undefined;
     image?: string;
-    role: "User" | "Organizer" | undefined;
-    access_token: string;
+    user_role?: string | undefined;
+    access_token?: string;
   }
-
   interface Session {
     user: User;
   }

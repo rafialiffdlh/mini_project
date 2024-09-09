@@ -1,4 +1,6 @@
+"use client";
 import { actionLogout } from "@/actions/auth.action";
+import { UserRoles } from "@/interfaces/user.interface";
 import { SessionContextValue } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
@@ -12,13 +14,13 @@ export default function MobileProfileBarComponent({ session }: Props) {
     });
   };
   return (
-    <div>
+    <>
       <div className="text-center mb-2">
         <h3 className="text-lg font-semibold">
           {session ? session.data?.user.name : ""}
         </h3>
         <p className="text-sm text-gray-600">
-          {session ? session.data?.user.role : ""}
+          {session ? UserRoles[Number(session.data?.user.user_role)] : ""}
         </p>
       </div>
       <div className="mb-4 flex justify-between gap-2">
@@ -40,6 +42,6 @@ export default function MobileProfileBarComponent({ session }: Props) {
           </button>
         </Link>
       </div>
-    </div>
+    </>
   );
 }

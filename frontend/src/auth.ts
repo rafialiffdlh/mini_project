@@ -49,6 +49,8 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         session.user.phone_number = token.phone_number as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
+        session.user.image = token.image as string;
+        session.user.user_role = token.user_role as string;
       }
       return session;
     },
@@ -59,6 +61,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         token.phone_number = user.phone_number;
         token.email = user.email;
         token.image = user.image;
+        token.user_role = user.user_role as string;
       }
 
       if (trigger === "update" && session) {
