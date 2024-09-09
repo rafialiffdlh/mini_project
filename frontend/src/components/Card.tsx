@@ -10,12 +10,17 @@ interface Movie {
   price: number;
 }
 
+interface CartItem {
+  movie: Movie;
+  quantity: number;
+}
+
 const Card: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    // Fetch movie data from the API
     const fetchMovies = async () => {
       const response = await fetch("/api/movies");
       const data = await response.json();
@@ -28,9 +33,28 @@ const Card: React.FC = () => {
     movie.movie_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const addToCart = (movie: Movie) => {
+    const existingCartItem = cart.find(
+      (cartItem) => cartItem.movie.id === movie.id
+    );
+
+    if (existingCartItem) {
+      const updatedCart = cart.map((cartItem) =>
+        cartItem.movie.id === movie.id
+          ? { ...cartItem, quantity: cartItem.quantity + 1 }
+          : cartItem
+      );
+      setCart(updatedCart);
+    } else {
+      setCart([...cart, { movie, quantity: 1 }]);
+    }
+  };
+
   return (
     <div className="px-2 mt-8 mx-auto max-w-screen-xl">
       <h2 className="text-2xl font-semibold mb-8 text-center">Movies</h2>
+
+      {/* Search input */}
       <div className="relative flex mt-8 justify-center mb-6">
         <input
           type="text"
@@ -41,19 +65,22 @@ const Card: React.FC = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {/* Movie cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredMovies.length > 0 ? (
           filteredMovies.map((movie) => (
             <div
               key={movie.id}
-              className="bg-white shadow-lg rounded-lg overflow-hidden"
+              className="bg-white shadow-lg rounded-lg overflow-hidden relative"
             >
+              {/* Poster image */}
               <img
                 src={movie.poster}
                 alt={movie.movie_name}
                 className="w-full h-48 object-cover"
               />
-              <div className="p-4">
+              {/* Movie details */}
+              <div className="p-4 pb-16">
                 <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
                 <p className="text-gray-600 mt-2">{movie.description}</p>
                 <p className="text-gray-500 mt-2">
@@ -63,10 +90,42 @@ const Card: React.FC = () => {
                   Price: ${movie.price.toLocaleString()}
                 </p>
               </div>
+              {/* Buy button */}
+              <div className="absolute bottom-4 right-4">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+                  onClick={() => addToCart(movie)}
+                >
+                  Buy Now
+                </button>
+              </div>
             </div>
           ))
         ) : (
           <p className="text-center">No movies found.</p>
+        )}
+      </div>
+
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-4">Cart</h3>
+        {cart.length > 0 ? (
+          <ul className="space-y-4">
+            {cart.map((cartItem) => (
+              <li
+                key={cartItem.movie.id}
+                className="flex justify-between items-center"
+              >
+                <span>
+                  {cartItem.movie.movie_name} (x{cartItem.quantity})
+                </span>
+                <span>
+                  ${(cartItem.movie.price * cartItem.quantity).toLocaleString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Your cart is empty.</p>
         )}
       </div>
     </div>
