@@ -9,6 +9,8 @@ import ProfileBarComponent from "./header/ProfileBar.component";
 import SignBarComponent from "./header/SignBar.component";
 import { IoCloseOutline } from "react-icons/io5";
 import clsx from "clsx";
+import MobileProfileBarComponent from "./header/Mobile.ProfileBar.component";
+import MobileSignBarComponent from "./header/Mobile.SignBar.component";
 
 const Header: React.FC = () => {
   const session = useSession();
@@ -160,24 +162,11 @@ const Header: React.FC = () => {
               onClick={() => setMenu(false)}
               className="mt-2 mb-2 text-3xl cursor-pointer"
             />
-            <div className="text-center mb-2">
-              <h3 className="text-lg font-semibold">Masuk ke Akunmu</h3>
-              <p className="text-sm text-gray-600">
-                Untuk menggunakan semua fitur di Loket
-              </p>
-            </div>
-            <div className="mb-4 flex justify-between gap-2">
-              <Link href="/sign-up" className="w-1/2">
-                <button className="w-full bg-blue-600 text-white py-2 rounded-md">
-                  Daftar
-                </button>
-              </Link>
-              <Link href="/sign-in" className="w-1/2">
-                <button className="w-full border border-blue-600 text-blue-600 py-2 rounded-md">
-                  Masuk
-                </button>
-              </Link>
-            </div>
+            {session.data ? (
+              <MobileProfileBarComponent session={session} />
+            ) : (
+              <MobileSignBarComponent />
+            )}
             {navlinks.map((d, i) => (
               <Link key={i} className="font-bold" href={d.link}>
                 {d.label}
