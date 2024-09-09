@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
+
+enum RoleEnum {
+  User,
+  Organizer,
+}
 
 const SignUp: React.FC = () => {
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -19,13 +25,19 @@ const SignUp: React.FC = () => {
     handleSubmit,
   } = form;
 
+  const [termCheck, setTermCheck] = React.useState(false);
+
+  const handleTermCheck = (checked: boolean) => {
+    setTermCheck(checked);
+  };
+
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     actionRegister(values)
       .then((res) => {
         form.reset();
-        router.push("/menu/sign-in");
+        router.push("/sign-in");
         window.alert(res.message);
         // toast.success(res.message);
       })
@@ -53,6 +65,38 @@ const SignUp: React.FC = () => {
           className="w-full max-w-xs md:max-w-sm relative"
           onSubmit={handleSubmit(onSubmit)}
         >
+          <div className="mb-4 flex">
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">
+                  Saya ingin mendaftar sebagai:
+                </span>
+              </div>
+              <select
+                className="select select-bordered"
+                required
+                defaultValue={""}
+                {...register("role")}
+              >
+                <option disabled value={""}>
+                  Pilih salah satu:
+                </option>
+                {(Object.keys(RoleEnum) as Array<keyof typeof RoleEnum>).map(
+                  (role) =>
+                    !Number.isInteger(Number(role)) ? (
+                      <option key={role} value={role}>
+                        {role}
+                      </option>
+                    ) : (
+                      ""
+                    )
+                )}
+              </select>
+            </label>
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"role"} />
+            </div>
+          </div>
           <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <input
               className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
@@ -67,6 +111,14 @@ const SignUp: React.FC = () => {
               {...register("phone_number")}
             />
           </div>
+          <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"name"} />
+            </div>
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"phone_number"} />
+            </div>
+          </div>
           <div className="mb-4">
             <input
               className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
@@ -74,6 +126,9 @@ const SignUp: React.FC = () => {
               placeholder="Email"
               {...register("email")}
             />
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"email"} />
+            </div>
           </div>
           <div className="mb-4 relative">
             <input
@@ -82,18 +137,29 @@ const SignUp: React.FC = () => {
               placeholder="Password"
               {...register("password")}
             />
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"password"} />
+            </div>
           </div>
           <div className="mb-4 relative">
             <input
               className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
               type="password"
-              placeholder="ConfirmPassword"
+              placeholder="Confirm Password"
               {...register("confirm_password")}
             />
+            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
+              <ErrorMessage errors={errors} name={"confirm_password"} />
+            </div>
           </div>
 
           <div className="mb-4 flex items-center">
-            <input type="checkbox" id="terms" className="mr-2" />
+            <input
+              type="checkbox"
+              id="terms"
+              className="mr-2"
+              onChange={(e) => handleTermCheck(e.target.checked)}
+            />
             <label htmlFor="terms" className="text-gray-400 text-xs md:text-sm">
               I agree to the{" "}
               <a href="" className="text-blue-400">
@@ -102,9 +168,9 @@ const SignUp: React.FC = () => {
             </label>
           </div>
           <button
-            className="bg-purple-600 text-white py-2 px-4 rounded-md w-full mb-4"
+            className="bg-purple-600 text-white py-2 px-4 rounded-md w-full mb-4 disabled:bg-slate-600 disabled:text-gray-300 disabled:cursor-not-allowed"
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || !termCheck}
           >
             Create account
           </button>

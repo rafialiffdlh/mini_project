@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { SessionContextValue } from "next-auth/react";
 import { actionLogout } from "@/actions/auth.action";

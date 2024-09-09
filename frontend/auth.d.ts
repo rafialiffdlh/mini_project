@@ -6,6 +6,7 @@ declare module "next-auth" {
     name: string | undefined;
     //   gender: 'Pria' | 'Perempuan' | undefined;
     image?: string;
+    role: "User" | "Organizer" | undefined;
     access_token: string;
   }
 
@@ -24,6 +25,7 @@ declare module "next-auth/jwt" {
     name: string | undefined;
     //   gender: 'Pria' | 'Perempuan' | undefined;
     image?: string;
+    role: "User" | "Organizer" | undefined;
     access_token: string;
   }
 }

@@ -4,21 +4,39 @@ export interface IUser {
   email: string;
   password?: string;
   phone_number: string;
+  user_role?: userRole | null;
 }
 
-interface IUserDetail extends IUser {
+interface IUserModel {
+  id: number;
+  name?: string;
+  email?: string;
+  password?: string;
+  phone_number?: string;
+  birthDate?: Date;
+  gender?: userGender;
+  user_roles?: UserRoles;
+}
+
+interface UserRoles {
   id: number;
   user_id: number;
   role: userRole;
-  birth_date: Date;
-  created_at: Date;
-  updated_at?: Date;
-
-  gender?: string;
 }
 
+interface IUserDetail extends IUser {
+  image?: string;
+  birth_date: Date;
+  created_at: Date;
+  gender?: userGender;
+}
 enum userRole {
   "user",
   "organizer",
 }
-export { IUserDetail, userRole };
+
+enum userGender {
+  "pria",
+  "wanita",
+}
+export { IUserDetail, IUserModel, userRole };
