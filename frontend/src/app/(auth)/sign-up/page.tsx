@@ -39,7 +39,6 @@ const SignUp: React.FC = () => {
         alert(res.message);
         form.reset();
         router.push("/sign-in");
-        // toast.success(res.message);
       })
       .catch((err) => {
         alert(err.message);
@@ -48,108 +47,100 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    // <Form {...form}>
     <div className="flex flex-col justify-center items-center h-screen bg-gray-900 p-4 md:p-8">
-      <div className="md:w-1/2 flex flex-col justify-center items-center p-6 md:p-8 bg-gray-800 rounded-lg relative bg-cover bg-center">
-        <div className="absolute inset-0 bg-gray-800 opacity-80 md:hidden rounded-lg"></div>
-        <h2 className="text-2xl md:text-3xl font-semibold text-white mb-4 md:mb-6 relative">
-          Create an account
+      <div className="w-full max-w-lg p-6 bg-gray-800 rounded-lg shadow-md">
+        <h2 className="text-2xl font-semibold text-white text-center mb-6">
+          Create an Account
         </h2>
-        <p className="text-gray-400 mb-4 text-sm md:text-base relative">
+        <p className="text-gray-400 text-center mb-6">
           Already have an account?{" "}
-          <a href="/sign-in" className="text-blue-400">
+          <a href="/sign-in" className="text-blue-400 underline">
             Log in
           </a>
         </p>
-        <form
-          className="w-full max-w-xs md:max-w-sm relative"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="mb-4 flex">
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">
-                  Saya ingin mendaftar sebagai:
-                </span>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-4">
+            <select
+              className="w-full p-2 bg-gray-700 text-white rounded-md"
+              required
+              defaultValue={""}
+              {...register("role")}
+            >
+              <option disabled value={""}>
+                Select a role
+              </option>
+              {(Object.keys(RoleEnum) as Array<keyof typeof RoleEnum>).map(
+                (role) =>
+                  !Number.isInteger(Number(role)) ? (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ) : null
+              )}
+            </select>
+            <div className="text-red-500 text-sm mt-1">
+              <ErrorMessage errors={errors} name="role" />
+            </div>
+          </div>
+
+          <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <input
+                className="w-full p-2 bg-gray-700 text-white rounded-md"
+                type="text"
+                placeholder="Full Name"
+                {...register("name")}
+              />
+              <div className="text-red-500 text-sm mt-1">
+                <ErrorMessage errors={errors} name="name" />
               </div>
-              <select
-                className="select select-bordered"
-                required
-                defaultValue={""}
-                {...register("role")}
-              >
-                <option disabled value={""}>
-                  Pilih salah satu:
-                </option>
-                {(Object.keys(RoleEnum) as Array<keyof typeof RoleEnum>).map(
-                  (role) =>
-                    !Number.isInteger(Number(role)) ? (
-                      <option key={role} value={role}>
-                        {role}
-                      </option>
-                    ) : (
-                      ""
-                    )
-                )}
-              </select>
-            </label>
-            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
-              <ErrorMessage errors={errors} name={"role"} />
+            </div>
+            <div>
+              <input
+                className="w-full p-2 bg-gray-700 text-white rounded-md"
+                type="text"
+                placeholder="Phone Number"
+                {...register("phone_number")}
+              />
+              <div className="text-red-500 text-sm mt-1">
+                <ErrorMessage errors={errors} name="phone_number" />
+              </div>
             </div>
           </div>
-          <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <input
-              className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
-              type="text"
-              placeholder="Full Name"
-              {...register("name")}
-            />
-            <input
-              className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
-              type="text"
-              placeholder="Phone Number"
-              {...register("phone_number")}
-            />
-          </div>
-          <div className="mb-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
-              <ErrorMessage errors={errors} name={"name"} />
-            </div>
-            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
-              <ErrorMessage errors={errors} name={"phone_number"} />
-            </div>
-          </div>
+
           <div className="mb-4">
             <input
-              className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
+              className="w-full p-2 bg-gray-700 text-white rounded-md"
               type="email"
               placeholder="Email"
               {...register("email")}
             />
-            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
-              <ErrorMessage errors={errors} name={"email"} />
+            <div className="text-red-500 text-sm mt-1">
+              <ErrorMessage errors={errors} name="email" />
             </div>
           </div>
-          <div className="mb-4 relative">
+
+          <div className="mb-4">
             <input
-              className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
+              className="w-full p-2 bg-gray-700 text-white rounded-md"
               type="password"
               placeholder="Password"
               {...register("password")}
             />
-            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
-              <ErrorMessage errors={errors} name={"password"} />
+            <div className="text-red-500 text-sm mt-1">
+              <ErrorMessage errors={errors} name="password" />
             </div>
           </div>
-          <div className="mb-4 relative">
+
+          <div className="mb-4">
             <input
-              className="bg-gray-700 text-white rounded-md px-4 py-2 w-full"
+              className="w-full p-2 bg-gray-700 text-white rounded-md"
               type="password"
               placeholder="Confirm Password"
               {...register("confirm_password")}
             />
-            <div className="text-red-500 pt-[5px] min-h-[25px] text-[13px]">
-              <ErrorMessage errors={errors} name={"confirm_password"} />
+            <div className="text-red-500 text-sm mt-1">
+              <ErrorMessage errors={errors} name="confirm_password" />
             </div>
           </div>
 
@@ -160,32 +151,33 @@ const SignUp: React.FC = () => {
               className="mr-2"
               onChange={(e) => handleTermCheck(e.target.checked)}
             />
-            <label htmlFor="terms" className="text-gray-400 text-xs md:text-sm">
+            <label htmlFor="terms" className="text-gray-400 text-sm">
               I agree to the{" "}
-              <a href="" className="text-blue-400">
+              <a href="#" className="text-blue-400 underline">
                 Terms & Conditions
               </a>
             </label>
           </div>
+
           <button
-            className="bg-purple-600 text-white py-2 px-4 rounded-md w-full mb-4 disabled:bg-slate-600 disabled:text-gray-300 disabled:cursor-not-allowed"
+            className="w-full py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition disabled:bg-slate-600 disabled:text-gray-300 disabled:cursor-not-allowed"
             type="submit"
             disabled={form.formState.isSubmitting || !termCheck}
           >
-            Create account
+            Create Account
           </button>
         </form>
-        <div className="flex flex-col justify-center md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full relative">
+
+        <div className="mt-6 text-center">
           <a
             href="/"
-            className="text-blue-400 text-center py-2 px-4 w-full md:w-auto flex items-center justify-center"
+            className="text-blue-400 underline text-sm hover:text-blue-300"
           >
             Back to Home
           </a>
         </div>
       </div>
     </div>
-    // </Form>
   );
 };
 
