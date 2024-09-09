@@ -36,14 +36,14 @@ const SignUp: React.FC = () => {
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
     actionRegister(values)
       .then((res) => {
+        alert(res.message);
         form.reset();
         router.push("/sign-in");
-        window.alert(res.message);
         // toast.success(res.message);
       })
       .catch((err) => {
-        window.alert(err.message);
-        // toast.success(err.message);
+        alert(err.message);
+        // toast.error(err.message);
       });
   };
 
