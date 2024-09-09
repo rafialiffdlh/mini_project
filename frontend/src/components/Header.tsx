@@ -60,10 +60,10 @@ const Header: React.FC = () => {
           <a href="#" className="ml-2">
             Biaya
           </a>
-          <a href="#" className="ml-2">
+          <a href="/blog" className="ml-2">
             Blog
           </a>
-          <a href="#" className="ml-2">
+          <a href="/contact" className="ml-2">
             Hubungi Kami
           </a>
           <a href="#" className="ml-2">
@@ -85,7 +85,7 @@ const Header: React.FC = () => {
           </Link>
 
           <div className="hidden md:flex gap-4 items-center">
-            <div className="relative  flex items-center">
+            <div className="relative flex items-center">
               <input
                 className="xl:w-[500px] pl-5 lg:w-[400px]  md:w-[200px] px-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
                 placeholder="Search Film.."
