@@ -11,7 +11,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="py-8">
+    <div className="pt-8">
       <div className="bg-[#112041] text-white mx-auto max-w-full">
         <div className="container mx-auto py-10 px-4 md:px-6 lg:px-12 max-w-screen-xl ">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -74,7 +74,6 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Kolom Lokasi Event */}
             <div>
               <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-4">
                 Lokasi Event
@@ -107,7 +106,6 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Kolom Inspirasi Event */}
             <div>
               <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-4">
                 Inspirasi Event
@@ -140,7 +138,7 @@ const Footer = () => {
         </div>
       </div>
       {/* Icon Sosial Media */}
-      <div className="bg-[#112041] text-white py-8 px-4 md:px-6 lg:px-12 mx-auto max-w-screen-2xl">
+      <div className="bg-[#112041] text-white py-8 px-4 md:px-6 lg:px-12 mx-auto max-w-full">
         <div className="container mx-auto flex justify-center gap-6 max-w-screen-xl">
           <Link href="">
             <FontAwesomeIcon icon={faInstagram} className="w-6 h-6" />
@@ -163,10 +161,10 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="bg-[#1d3976] text-white text-sm py-10 px-4 md:px-6 lg:px-12 mx-auto max-w-screen-xl">
+      <div className="bg-[#1d3976] text-white text-sm py-10 px-4 md:px-6 lg:px-12 mx-auto max-w-full">
         <div className="container mx-auto flex flex-col items-center text-center max-w-screen-xl">
           <div className="flex flex-wrap gap-4 md:gap-6 justify-center">
-            <Link href="" className="text-xs md:text-sm lg:text-base">
+            <Link href="/contact" className="text-xs md:text-sm lg:text-base">
               Tentang Kami
             </Link>
             <Link href="" className="text-xs md:text-sm lg:text-base">

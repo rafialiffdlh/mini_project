@@ -129,7 +129,7 @@ const Header: React.FC = () => {
               />
             </div>
 
-            {/* Hamburger */}
+            {/* //hamburger */}
             <FiMenu
               onClick={() => setMenu(true)}
               className="text-3xl cursor-pointer lg:hidden text-white"
