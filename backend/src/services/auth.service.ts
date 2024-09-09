@@ -56,7 +56,7 @@ export class AuthService {
     await prisma.user_roles.create({
       data: {
         user_id: newData.id,
-        role: role,
+        role: role as unknown as user_roles_role,
       },
     });
 
