@@ -51,14 +51,24 @@ export class AuthService {
     //   data.image = image.filename;
     // }
 
-    const newData = await prisma.users.create({ data });
+    await prisma.$transaction(async (trx) => {
+      const newData = await trx.users.create({ data });
 
-    await prisma.user_roles.create({
-      data: {
-        user_id: newData.id,
-        role: role,
-      },
+      const newRole = await trx.user_roles.create({
+        data: {
+          user_id: newData.id,
+          role: role.toLowerCase() as unknown as user_roles_role,
+        },
+      });
     });
+    // const newData = await prisma.users.create({ data });
+
+    // const newRole = await prisma.user_roles.create({
+    //   data: {
+    //     user_id: newData.id,
+    //     role: role.toLowerCase() as unknown as user_roles_role,
+    //   },
+    // });
 
     return null;
   }
