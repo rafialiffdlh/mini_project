@@ -66,7 +66,7 @@ const Card: React.FC = () => {
       </div>
 
       {/* Movie cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid px-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredMovies.length > 0 ? (
           filteredMovies.map((movie) => (
             <div
@@ -94,7 +94,7 @@ const Card: React.FC = () => {
               <div className="absolute bottom-4 right-4">
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-                  onClick={() => addToCart(movie)}
+                  onClick={() => addToCart(movie)} // Add to cart when clicked
                 >
                   Buy Now
                 </button>
@@ -106,6 +106,7 @@ const Card: React.FC = () => {
         )}
       </div>
 
+      {/* Cart section */}
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Cart</h3>
         {cart.length > 0 ? (

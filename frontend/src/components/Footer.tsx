@@ -14,13 +14,12 @@ const Footer = () => {
     <div className="pt-8">
       <div className="bg-[#112041] text-white mx-auto max-w-full">
         <div className="container mx-auto py-10 px-4 md:px-6 lg:px-12 max-w-screen-xl ">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Kolom Tentang Loket */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-4">
+              <h3 className="md:text-base lg:text-lg font-semibold mb-4">
                 Tentang Loket
               </h3>
-              <ul className="text-xs md:text-sm lg:text-base space-y-2">
+              <ul className="text-sm md:text-sm lg:text-sm space-y-2">
                 <li>
                   <Link href="#">Masuk</Link>
                 </li>
@@ -49,36 +48,38 @@ const Footer = () => {
               <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-4">
                 Rayakan Eventmu
               </h3>
-              <ul className="text-xs md:text-sm lg:text-base space-y-2">
-                <li>
-                  <Link href="">Cara Mempersiapkan Event</Link>
-                </li>
-                <li>
-                  <Link href="">Cara membuat Event Lomba</Link>
-                </li>
-                <li>
-                  <Link href="">Cara Mempublikasikan Event</Link>
-                </li>
-                <li>
-                  <Link href="">Cara Membuat Event Musik</Link>
-                </li>
-                <li>
-                  <Link href="">Cara Mengelola Event</Link>
-                </li>
-                <li>
-                  <Link href="">Cara Membuat Konsep Acara yang Menarik</Link>
-                </li>
-                <li>
-                  <Link href="">Cara Membuat Event di Co-Working Space</Link>
-                </li>
-              </ul>
+              <div className="text-sm">
+                <ul className="text-md md:text-sm lg:text-sm space-y-2">
+                  <li>
+                    <Link href="">Cara Mempersiapkan Event</Link>
+                  </li>
+                  <li>
+                    <Link href="">Cara membuat Event Lomba</Link>
+                  </li>
+                  <li>
+                    <Link href="">Cara Mempublikasikan Event</Link>
+                  </li>
+                  <li>
+                    <Link href="">Cara Membuat Event Musik</Link>
+                  </li>
+                  <li>
+                    <Link href="">Cara Mengelola Event</Link>
+                  </li>
+                  <li>
+                    <Link href="">Cara Membuat Konsep Acara yang Menarik</Link>
+                  </li>
+                  <li>
+                    <Link href="">Cara Membuat Event di Co-Working Space</Link>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div>
               <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-4">
                 Lokasi Event
               </h3>
-              <ul className="text-xs md:text-sm lg:text-base space-y-2">
+              <ul className="text-xs md:text-sm lg:text-sm space-y-2">
                 <li>
                   <Link href="">Jakarta</Link>
                 </li>
@@ -110,7 +111,7 @@ const Footer = () => {
               <h3 className="text-sm md:text-base lg:text-lg font-semibold mb-4">
                 Inspirasi Event
               </h3>
-              <ul className="text-xs md:text-sm lg:text-base space-y-2">
+              <ul className="text-xs md:text-sm lg:text-sm space-y-2">
                 <li>
                   <Link href="">Festival</Link>
                 </li>

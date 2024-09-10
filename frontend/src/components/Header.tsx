@@ -2,7 +2,6 @@
 import React, { useState, useRef } from "react";
 import { FiMenu } from "react-icons/fi";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProfileBarComponent from "./header/ProfileBar.component";
@@ -51,73 +50,78 @@ const Header: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-full">
-      <div className="hidden bg-[#003899] text-white md:flex justify-end px-[30px] py-2 gap-5 text-[12px]">
-        <div className=" mx-auto space-x-4">
-          <a href="/about" className="ml-2">
-            Tentang Loket
-          </a>
-          <a href="#" className="ml-2">
-            Mulai Jadi Event Creator
-          </a>
-          <a href="#" className="ml-2">
-            Biaya
-          </a>
-          <a href="/blog" className="ml-2">
-            Blog
-          </a>
-          <a href="/contact" className="ml-2">
-            Hubungi Kami
-          </a>
-          <a href="#" className="ml-2">
-            Loket Screen
-          </a>
+      <div className="hidden bg-[#003899] text-white md:flex py-2 gap-5 text-[12px]">
+        <div className="flex items-center justify-end max-w-7xl mx-auto pt-4 pb-2 md:pt-0 md:pb-0 w-full">
+          <div className="space-x-4">
+            <a href="/about" className="">
+              Tentang Loket
+            </a>
+            <a href="#" className="">
+              Mulai Jadi Event Creator
+            </a>
+            <a href="#" className="">
+              Biaya
+            </a>
+            <a href="/blog" className="">
+              Blog
+            </a>
+            <a href="/contact" className="">
+              Hubungi Kami
+            </a>
+            <a href="#" className="">
+              Loket Screen
+            </a>
+          </div>
         </div>
       </div>
 
       <div className="bg-[#142954] py-3">
         <div className="flex items-center justify-between max-w-7xl mx-auto px-4 pt-4 pb-2 md:pt-0 md:pb-0">
           <Link href="/">
-            <Image
-              className="md:w-16 w-10 cursor-pointer"
-              src="/images/logo kr.png"
-              alt="Logo"
-              width={64}
-              height={64}
+            <img
+              className="md:w-28 w-32 px-2 cursor-pointer"
+              src="https://assets.loket.com/images/logo-loket-white.png"
+              alt="Loket Logo"
+              width={70}
+              height={70}
             />
           </Link>
 
           <div className="hidden md:flex gap-4 items-center">
             <div className="relative flex items-center">
               <input
-                className="xl:w-[500px] pl-5 lg:w-[400px]  md:w-[200px] px-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
-                placeholder="Search Film.."
+                className="xl:w-[500px] pl-5 lg:w-[400px] md:w-[200px] px-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
+                placeholder="Cari event seru di sini..."
                 required
               />
             </div>
           </div>
-          <div className="hidden lg:flex gap-5 text-white ml-8 lg:ml-0 lg:mr-24">
-            <div className="content-center flex items-center gap-1">
-              <Image
+
+          {/* Event and Explore links for desktop */}
+          <div className="hidden lg:flex gap-5 text-white ml-8 lg:ml-12 lg:mr-24">
+            <div className="flex items-center gap-1">
+              <img
                 src="https://assets.loket.com/web/assets/img/ic_schedule.svg"
-                alt=""
+                alt="Create Event"
                 className="w-[21px]"
                 width={64}
                 height={64}
               />
-              <a href="">Buat Event</a>
+              <a href="#">Buat Event</a>
             </div>
-            <div className="content-center flex items-center gap-1">
-              <Image
+            <div className="flex items-center gap-1">
+              <img
                 src="https://assets.loket.com/web/assets/img/ic_explore_compass.svg"
-                alt=""
+                alt="Explore"
                 className="w-[21px]"
                 width={64}
                 height={64}
               />
-              <a href="">Jelajah</a>
+              <a href="#">Jelajah</a>
             </div>
           </div>
 
+          {/* Sign In / Sign Up */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-4">
               {session.data ? (
@@ -126,16 +130,18 @@ const Header: React.FC = () => {
                 <SignBarComponent />
               )}
             </div>
+
+            {/* Search mobile */}
             <div className="md:hidden relative">
               <input
                 type="search"
                 className="block w-full max-w-[300px] sm:max-w-[250px] pl-10 pr-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
-                placeholder="Search.."
+                placeholder="Cari..."
                 required
               />
             </div>
 
-            {/* //hamburger */}
+            {/* Hamburger mobile */}
             <FiMenu
               onClick={() => setMenu(true)}
               className="text-3xl cursor-pointer lg:hidden text-white"
@@ -143,14 +149,16 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex gap-3 py-2 px-5 md:px-36 bg-[#152955] mx-auto text-white text-xs overflow-x-auto whitespace-nowrap">
-          <div className="mx-auto space-x-4 ml-10">
-            <Link href="">#LoketMart</Link>
-            <Link href="">#Promo_Indodana</Link>
-            <Link href="">#LOKETScreen</Link>
-            <Link href="">#LOKET_Promo</Link>
-            <Link href="">#motoGP</Link>
-            <Link href="">#LoketAttraction</Link>
+        <div className="flex gap-3 py-2 px-5 bg-[#152955] mx-auto text-white text-xs overflow-x-auto whitespace-nowrap">
+          <div className="px-5 flex w-full items-center justify-between max-w-7xl mx-auto">
+            <div className="space-x-4">
+              <Link href="#">#LoketMart</Link>
+              <Link href="#">#Promo_Indonesia</Link>
+              <Link href="#">#LOKETScreen</Link>
+              <Link href="#">#LOKET_Promo</Link>
+              <Link href="#">#motoGP</Link>
+              <Link href="#">#LoketAttraction</Link>
+            </div>
           </div>
         </div>
 
