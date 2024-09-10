@@ -97,7 +97,7 @@ const Header: React.FC = () => {
           </div>
           <div className="hidden lg:flex gap-5 text-white ml-8 lg:ml-0 lg:mr-24">
             <div className="content-center flex items-center gap-1">
-              <img
+              <Image
                 src="https://assets.loket.com/web/assets/img/ic_schedule.svg"
                 alt=""
                 className="w-[21px]"

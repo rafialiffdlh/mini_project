@@ -1,16 +1,46 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SessionContextValue } from "next-auth/react";
 import { actionLogout } from "@/actions/auth.action";
 import { FaShoppingCart } from "react-icons/fa";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 type Props = { session: SessionContextValue | null };
 
 export default function ProfileBarComponent({ session }: Props) {
+  const [isLogoutSuccess, setIsLogoutSuccess] = useState(false);
+  const [isLogoutError, setIsLogoutError] = useState(false);
+
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const logout = async () => {
-    await actionLogout().then(() => {
-      alert("Logout Success");
-    });
+    try {
+      await actionLogout();
+      setIsLogoutSuccess(true);
+      Toast.fire({
+        icon: "success",
+        title: "Logout Berhasil",
+      });
+    } catch (error) {
+      setIsLogoutError(true);
+      Toast.fire({
+        icon: "error",
+        title: "Error, Logout Gagal",
+      });
+    }
   };
 
   return (
