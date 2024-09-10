@@ -2,20 +2,24 @@
 import { googleAuthenticate, loginAction } from "@/actions/auth.action";
 import { loginSchema } from "@/schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "@hookform/error-message";
+import { useSession } from "next-auth/react";
 
 const SignIn: React.FC = () => {
+  const session = useSession();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {},
   });
 
   const [termCheck, setTermCheck] = React.useState(false);
-  const router = useRouter();
+
+  useEffect(() => {
+    if (session.status === "authenticated") onSession();
+  });
 
   const {
     register,
@@ -23,12 +27,12 @@ const SignIn: React.FC = () => {
     handleSubmit,
   } = form;
 
+  const onSession = (url: string = "/") => {};
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     await loginAction(values)
       .then((res) => {
         console.log(res);
         alert(res.message);
-        router.push("/");
       })
       .catch((err) => {
         if (err instanceof Error) {
