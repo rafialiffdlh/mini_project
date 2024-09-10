@@ -8,9 +8,7 @@ import { AxiosError } from "axios";
 export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   try {
     await signIn("credentials", {
-      phone_number: values.phone_number,
-      password: values.password,
-      redirect: false,
+      ...values,
       redirectTo: "/",
     });
     return {
@@ -22,14 +20,15 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
 };
 
 export const actionLogout = async () => {
-  return await signOut({ redirect: false, redirectTo: "/sign-in" });
+  return await signOut({ redirect: false });
 };
 
 export const actionRegister = async (
   values: z.infer<typeof registerSchema>
 ) => {
   try {
-    await api.post("/auth/register", values);
+    const res = await api.post("/auth/register", values);
+
     return {
       message: "Register Berhasil",
     };

@@ -97,6 +97,7 @@ model users {
   phone_number String      @unique(map: "phone_number") @db.VarChar(20)
   registeredAt DateTime?   @default(dbgenerated("(now())")) @db.Timestamp(0)
   password     String      @db.VarChar(100)
+  image_src String?
   birthDate DateTime?
   gender gender?
   purchases    purchases[]

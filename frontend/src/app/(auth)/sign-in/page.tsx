@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "@hookform/error-message";
+import { useSession } from "next-auth/react";
 
 const MySwal = withReactContent(Swal);
 
@@ -18,9 +19,14 @@ const SignIn: React.FC = () => {
   const [isLoginError, setIsLoginError] = useState<string | null>(null);
   const router = useRouter();
 
+  const session = useSession();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {},
+  });
+
+  useEffect(() => {
+    if (session.status === "authenticated") onSession();
   });
 
   const {
@@ -29,6 +35,10 @@ const SignIn: React.FC = () => {
     handleSubmit,
   } = form;
 
+  const onSession = (url: string = "/") => {
+    router.prefetch(url);
+    router.push(url);
+  };
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       const res = await loginAction(values);
