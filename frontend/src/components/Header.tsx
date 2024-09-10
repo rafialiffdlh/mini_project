@@ -87,13 +87,13 @@ const Header: React.FC = () => {
           <div className="hidden md:flex gap-4 items-center">
             <div className="relative flex items-center">
               <input
-                className="xl:w-[500px] pl-5 lg:w-[400px]  md:w-[200px] px-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
+                className="xl:w-[500px] pl-5 lg:w-[400px] md:w-[200px] px-2 py-2 text-sm text-black outline-none rounded-md shadow-md"
                 placeholder="Search Film.."
                 required
               />
             </div>
           </div>
-          <div className="hidden lg:flex gap-5 text-white ml-8 lg:ml-0 lg:mr-24">
+          <div className="hidden lg:flex gap-5 text-white ml-8 lg:ml-12 lg:mr-24">
             <div className="content-center flex items-center gap-1">
               <img
                 src="https://assets.loket.com/web/assets/img/ic_schedule.svg"

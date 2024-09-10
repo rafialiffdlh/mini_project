@@ -1,21 +1,27 @@
 "use client";
+import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { googleAuthenticate, loginAction } from "@/actions/auth.action";
 import { loginSchema } from "@/schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ErrorMessage } from "@hookform/error-message";
 
+const MySwal = withReactContent(Swal);
+
 const SignIn: React.FC = () => {
+  const [termCheck, setTermCheck] = useState(false);
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+  const [isLoginError, setIsLoginError] = useState<string | null>(null);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {},
   });
-
-  const [termCheck, setTermCheck] = React.useState(false);
-  const router = useRouter();
 
   const {
     register,
@@ -24,19 +30,42 @@ const SignIn: React.FC = () => {
   } = form;
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-    await loginAction(values)
-      .then((res) => {
-        console.log(res);
-        alert(res.message);
-        router.push("/");
-      })
-      .catch((err) => {
-        if (err instanceof Error) {
-          console.error(err);
-          alert(err.message);
-        }
+    try {
+      const res = await loginAction(values);
+      setIsLoginSuccess(true);
+      setIsLoginError(null);
+      router.push("/");
+
+      // login berhasil
+      Toast.fire({
+        icon: "success",
+        title: "Login berhasil",
       });
+    } catch (err) {
+      if (err instanceof Error) {
+        setIsLoginError(err.message);
+        setIsLoginSuccess(false);
+
+        // login gagal
+        Toast.fire({
+          icon: "error",
+          title: "Error, No atau Password anda salah",
+        });
+      }
+    }
   };
+
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
 
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-gray-900 px-6">
@@ -52,7 +81,7 @@ const SignIn: React.FC = () => {
         </p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="block text-gray-300 mb-1">Phone Number:</label>
+            <label className="block text-gray-300 mb-1">Phone Number</label>
             <input
               className="w-full p-2 bg-gray-700 text-white rounded-md"
               type="text"
@@ -65,7 +94,7 @@ const SignIn: React.FC = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-300 mb-1">Password:</label>
+            <label className="block text-gray-300 mb-1">Password</label>
             <input
               className="w-full p-2 bg-gray-700 text-white rounded-md"
               type="password"

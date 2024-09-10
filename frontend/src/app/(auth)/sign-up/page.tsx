@@ -7,6 +7,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 enum RoleEnum {
   User,
@@ -33,16 +37,36 @@ const SignUp: React.FC = () => {
 
   const router = useRouter();
 
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    actionRegister(values)
-      .then((res) => {
-        form.reset();
-        router.push("/sign-in");
-        window.alert(res.message);
-      })
-      .catch((err) => {
-        window.alert(err.message);
+    try {
+      const res = await actionRegister(values);
+      form.reset();
+
+      Toast.fire({
+        icon: "success",
+        title: "Registration Successful",
+        text: res.message,
       });
+      router.push("/sign-in");
+    } catch (err) {
+      Toast.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: (err as Error).message,
+      });
+    }
   };
 
   return (
