@@ -3,7 +3,7 @@ import { actionLogout } from "@/actions/auth.action";
 import { UserRoles } from "@/interfaces/user.interface";
 import { SessionContextValue } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type Props = { session: SessionContextValue | null };
@@ -13,7 +13,7 @@ export default function MobileProfileBarComponent({ session }: Props) {
   const logout = async () => {
     await actionLogout().then(() => {
       alert("Logout Success");
-      router.push(router.asPath);
+      router.push("/");
     });
   };
   return (

@@ -26,6 +26,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
           const token = res.data.data;
           if (!token) throw new Error("Login error!");
           const user = jwtDecode(token) as User;
+          user.access_token = token;
           console.log(user);
           return user;
         } catch (error) {
@@ -51,6 +52,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         session.user.name = token.name as string;
         session.user.image = token.image as string;
         session.user.user_role = token.user_role as string;
+        session.user.access_token = token.access_token as string;
       }
       return session;
     },
@@ -62,6 +64,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         token.email = user.email;
         token.image = user.image;
         token.user_role = user.user_role as string;
+        token.access_token = user.access_token as string;
       }
 
       if (trigger === "update" && session) {

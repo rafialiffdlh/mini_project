@@ -13,6 +13,8 @@ import { AuthRouter } from "./routers/auth.router";
 import { EventRouter } from "./routers/event.router";
 import { PurchaseRouter } from "./routers/purchase.router";
 import { OrganizerRouter } from "./routers/organizer.router";
+import { AuthOrganizerMiddleware } from "./middlewares/authOrganizer.middleware";
+import { AuthMiddleware } from "./middlewares/auth.middleware";
 
 export default class App {
   private app: Express;
@@ -65,8 +67,17 @@ export default class App {
     // this.app.use('/api/samples', sampleRouter.getRouter());
     this.app.use("/api/auth", new AuthRouter().getRouter());
     this.app.use("/api/event", new EventRouter().getRouter());
-    // this.app.use("/api/organizer", new OrganizerRouter().getRouter());
-    this.app.use("/api/purchase", new PurchaseRouter().getRouter());
+    this.app.use(
+      "/api/organizer",
+      AuthMiddleware,
+      AuthOrganizerMiddleware,
+      new OrganizerRouter().getRouter()
+    );
+    this.app.use(
+      "/api/purchase",
+      AuthMiddleware,
+      new PurchaseRouter().getRouter()
+    );
   }
 
   public start(): void {

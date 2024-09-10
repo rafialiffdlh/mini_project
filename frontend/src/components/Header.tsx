@@ -101,14 +101,18 @@ const Header: React.FC = () => {
                 src="https://assets.loket.com/web/assets/img/ic_schedule.svg"
                 alt=""
                 className="w-[21px]"
+                width={64}
+                height={64}
               />
               <a href="">Buat Event</a>
             </div>
             <div className="content-center flex items-center gap-1">
-              <img
+              <Image
                 src="https://assets.loket.com/web/assets/img/ic_explore_compass.svg"
                 alt=""
                 className="w-[21px]"
+                width={64}
+                height={64}
               />
               <a href="">Jelajah</a>
             </div>
