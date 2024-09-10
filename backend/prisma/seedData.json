@@ -1,15 +1,26 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": 10,
       "name": "User Test",
       "phone_number": "0819299001122",
-      "gender": "Pria",
-      "image": "AVATAR-1724733048807.jpeg",
+      "gender": "pria",
+      "image_src": "AVATAR-1724733048807.jpeg",
       "birthDate": "2000-01-01",
-      "email": "test4@mail.com",
+      "email": "test4test@mail.com",
       "password": "$2b$10$.ghPwWl3.0q2M8l6p2rgReaxYiSHo3GdBGCYSyyaDrD3WhVBamEH.",
       "role": "user"
+    },
+    {
+      "id": 11,
+      "name": "Organizer Test",
+      "phone_number": "0819299002233",
+      "gender": "pria",
+      "image_src": "AVATAR-1724733048807.jpeg",
+      "birthDate": "2000-01-01",
+      "email": "testtest@mail.com",
+      "password": "$2b$10$.ghPwWl3.0q2M8l6p2rgReaxYiSHo3GdBGCYSyyaDrD3WhVBamEH.",
+      "role": "organizer"
     }
   ],
   "locations": [
@@ -44,6 +55,16 @@
       "location_id": 5,
       "lat": "-6.21462",
       "lon": "106.84513"
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Film"
+    },
+    {
+      "id": 2,
+      "name": "Festival"
     }
   ]
 }

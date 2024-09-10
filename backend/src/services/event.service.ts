@@ -121,43 +121,4 @@ export class EventService {
     const {} = data;
     return {};
   }
-
-  static async createService(req: Request) {
-    const { id } = req.params;
-    const { title, description, event_date, duration, category } = req.body;
-    if (id && (await this.checkAuthorization(req.user))) {
-    } else {
-    }
-    return null;
-  }
-  static async updateService(req: Request) {
-    const { id } = req.params;
-    if (id && (await this.checkAuthorization(req.user))) {
-    } else {
-    }
-    return null;
-  }
-  static async deleteService(req: Request) {
-    const { id } = req.params;
-    if (id && (await this.checkAuthorization(req.user))) {
-    } else {
-    }
-    return null;
-  }
-  static async deactivateService(req: Request) {
-    const { id } = req.params;
-
-    if (id && (await this.checkAuthorization(req.user))) {
-    } else {
-    }
-    return null;
-  }
-
-  private static async checkAuthorization(user?: IUser) {
-    let isAuthorized = false;
-    if (user) {
-      isAuthorized = (user.user_role as unknown as string) === "organizer";
-    }
-    return isAuthorized;
-  }
 }
