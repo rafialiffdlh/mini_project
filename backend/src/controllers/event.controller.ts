@@ -13,6 +13,30 @@ export class EventController {
     }
   }
 
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await EventService.getByIdService(req);
+      return res
+        .status(200)
+        .json({ message: "Get Event By Id Success", data, success: true });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async getBySearch(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await EventService.getBySearchService(req);
+      return res
+        .status(200)
+        .json({ message: "Get Event By Search Success", data, success: true });
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await EventService.createService(req);

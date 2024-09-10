@@ -5,6 +5,7 @@ export interface IUser {
   password?: string;
   phone_number: string;
   user_role?: userRole | null;
+  image?: string | null;
 }
 
 interface IUserModel {
@@ -15,7 +16,7 @@ interface IUserModel {
   phone_number?: string;
   birthDate?: Date;
   gender?: userGender;
-  user_roles?: UserRoles;
+  user_roles?: UserRoles | string;
 }
 
 interface UserRoles {
