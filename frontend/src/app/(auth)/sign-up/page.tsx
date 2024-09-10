@@ -50,15 +50,22 @@ const SignUp: React.FC = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof registerSchema>) => {
-    actionRegister(values)
-      .then((res) => {
-        form.reset();
-        router.push("/sign-in");
-        window.alert(res.message);
-      })
-      .catch((err) => {
-        window.alert(err.message);
+    try {
+      const res = await actionRegister(values);
+      form.reset();
+      router.push("/sign-in");
+
+      Toast.fire({
+        icon: "success",
+        title: "Register Berhasil",
       });
+    } catch (err) {
+      if (err instanceof Error) {
+        Toast.fire({
+          icon: "error",
+          title: `Registration failed: ${err.message}`,
+        });
+      }
     }
   };
 
