@@ -23,7 +23,7 @@ declare module "next-auth/jwt" {
     name: string | undefined;
     //   gender: 'Pria' | 'Perempuan' | undefined;
     image?: string;
-    role: "User" | "Organizer" | undefined;
-    access_token: string;
+    role: "user" | "organizer" | undefined;
+    access_token?: string;
   }
 }

@@ -104,6 +104,8 @@ const Header: React.FC = () => {
                 src="https://assets.loket.com/web/assets/img/ic_schedule.svg"
                 alt="Create Event"
                 className="w-[21px]"
+                width={64}
+                height={64}
               />
               <a href="#">Buat Event</a>
             </div>
@@ -112,6 +114,8 @@ const Header: React.FC = () => {
                 src="https://assets.loket.com/web/assets/img/ic_explore_compass.svg"
                 alt="Explore"
                 className="w-[21px]"
+                width={64}
+                height={64}
               />
               <a href="#">Jelajah</a>
             </div>
