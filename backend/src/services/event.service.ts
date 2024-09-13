@@ -45,7 +45,6 @@ export class EventService {
         take: Number(limit),
         skip: (Number(page) - 1) * Number(limit),
       });
-    } else {
     }
     return null;
   }
@@ -66,7 +65,8 @@ export class EventService {
   }
 
   static async getBySearchService(req: Request) {
-    const { search, limit = 10, page = 1 } = req.query;
+    const { search = "", limit = 10, page = 1 } = req.query;
+    console.log(req.query);
     const data = await prisma.event_venue.findMany({
       include: {
         events: {
@@ -91,8 +91,11 @@ export class EventService {
                 fullName: true,
               },
             },
+            name: true,
+            address: true,
           },
         },
+        ticket_type: true,
       },
       where: {
         OR: [
@@ -118,7 +121,7 @@ export class EventService {
       take: Number(limit),
       skip: (Number(page) - 1) * Number(limit),
     });
-    const {} = data;
-    return {};
+    console.log(data);
+    return data;
   }
 }

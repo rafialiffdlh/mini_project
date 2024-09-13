@@ -7,7 +7,7 @@ export const AuthOrganizerMiddleware = (
   next: NextFunction
 ) => {
   try {
-    console.log(req.user, userRole[req.user.user_role]);
+    // console.log(req.user, userRole[req.user.user_role]);
     if (userRole[req.user.user_role] !== "organizer") {
       throw new ErrorHandler("unauthorized", 401);
     }

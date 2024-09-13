@@ -5,7 +5,7 @@ export class OrganizerController {
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const data = await OrganizerService.createService(req);
-      return res.status(201).json({ message: "Create Event Success" });
+      return res.status(201).json({ data, message: "Create Event Success" });
     } catch (error) {
       console.log(error);
       next(error);

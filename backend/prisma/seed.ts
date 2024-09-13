@@ -1,6 +1,6 @@
 import { user_roles_role } from "@prisma/client";
 import prisma from "../src/prisma";
-import { users, locations, venues } from "./seedData.json";
+import { users, locations, venues, categories } from "./seedData.json";
 
 export const seedUser = async () => {
   await prisma.$transaction(async (trx) => {
@@ -11,15 +11,27 @@ export const seedUser = async () => {
         birthDate: new Date(users[i].birthDate).toISOString(),
         user_role: { create: { role: users[i].role as "user" | "organizer" } },
       } as any;
-      delete data.id;
+      if (
+        await trx.users.findUnique({
+          where: { id: users[i].id },
+          select: { name: true },
+        })
+      )
+        delete data.id;
+      else {
+        data.id = await trx.users.findFirst({
+          where: { name: users[i].name },
+          select: { id: true },
+        });
+      }
+
       delete data.role;
-      // const res = await prisma.$transaction(async (trx) => {
       await trx.users.upsert({
+        create: data,
         where: {
-          id: users[i].id || 0,
+          id: users[i].id,
         },
         update: data,
-        create: data,
       });
     }
   });
@@ -60,10 +72,30 @@ export const seedVenue = async () => {
   console.log(data);
 };
 
+export const seedCategory = async () => {
+  const data = await prisma.$transaction(async (trx) => {
+    for (let i = 0; i < categories.length; i++) {
+      const data = {
+        ...categories[i],
+      };
+
+      await trx.category.upsert({
+        create: data,
+        where: {
+          id: categories[i].id,
+        },
+        update: data,
+      });
+    }
+  });
+  console.log(data);
+};
+
 const main = async () => {
   await seedUser();
   await seedLocation();
   await seedVenue();
+  await seedCategory();
 };
 
 main()

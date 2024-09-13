@@ -19,10 +19,11 @@ model event_venue {
   venue_id Int
   events   events    @relation(fields: [event_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_venue_ibfk_1")
   venues   venues    @relation(fields: [venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "event_venue_ibfk_2")
-  tickets  tickets[]
+  ticket_type ticket_type[] @relation(map: "ticket_type_ibfk_1")
 
   @@index([event_id], map: "event_id")
   @@index([venue_id], map: "venue_id")
+  
 }
 
 model events {
@@ -31,12 +32,17 @@ model events {
   category_id Int
   duration    Int
   event_date  DateTime      @db.Date
+  end_date DateTime? @db.Date
   image_src   String?       @db.VarChar(255)
   description String?       @db.Text
+  user_id Int @default(1)
   event_venue event_venue[]
+  
   category    category      @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "events_ibfk_1")
+  user users @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "events_ibfk_2")
 
   @@index([category_id], map: "category_id")
+  @@index([user_id], map: "user_id")
 }
 
 model location {
@@ -48,37 +54,53 @@ model location {
 model purchases {
   id            Int       @id @default(autoincrement())
   user_id       Int
-  ticket_id     Int
   purchase_date DateTime? @default(dbgenerated("(now())")) @db.Timestamp(0)
+  total_price        Decimal     @db.Decimal(10, 2)
+  isPurchased Boolean @default(false)
   users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchases_ibfk_1")
-  tickets       tickets   @relation(fields: [ticket_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchases_ibfk_2")
+  tickets       tickets[]
 
-  @@index([ticket_id], map: "ticket_id")
+  @@index([user_id], map: "user_id")
+}
+
+model referral_discount {
+  id Int  @id @default(autoincrement())
+  user_id Int 
+  points Int?
+  discount_code Int?
+  expiredAt DateTime @db.Date
+  usedAt DateTime? @db.Date
+  isActive Boolean @default(true)
+  users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "referral_discount_ibfk_1")
   @@index([user_id], map: "user_id")
 }
 
 model ticket_type {
   id        Int       @id @default(autoincrement())
+  event_venue_id    Int
   maxNumber Int
   rest      Int?
+  price        Decimal     @db.Decimal(10, 2)
+  paidTicket   Boolean?
   name      String?   @db.VarChar(50)
   tickets   tickets[]
+  
+  event_venue event_venue @relation(fields: [event_venue_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "ticket_type_ibfk_1")
+  
+  @@index([event_venue_id], map: "event_venue_id")
 }
+
 
 model tickets {
   id           Int         @id @default(autoincrement())
-  detail_id    Int
-  seat_number  String      @db.Text
-  price        Decimal     @db.Decimal(10, 2)
-  purchased_at DateTime?   @db.Timestamp(0)
-  paidTicket   Boolean?
+  purchase_id Int
   type_id      Int
-  purchases    purchases[]
-  event_venue  event_venue @relation(fields: [detail_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_1")
+  quantity Int @default(0)
   ticket_type  ticket_type @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_3")
-
-  @@index([detail_id], map: "detail_id")
+  purchases purchases @relation(fields: [purchase_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tickets_ibfk_4")
+  isPurchased Boolean @default(false)
   @@index([type_id], map: "type_id")
+  @@index([purchase_id], map: "purchase_id")
 }
 
 model user_roles {
@@ -100,8 +122,11 @@ model users {
   image_src String?
   birthDate DateTime?
   gender gender?
+  referral_number Int?
   purchases    purchases[]
   user_role   user_roles[]
+  events events[]
+  referral_discount referral_discount[]
 }
 
 model venues {

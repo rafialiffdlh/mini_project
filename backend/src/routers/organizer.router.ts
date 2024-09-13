@@ -10,9 +10,9 @@ export class OrganizerRouter {
 
   private routes(): void {
     this.router.post("/", this.organizerController.create);
-    this.router.patch("/:id", this.organizerController.update);
-    this.router.put("/:id", this.organizerController.update);
-    this.router.delete("/:id", this.organizerController.delete);
+    this.router.patch("/:event_id", this.organizerController.update);
+    this.router.put("/:event_id", this.organizerController.update);
+    this.router.delete("/:event_id", this.organizerController.delete);
   }
   public getRouter(): Router {
     return this.router;
