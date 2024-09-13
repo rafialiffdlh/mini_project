@@ -1,8 +1,7 @@
-import { IUser } from "@/interfaces/user.interface";
 import { ITicketModel, ITicketQuery } from "@/interfaces/event.interface";
 import prisma from "../prisma";
 import { Request } from "express";
-import { ErrorHandler } from "@/helpers/response.helper";
+import { ErrorHandler } from "../helpers/response.helper";
 
 export class OrganizerService {
   static async createService(req: Request) {

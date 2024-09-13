@@ -25,26 +25,23 @@ const SignIn: React.FC = () => {
     defaultValues: {},
   });
 
-  useEffect(() => {
-    if (session.status === "authenticated") onSession();
-  });
-
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = form;
 
-  const onSession = (url: string = "/") => {
-    router.prefetch(url);
-    router.push(url);
-  };
+  // const onSession = (url: string = "/") => {
+  //   session.data?.user.user_role;
+  //   router.prefetch(url);
+  //   router.push(url);
+  // };
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
       const res = await loginAction(values);
       setIsLoginSuccess(true);
       setIsLoginError(null);
-      router.push("/");
+      window.location.reload();
 
       // login berhasil
       Toast.fire({
