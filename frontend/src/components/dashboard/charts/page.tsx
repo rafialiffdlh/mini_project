@@ -1,13 +1,16 @@
 "use client";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import ChartOne from "@/components/Charts/ChartOne";
+import Breadcrumb from "@/components/dashboard/Breadcrumbs/Breadcrumb";
+import ChartOne from "@/components/dashboard/charts/ChartOne";
 import ChartTwo from "@/components/dashboard/charts/ChartTwo";
 import dynamic from "next/dynamic";
 import React from "react";
 
-const ChartThree = dynamic(() => import("@/components/Charts/ChartThree"), {
-  ssr: false,
-});
+const ChartThree = dynamic(
+  () => import("@/components/dashboard/charts/ChartThree"),
+  {
+    ssr: false,
+  }
+);
 
 const Chart: React.FC = () => {
   return (
