@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply relative z-1 text-base font-normal;
+    /* 
+    text-body
+    font-satoshi
+    */
+  }
+}
+
+/* @layer components {
+} */
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* third-party libraries CSS */
+
+.flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
+.flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
+.flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n + 1)) {
+  box-shadow: -10px 0 0 #3c50e0;
+}
+
+.custom-input-date::-webkit-calendar-picker-indicator {
+  background: transparent;
+}
+
+.custom-input-date::-webkit-calendar-picker-indicator {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+}
+
+[x-cloak] {
+  display: none !important;
+}

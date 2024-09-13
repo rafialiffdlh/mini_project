@@ -165,11 +165,11 @@ const Header: React.FC = () => {
         {/* Sidebar mobile menu */}
         <div
           className={clsx(
-            "fixed h-full w-screen lg:hidden bg-black/50 backdrop-blur-sm top-0 right-0 -translate-x-full transition-all z-[9999]",
+            "fixed h-full w-screen lg:hidden backdrop-blur-none top-0 right-0 -translate-x-full transition-all z-[9999]",
             isSideMenuOpen && "translate-x-0"
           )}
         >
-          <section className="text-black bg-white flex-col absolute left-0 top-0 h-screen p-6 gap-6 z-50 w-72 flex">
+          <section className="text-black bg-white flex-col absolute left-[-30px] top-0 h-screen p-4 gap-6 z-50 w-72 flex">
             <IoCloseOutline
               onClick={() => setMenu(false)}
               className="mt-2 mb-2 text-3xl cursor-pointer"
