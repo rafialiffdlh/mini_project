@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const search = searchParams.get("search")?.toLowerCase() || "";
+
   const movies = [
     {
       id: 1,
@@ -28,7 +31,7 @@ export async function GET() {
       ratings: 8.9,
       genre: ["Crime", "Drama"],
       poster:
-        "https://m.media-amazon.com/images/M/MV5BMjVkMzZmMWEtNjUyMi00MWJlLTg0NDYtN2MzMDQxNWY2MWIxXkEyXkFqcGdeQXVyMTQyNDk2NzE@._V1_.jpg",
+        "https://m.media-amazon.com/images/M/MV5BMjIwMjE1Nzc4NV5BMl5BanBnXkFtZTgwNDg4OTA1NzM@._V1_SX300.jpg ",
       release_date: "1994-10-14",
       runtime: 154,
       price: 10000,
@@ -44,7 +47,7 @@ export async function GET() {
       ratings: 8.8,
       genre: ["Drama", "Romance"],
       poster:
-        "https://m.media-amazon.com/images/M/MV5BMjVkMzZmMWEtNjUyMi00MWJlLTg0NDYtN2MzMDQxNWY2MWIxXkEyXkFqcGdeQXVyMTQyNDk2NzE@._V1_.jpg",
+        "https://m.media-amazon.com/images/M/MV5BMjIwMjE1Nzc4NV5BMl5BanBnXkFtZTgwNDg4OTA1NzM@._V1_SX300.jpg",
       release_date: "1994-07-06",
       runtime: 142,
       price: 10000,
@@ -95,8 +98,11 @@ export async function GET() {
       runtime: 148,
       price: 10000,
     },
-    // Add more movies here...
   ];
 
-  return NextResponse.json(movies);
+  const filteredMovies = movies.filter((movie) =>
+    movie.movie_name.toLowerCase().includes(search)
+  );
+
+  return NextResponse.json(filteredMovies);
 }

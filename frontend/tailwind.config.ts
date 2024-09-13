@@ -7,6 +7,13 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  theme: {
+    extend: {
+      zIndex: {
+        "1": "1", // Define your custom z-1 class
+      },
+    },
+  },
   plugins: [daisyui],
 };
 

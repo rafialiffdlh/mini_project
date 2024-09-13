@@ -9,7 +9,7 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   try {
     await signIn("credentials", {
       ...values,
-      redirectTo: "/",
+      redirect: false,
     });
     return {
       message: "Login Berhasil",

@@ -15,23 +15,43 @@ interface CartItem {
   quantity: number;
 }
 
+const SkeletonCard: React.FC = () => (
+  <div className="flex w-52 flex-col gap-4 animate-pulse">
+    <div className="skeleton h-32 w-full bg-gray-300"></div>
+    <div className="skeleton h-4 w-28 bg-gray-300"></div>
+    <div className="skeleton h-4 w-full bg-gray-300"></div>
+    <div className="skeleton h-4 w-full bg-gray-300"></div>
+  </div>
+);
+
 const Card: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const [loading, setLoading] = useState(true); // State for loading
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
 
   useEffect(() => {
     const fetchMovies = async () => {
-      const response = await fetch("/api/movies");
+      setLoading(true); // Set loading to true before fetching
+      const response = await fetch(`/api/movies?search=${debouncedSearchTerm}`);
       const data = await response.json();
       setMovies(data);
+      setLoading(false); // Set loading to false after fetching
     };
-    fetchMovies();
-  }, []);
 
-  const filteredMovies = movies.filter((movie) =>
-    movie.movie_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    fetchMovies();
+  }, [debouncedSearchTerm]);
 
   const addToCart = (movie: Movie) => {
     const existingCartItem = cart.find(
@@ -67,19 +87,24 @@ const Card: React.FC = () => {
 
       {/* Movie cards */}
       <div className="grid px-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredMovies.length > 0 ? (
-          filteredMovies.map((movie) => (
+        {loading ? (
+          <>
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </>
+        ) : movies.length > 0 ? (
+          movies.map((movie) => (
             <div
               key={movie.id}
               className="bg-white shadow-lg rounded-lg overflow-hidden relative"
             >
-              {/* Poster image */}
               <img
                 src={movie.poster}
                 alt={movie.movie_name}
                 className="w-full h-48 object-cover"
               />
-              {/* Movie details */}
               <div className="p-4 pb-16">
                 <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
                 <p className="text-gray-600 mt-2">{movie.description}</p>
@@ -90,11 +115,10 @@ const Card: React.FC = () => {
                   Price: ${movie.price.toLocaleString()}
                 </p>
               </div>
-              {/* Buy button */}
               <div className="absolute bottom-4 right-4">
                 <button
                   className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-                  onClick={() => addToCart(movie)} // Add to cart when clicked
+                  onClick={() => addToCart(movie)}
                 >
                   Buy Now
                 </button>
