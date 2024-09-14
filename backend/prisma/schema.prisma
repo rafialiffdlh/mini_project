@@ -57,9 +57,10 @@ model purchases {
   purchase_date DateTime? @default(dbgenerated("(now())")) @db.Timestamp(0)
   total_price        Decimal     @db.Decimal(10, 2)
   isPurchased Boolean @default(false)
+  invoice_no String? @db.VarChar(100)
   users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "purchases_ibfk_1")
   tickets       tickets[]
-
+  referal_id Int?
   @@index([user_id], map: "user_id")
 }
 

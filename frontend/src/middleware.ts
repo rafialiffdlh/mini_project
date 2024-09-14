@@ -20,11 +20,23 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/e", request.url));
     }
     return NextResponse.redirect(new URL("/", request.url));
+  } else if (
+    (user?.id && pathname.includes("/e/")) ||
+    pathname.endsWith("/e")
+  ) {
+    if (UserRoles[Number(user?.user_role)] !== "Organizer") {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  } else if (
+    (!user?.id && pathname.includes("/purchases/")) ||
+    pathname.endsWith("/purchases")
+  ) {
+    return NextResponse.redirect(new URL("/sign-in", request.url));
   }
   return response;
 }
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/sign-in", "/sign-up"],
+  matcher: ["/sign-in", "/sign-up", "/e/:path*", "/purchases/:path*"],
 };

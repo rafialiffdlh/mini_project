@@ -1,29 +1,39 @@
 import { User } from "./user.interface";
 
-interface Event {
+interface IEvent {
   id: number;
-  events: EventItem;
-  venues: VenueItem;
-  tickets: Ticket[];
+  events: IEventItem;
+  venues: IVenueItem;
+  tickets: ITicket[];
   users: User;
 }
-interface EventItem {
+interface IEventItem {
   id: number;
   description: string;
   title: string;
   event_date: Date;
   image_src: string;
-  category: { name: string };
+  category: ICategoryItem;
   duration: number;
 }
-interface VenueItem {
-  location: { fullName: string };
+interface IVenueItem {
+  id?: number;
+  location: { id?: number; fullName: string };
   name: string;
   address: string;
 }
-
-interface Ticket {
-  price: number;
+interface ICategoryItem {
+  id?: number;
+  name: string;
 }
 
-export type { Ticket, VenueItem, EventItem, Event };
+interface ITicket {
+  id?: number;
+  name: string;
+  description: string;
+  maxNumber: number;
+  price: number;
+  action?: "update" | "create" | "delete";
+}
+
+export type { ITicket, IVenueItem, IEventItem, IEvent, ICategoryItem };
