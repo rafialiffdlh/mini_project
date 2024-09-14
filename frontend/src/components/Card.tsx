@@ -29,7 +29,8 @@ const Card: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-  const [loading, setLoading] = useState(true); // State for loading
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -43,15 +44,15 @@ const Card: React.FC = () => {
 
   useEffect(() => {
     const fetchMovies = async () => {
-      setLoading(true); // Set loading to true before fetching
+      setLoading(true);
       const response = await fetch(`/api/movies?search=${debouncedSearchTerm}`);
       const data = await response.json();
       setMovies(data);
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false);
     };
 
     fetchMovies();
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, currentPage]);
 
   const addToCart = (movie: Movie) => {
     const existingCartItem = cart.find(
@@ -70,88 +71,114 @@ const Card: React.FC = () => {
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="px-2 mt-8 mx-auto max-w-screen-xl">
-      <h2 className="text-2xl font-semibold mb-8 text-center">Movies</h2>
+    <div className="py-4">
+      <div className="px-2 mt-8 mx-auto max-w-screen-xl">
+        <h2 className="text-2xl font-semibold mb-8 text-center">Movies</h2>
 
-      {/* Search input */}
-      <div className="relative flex mt-8 justify-center mb-6">
-        <input
-          type="text"
-          placeholder="Search movies..."
-          className="w-full max-w-md px-4 py-2 border rounded-md shadow-md"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+        {/* Search input */}
+        <div className="relative flex mt-8 justify-center mb-6">
+          <input
+            type="text"
+            placeholder="Search movies..."
+            className="w-full max-w-md px-4 py-2 border rounded-md shadow-md"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
-      {/* Movie cards */}
-      <div className="grid px-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {loading ? (
-          <>
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </>
-        ) : movies.length > 0 ? (
-          movies.map((movie) => (
-            <div
-              key={movie.id}
-              className="bg-white shadow-lg rounded-lg overflow-hidden relative"
-            >
-              <img
-                src={movie.poster}
-                alt={movie.movie_name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4 pb-16">
-                <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
-                <p className="text-gray-600 mt-2">{movie.description}</p>
-                <p className="text-gray-500 mt-2">
-                  Release Date: {movie.release_date}
-                </p>
-                <p className="text-gray-700 mt-2 font-semibold">
-                  Price: ${movie.price.toLocaleString()}
-                </p>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <button
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-                  onClick={() => addToCart(movie)}
-                >
-                  Buy Now
-                </button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center">No movies found.</p>
-        )}
-      </div>
-
-      {/* Cart section */}
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold mb-4">Cart</h3>
-        {cart.length > 0 ? (
-          <ul className="space-y-4">
-            {cart.map((cartItem) => (
-              <li
-                key={cartItem.movie.id}
-                className="flex justify-between items-center"
+        {/* skeleton */}
+        <div className="grid px-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {loading ? (
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
+          ) : movies.length > 0 ? (
+            movies.map((movie) => (
+              <div
+                key={movie.id}
+                className="bg-white shadow-lg rounded-lg overflow-hidden relative"
               >
-                <span>
-                  {cartItem.movie.movie_name} (x{cartItem.quantity})
-                </span>
-                <span>
-                  ${(cartItem.movie.price * cartItem.quantity).toLocaleString()}
-                </span>
-              </li>
+                <img
+                  src={movie.poster}
+                  alt={movie.movie_name}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4 pb-16">
+                  <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
+                  <p className="text-gray-600 mt-2">{movie.description}</p>
+                  <p className="text-gray-500 mt-2">
+                    Release Date: {movie.release_date}
+                  </p>
+                  <p className="text-gray-700 mt-2 font-semibold">
+                    Price: ${movie.price.toLocaleString()}
+                  </p>
+                </div>
+                <div className="absolute bottom-4 right-4">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+                    onClick={() => addToCart(movie)}
+                  >
+                    Buy Now
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center">No movies found.</p>
+          )}
+        </div>
+
+        {/* pagination */}
+        <div className="flex justify-center mt-6">
+          <div className="join">
+            {Array.from({ length: 5 }, (_, i) => (
+              <input
+                key={i + 1}
+                className="join-item btn btn-square"
+                type="radio"
+                name="options"
+                aria-label={`${i + 1}`}
+                checked={currentPage === i + 1}
+                onChange={() => handlePageChange(i + 1)}
+              />
             ))}
-          </ul>
-        ) : (
-          <p>Your cart is empty.</p>
-        )}
+          </div>
+        </div>
+
+        {/* add card*/}
+        <div className="mt-8">
+          <h3 className="text-xl font-semibold mb-4">Cart</h3>
+          {cart.length > 0 ? (
+            <ul className="space-y-4">
+              {cart.map((cartItem) => (
+                <li
+                  key={cartItem.movie.id}
+                  className="flex justify-between items-center"
+                >
+                  <span>
+                    {cartItem.movie.movie_name} (x{cartItem.quantity})
+                  </span>
+                  <span>
+                    $
+                    {(
+                      cartItem.movie.price * cartItem.quantity
+                    ).toLocaleString()}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Your cart is empty.</p>
+          )}
+        </div>
       </div>
     </div>
   );

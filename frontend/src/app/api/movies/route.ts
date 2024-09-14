@@ -98,6 +98,51 @@ export async function GET(req: Request) {
       runtime: 148,
       price: 10000,
     },
+    {
+      id: 7,
+      movie_name: "Inception2",
+      cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
+      director: "Christopher Nolan",
+      producer: "Christopher Nolan, Emma Thomas",
+      description: "A thief who steals corporate secrets through the use",
+      ratings: 8.8,
+      genre: ["Action", "Adventure", "Sci-Fi"],
+      poster:
+        "https://m.media-amazon.com/images/M/MV5BMjVkMzZmMWEtNjUyMi00MWJlLTg0NDYtN2MzMDQxNWY2MWIxXkEyXkFqcGdeQXVyMTQyNDk2NzE@._V1_.jpg",
+      release_date: "2010-07-16",
+      runtime: 148,
+      price: 10000,
+    },
+    {
+      id: 8,
+      movie_name: "Inception3",
+      cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
+      director: "Christopher Nolan",
+      producer: "Christopher Nolan, Emma Thomas",
+      description: "A thief who steals corporate secrets through the use",
+      ratings: 8.8,
+      genre: ["Action", "Adventure", "Sci-Fi"],
+      poster:
+        "https://m.media-amazon.com/images/M/MV5BMjVkMzZmMWEtNjUyMi00MWJlLTg0NDYtN2MzMDQxNWY2MWIxXkEyXkFqcGdeQXVyMTQyNDk2NzE@._V1_.jpg",
+      release_date: "2010-07-16",
+      runtime: 148,
+      price: 10000,
+    },
+    {
+      id: 9,
+      movie_name: "Inception",
+      cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Ellen Page"],
+      director: "Christopher Nolan",
+      producer: "Christopher Nolan, Emma Thomas",
+      description: "A thief who steals corporate secrets through the use",
+      ratings: 8.8,
+      genre: ["Action", "Adventure", "Sci-Fi"],
+      poster:
+        "https://m.media-amazon.com/images/M/MV5BMjVkMzZmMWEtNjUyMi00MWJlLTg0NDYtN2MzMDQxNWY2MWIxXkEyXkFqcGdeQXVyMTQyNDk2NzE@._V1_.jpg",
+      release_date: "2010-07-16",
+      runtime: 148,
+      price: 10000,
+    },
   ];
 
   const filteredMovies = movies.filter((movie) =>

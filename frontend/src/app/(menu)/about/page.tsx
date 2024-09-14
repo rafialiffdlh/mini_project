@@ -10,14 +10,14 @@ function About() {
         <div className="text-center mb-8">
           <h2 className="text-4xl font-bold mb-4">TENTANG KAMI</h2>
           <p className="text-lg text-gray-600">
-            KRAP, perusahaan teknologi asal Indonesia yang membawa misi
+            LOkET, perusahaan teknologi asal Indonesia yang membawa misi
             pemerataan teknologi digital bagi penyelenggara event dari berbagai
             skala.
           </p>
         </div>
         <div className="text-gray-800">
           <p className="mb-4">
-            KRAP adalah platform yang memiliki Ticketing Management Service
+            LOKET adalah platform yang memiliki Ticketing Management Service
             (TMS) teknologi unggul dalam mendukung seluruh penyelenggara event
             mulai dari distribusi & manajemen tiket, hingga penyediaan laporan
             analisa event di akhir acara.

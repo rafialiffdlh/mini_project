@@ -32,11 +32,11 @@ const Header: React.FC = () => {
     },
     {
       label: "Biaya",
-      link: "#",
+      link: "/biaya",
     },
     {
       label: "Blog",
-      link: "#",
+      link: "/blog",
     },
     {
       label: "Hubungi Kami",
@@ -59,7 +59,7 @@ const Header: React.FC = () => {
             <a href="#" className="">
               Mulai Jadi Event Creator
             </a>
-            <a href="#" className="">
+            <a href="/biaya" className="">
               Biaya
             </a>
             <a href="/blog" className="">
