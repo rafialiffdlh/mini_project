@@ -5,21 +5,34 @@ import withReactContent from "sweetalert2-react-content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, useForm } from "react-hook-form";
 import { z } from "zod";
-import { ICategoryItem, ITicket } from "@/interfaces/event.interface";
+import { ICategoryItem, IEvent, ITicket } from "@/interfaces/event.interface";
 import { ErrorMessage } from "@hookform/error-message";
 import { createEventSchema } from "@/schemas/event.schema";
 import { api } from "@/config/axios.config";
 import { FiUser, FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import DatePickerOne from "../dashboard/FormElements/DatePicker/DatePickerOne";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const MySwal = withReactContent(Swal);
-type Props = {};
+type Props = { params?: { id?: number } };
 
-export default function EventFormComponent({}: Props) {
+export default function EventFormComponent({ params }: Props) {
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
   const [categories, setCategories] = useState<ICategoryItem[]>([]);
   const [venues, setVenues] = useState<ICategoryItem[]>([]);
   const [tickets, setTickets] = useState<ITicket[]>([]);
+  const [event, setEvent] = useState<IEvent>();
   const form = useForm<z.infer<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
     defaultValues: {},
@@ -27,10 +40,11 @@ export default function EventFormComponent({}: Props) {
 
   const onTicketChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    id: number
+    id: string
   ) => {
+    e.preventDefault();
     const { name, value } = e.target;
-    const index = tickets.findIndex((x) => x.id === id);
+    const index = tickets.findIndex((x) => x._id === id);
     switch (name) {
       case "name":
         tickets[index].name = value;
@@ -41,16 +55,19 @@ export default function EventFormComponent({}: Props) {
       case "price":
         tickets[index].price = Number(value);
         break;
-      case "name":
+      case "maxNumber":
         tickets[index].maxNumber = Number(value);
         break;
       default:
         break;
     }
+
+    setTickets([...tickets]);
   };
   const onTicketDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const newTickets = [...tickets].filter(
-      (x) => x.id !== Number(e.currentTarget.value)
+      (x) => x._id !== e.currentTarget.value
     );
     setTickets(newTickets);
   };
@@ -60,7 +77,7 @@ export default function EventFormComponent({}: Props) {
     const randomId = Math.random().toString(36).slice(2, 10);
     const price = type === "paid" ? 1000 : 0;
     newTickets.push({
-      id: Number(randomId),
+      _id: randomId,
       name: "",
       description: "",
       maxNumber: 0,
@@ -71,16 +88,19 @@ export default function EventFormComponent({}: Props) {
   };
 
   const session = useSession();
-
+  const router = useRouter();
   useEffect(() => {
     async function fetchData() {
       console.log("fetch data category");
       let response = await api.get("/event/category");
-      console.log(response.data.data);
       setCategories(response.data.data);
       response = await api.get("/event/venue");
-      console.log(response.data.data);
       setVenues(response.data.data);
+      if (params) {
+        response = await api.get(`/event/${params.id}`);
+        setEvent(response.data.data);
+        setTickets(response.data.data.tickets);
+      }
     }
     fetchData();
   }, []);
@@ -95,7 +115,7 @@ export default function EventFormComponent({}: Props) {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     handleSubmit,
   } = form;
 
@@ -108,7 +128,60 @@ export default function EventFormComponent({}: Props) {
     formCreate.append("category_id", values.category_id.toString());
     formCreate.append("image_src", values.image_src[0]);
     formCreate.append("venue_id", values.venue_id.toString());
-    formCreate.append("tickets", JSON.stringify(tickets));
+    formCreate.append(
+      "tickets",
+      JSON.stringify(tickets.map(({ _id, ...rest }) => rest))
+    );
+    if (params) {
+      formCreate.append("id", String(params.id));
+      await api
+        .patch(`/organizer/${params.id}`, values, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${session?.data?.user.access_token}`,
+          },
+        })
+        .then((res) => {
+          form.reset();
+          router.push("/e");
+          Toast.fire({
+            icon: "success",
+            title: res.data.message,
+          });
+        })
+        .catch((err) => {
+          if (err instanceof Error) {
+            Toast.fire({
+              icon: "error",
+              title: err.message,
+            });
+          }
+        });
+    } else {
+      await api
+        .post("/organizer", values, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${session?.data?.user.access_token}`,
+          },
+        })
+        .then((res) => {
+          form.reset();
+          router.push("/e");
+          Toast.fire({
+            icon: "success",
+            title: res.data.message,
+          });
+        })
+        .catch((err) => {
+          if (err instanceof Error) {
+            Toast.fire({
+              icon: "error",
+              title: err.message,
+            });
+          }
+        });
+    }
   };
 
   return (
@@ -116,142 +189,137 @@ export default function EventFormComponent({}: Props) {
       className="flex flex-col items-center justify-center"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="card bg-base-100 w-128 md:w-2/3 shadow-xl">
+      <div className="card bg-slate-400 dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
         <div className="card-body items-center text-center">
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-full max-w-lg">
-                <div className="border-dashed border-2 border-gray-300 p-6 text-center">
-                  <button className="text-blue-500">
-                    Unggah gambar/poster/banner
-                  </button>
-                  <p className="text-gray-500 mt-2 text-sm">
-                    Direkomendasikan 724 x 340px dan tidak lebih dari 2MB
-                  </p>
-                </div>
+          <div className="flex flex-col items-center justify-center">
+            <div className="w-full">
+              <div className="border-dashed border-2 border-gray-300 p-6 text-center">
+                <button className="text-blue-500">
+                  Unggah gambar/poster/banner
+                </button>
+                <p className="text-gray-500 mt-2 text-sm">
+                  Direkomendasikan 724 x 340px dan tidak lebih dari 2MB
+                </p>
               </div>
-              <div className="mt-4 w-full max-w-lg">
-                <input
-                  type="text"
-                  placeholder="Nama Event"
-                  className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  required
-                  {...register("title")}
-                />
+            </div>
+            <div className="mt-4 w-full">
+              <input
+                type="text"
+                placeholder="Nama Event"
+                className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                {...register("title")}
+              />
 
-                <textarea
-                  className="w-full mt-3 border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  placeholder="Deskripsi Event"
-                  rows={4}
-                  {...register("description")}
-                />
+              <textarea
+                className="w-full mt-3 border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                placeholder="Deskripsi Event"
+                rows={4}
+                {...register("description")}
+              />
 
-                <select
-                  title="Pilih Kategori"
-                  defaultValue={""}
-                  className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                  required
-                  {...register("category_id")}
-                >
-                  <option value={""} disabled>
-                    Pilih Kategori
+              <select
+                title="Pilih Kategori"
+                defaultValue={""}
+                className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                {...register("category_id")}
+              >
+                <option value={""} disabled>
+                  Pilih Kategori
+                </option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
                   </option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="grid md:flex justify-around bg-white p-4 rounded-lg shadow-md mt-4">
-                  {/* Organizer */}
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center space-x-2">
-                      <div className="bg-gray-200 p-3 rounded-full">
-                        <FiUser className="text-gray-500" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">
-                          Diselenggarakan Oleh
-                        </p>
-                        <p className="font-medium">{session.data?.user.name}</p>
-                      </div>
+                ))}
+              </select>
+              <div className="flex flex-col md:flex-row justify-around bg-grey-200 p-4 rounded-lg shadow-md mt-4">
+                {/* Organizer */}
+                <div className="flex flex-col items-center space-x-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="bg-gray-200 p-3 rounded-full">
+                      <FiUser className="text-gray-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">
+                        Diselenggarakan Oleh
+                      </p>
+                      <p className="font-medium">{session.data?.user.name}</p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Date & Time */}
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center space-x-2">
-                      <DatePickerOne
-                        name="Tanggal Event"
-                        placeholder="Tanggal Event"
-                        register={register("event_date")}
-                      />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <DatePickerOne
-                        name="Akhir Event"
-                        placeholder="Tanggal Akhir Event (opsional)"
-                        register={register("end_date")}
-                      />
-                    </div>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <FiClock className="text-gray-500" />
-                      <p className="text-sm text-gray-500">Pilih Waktu</p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <select
-                        title="starttime"
-                        defaultValue={""}
-                        className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                      >
-                        {timeRange().map((time) => {
-                          return (
-                            <option key={`${time}`} value={`${time}`}>
-                              {time < 10 ? `0${time}:00` : `${time}:00`}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      {"s/d"}
-                      <select
-                        title="endtime"
-                        defaultValue={""}
-                        className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                      >
-                        {" "}
-                        {timeRange().map((time) => {
-                          return (
-                            <option key={`${time}`} value={`${time}`}>
-                              {time < 10 ? `0${time}:00` : `${time}:00`}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
+                {/* Date & Time */}
+                <div className="flex flex-col items-center space-x-2">
+                  <div className="flex items-center space-x-2">
+                    <DatePickerOne
+                      name="Tanggal Event"
+                      placeholder="Tanggal Event"
+                      register={register("event_date")}
+                    />
                   </div>
-
-                  {/* Location */}
-                  <div className="flex flex-col items-center">
-                    <FiMapPin className="text-gray-500" />
-                    <p>Venue</p>
-                    <div className="flex items-center space-x-2">
-                      <select
-                        title="Pilih Venue"
-                        defaultValue={""}
-                        className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                        required
-                        {...register("venue_id")}
-                      >
-                        <option value={""} disabled>
-                          Pilih Venue
-                        </option>
-                        {venues.map((venue) => (
-                          <option key={venue.id} value={venue.id}>
-                            {venue.name}
+                  <div className="flex items-center space-x-2">
+                    <DatePickerOne
+                      name="Akhir Event"
+                      placeholder="Tanggal Akhir Event (opsional)"
+                      register={register("end_date")}
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <FiClock className="text-gray-500" />
+                    <p className="text-sm text-gray-500">Pilih Waktu</p>
+                  </div>
+                  <div className="flex  items-center space-x-2">
+                    <select
+                      title="starttime"
+                      defaultValue={""}
+                      className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                    >
+                      {timeRange().map((time) => {
+                        return (
+                          <option key={`${time}`} value={`${time}`}>
+                            {time < 10 ? `0${time}:00` : `${time}:00`}
                           </option>
-                        ))}
-                      </select>
-                    </div>
+                        );
+                      })}
+                    </select>
+                    {" s/d "}
+                    <select
+                      title="endtime"
+                      defaultValue={""}
+                      className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                    >
+                      {" "}
+                      {timeRange().map((time) => {
+                        return (
+                          <option key={`${time}`} value={`${time}`}>
+                            {time < 10 ? `0${time}:00` : `${time}:00`}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="flex flex-col items-center space-x-2">
+                  <FiMapPin className="text-gray-500" />
+                  <p>Venue</p>
+                  <div className="flex items-center space-x-2">
+                    <select
+                      title="Pilih Venue"
+                      defaultValue={""}
+                      className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                      {...register("venue_id")}
+                    >
+                      <option value={""} disabled>
+                        Pilih Venue
+                      </option>
+                      {venues.map((venue) => (
+                        <option key={venue.id} value={venue.id}>
+                          {venue.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
@@ -260,16 +328,17 @@ export default function EventFormComponent({}: Props) {
         </div>
       </div>
 
-      <div className="card bg-base-100 w-128 md:w-2/3 shadow-xl">
+      <div className="card bg-slate-400 dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
         <div className="card-body items-center text-center">
           <h3 className="text-lg font-semibold card-title">Kategori Tiket</h3>
           <div className="flex justify-between space-x-4 mt-4">
             {(tickets.length > 0 && tickets[0].price) || tickets.length == 0 ? (
               <button
                 className="border border-gray-300 p-3 w-full rounded-md hover:bg-gray-100"
+                type="button"
                 onClick={() => createTickets("paid")}
               >
-                Buat Tiket Berbayar
+                {tickets.length > 0 ? "Tambah" : "Buat"} Tiket Berbayar
               </button>
             ) : (
               ""
@@ -278,6 +347,7 @@ export default function EventFormComponent({}: Props) {
             tickets.length == 0 ? (
               <button
                 className="border border-gray-300 p-3 w-full rounded-md hover:bg-gray-100"
+                type="button"
                 onClick={() => createTickets("free")}
               >
                 Buat Tiket Gratis
@@ -287,13 +357,13 @@ export default function EventFormComponent({}: Props) {
             )}
           </div>
         </div>
-        <div className="card-body items-center text-center flex">
+        <div className="card-body flex flex-col md:flex-row items-center text-center">
           {tickets.length > 0
             ? tickets.map((ticket) => {
                 return (
                   <div
-                    key={ticket.id}
-                    className="card bg-base-200 w-auto md:w-1/3 shadow-xl"
+                    key={ticket._id}
+                    className="card bg-base-100 dark:bg-gray-500 w-auto md:w-1/3 shadow-xl"
                   >
                     <div>
                       {" "}
@@ -301,7 +371,7 @@ export default function EventFormComponent({}: Props) {
                         <button
                           title="closeTicket"
                           className="btn btn-square btn-sm"
-                          value={ticket.id}
+                          value={ticket._id}
                           onClick={(e) => onTicketDelete(e)}
                         >
                           <svg
@@ -328,7 +398,7 @@ export default function EventFormComponent({}: Props) {
                         type="text"
                         placeholder="Nama Tiket:"
                         className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                        onChange={(e) => onTicketChange(e, Number(ticket.id))}
+                        onChange={(e) => onTicketChange(e, String(ticket._id))}
                       />
                       <input
                         value={ticket.description}
@@ -336,7 +406,7 @@ export default function EventFormComponent({}: Props) {
                         type="text"
                         placeholder="Deskripsi Tiket:"
                         className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                        onChange={(e) => onTicketChange(e, Number(ticket.id))}
+                        onChange={(e) => onTicketChange(e, String(ticket._id))}
                       />
                       {ticket.price ? (
                         <input
@@ -345,7 +415,9 @@ export default function EventFormComponent({}: Props) {
                           type="number"
                           placeholder="Harga:"
                           className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                          onChange={(e) => onTicketChange(e, Number(ticket.id))}
+                          onChange={(e) =>
+                            onTicketChange(e, String(ticket._id))
+                          }
                         />
                       ) : (
                         <p className="text-sm text-gray-500">Harga: Gratis</p>
@@ -356,13 +428,24 @@ export default function EventFormComponent({}: Props) {
                         name="maxNumber"
                         placeholder="Max. Pemesanan:"
                         className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                        onChange={(e) => onTicketChange(e, Number(ticket.id))}
+                        onChange={(e) => onTicketChange(e, String(ticket._id))}
                       />
                     </div>
                   </div>
                 );
               })
             : ""}
+        </div>
+        <div className="card-body items-center text-center">
+          <div className="card-actions">
+            <button
+              type="submit"
+              disabled={isSubmitting || tickets.length == 0}
+              className="btn btn-primary"
+            >
+              Simpan
+            </button>
+          </div>
         </div>
       </div>
     </form>
