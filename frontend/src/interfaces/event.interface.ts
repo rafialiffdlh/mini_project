@@ -4,17 +4,19 @@ interface IEvent {
   id: number;
   events: IEventItem;
   venues: IVenueItem;
-  tickets: ITicket[];
-  users: User;
+  ticket_type: ITicket[];
 }
 interface IEventItem {
   id: number;
   description: string;
   title: string;
   event_date: Date;
+  end_date: Date;
   image_src: string;
   category: ICategoryItem;
-  duration: number;
+  start_time: number;
+  end_time: number;
+  user: User;
 }
 interface IVenueItem {
   id?: number;

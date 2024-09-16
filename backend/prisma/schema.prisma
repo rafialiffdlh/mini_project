@@ -81,6 +81,7 @@ model referral_discount {
 model ticket_type {
   id        Int       @id @default(autoincrement())
   event_venue_id    Int
+  description String?
   maxNumber Int
   rest      Int?
   price        Decimal     @db.Decimal(10, 2)

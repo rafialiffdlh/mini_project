@@ -115,22 +115,6 @@ export default function EventFormComponent({ params }: Props) {
     defaultValues: {},
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      form.setValue("image_src", file);
-    }
-  };
-  const handleBlobImage = (blobData: any) => {
-    const reader = new FileReader();
-    let BgImage;
-    reader.onload = () => {
-      BgImage = `url(${reader.result})`;
-    };
-
-    reader.readAsDataURL(blobData);
-    return BgImage;
-  };
   const {
     register,
     formState: { errors, isSubmitting },
@@ -139,6 +123,7 @@ export default function EventFormComponent({ params }: Props) {
 
   const onSubmit = async (values: z.infer<typeof createEventSchema>) => {
     const formCreate = new FormData();
+    formCreate.append("image_src", values.image_src);
     formCreate.append("title", values.title);
     formCreate.append("description", values.description);
     formCreate.append("event_date", values.event_date.toString());
@@ -147,9 +132,11 @@ export default function EventFormComponent({ params }: Props) {
     formCreate.append("start_time", values.start_time.toString());
     formCreate.append("end_time", values.end_time.toString());
     formCreate.append("category_id", values.category_id.toString());
-    formCreate.append("image_src", values.image_src[0]);
     formCreate.append("venue", values.venue_id.toString());
-    console.log("tickets",tickets);
+    console.log(
+      "tickets",
+      tickets.map(({ _id, ...rest }) => rest)
+    );
     formCreate.append(
       "tickets",
       JSON.stringify(tickets.map(({ _id, ...rest }) => rest))
@@ -174,7 +161,7 @@ export default function EventFormComponent({ params }: Props) {
     // if (params) {
     //   formCreate.append("id", String(params.id));
     //   await api
-    //     .patch(`/organizer/${params.id}`, values, {
+    //     .patch(`/organizer/${params.id}`, formCreate, {
     //       headers: {
     //         "Content-Type": "multipart/form-data",
     //         Authorization: `Bearer ${session?.data?.user.access_token}`,
@@ -198,7 +185,7 @@ export default function EventFormComponent({ params }: Props) {
     //     });
     // } else {
     await api
-      .post("/organizer", values, {
+      .post("/organizer", formCreate, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${session?.data?.user.access_token}`,
@@ -250,7 +237,12 @@ export default function EventFormComponent({ params }: Props) {
                 <input
                   type="file"
                   {...register("image_src")}
-                  onChange={handleFileChange}
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      const file = e.target.files[0];
+                      form.setValue("image_src", file);
+                    }
+                  }}
                   className="hidden"
                   accept="image/*"
                   ref={ref}
@@ -519,7 +511,9 @@ export default function EventFormComponent({ params }: Props) {
                           }
                         />
                       ) : (
-                        <p className="text-sm text-gray-500">Harga: Gratis</p>
+                        <p className="text-sm text-black dark:text-white">
+                          Harga: Gratis
+                        </p>
                       )}
                       <input
                         value={ticket.maxNumber}

@@ -5,16 +5,43 @@ import { SessionContextValue } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 type Props = { session: SessionContextValue | null };
 
 export default function MobileProfileBarComponent({ session }: Props) {
   const router = useRouter();
+
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
+
   const logout = async () => {
-    await actionLogout().then(() => {
-      alert("Logout Success");
-      router.push("/");
-    });
+    try {
+      await actionLogout().then(() => {
+        Toast.fire({
+          icon: "success",
+          title: "Logout Berhasil",
+        });
+        router.push("/");
+      });
+    } catch (error) {
+      Toast.fire({
+        icon: "error",
+        title: "Error, Logout Gagal",
+      });
+    }
   };
   return (
     <>

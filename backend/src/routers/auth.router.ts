@@ -27,13 +27,13 @@ export class AuthRouter {
     this.router.patch(
       "/profile",
       AuthMiddleware,
-      uploader("AVATAR", "avatars").single("image"),
+      uploader("AVATAR", "avatars").single("image_src"),
       this.authController.updateProfile
     );
     this.router.put(
       "/profile",
       AuthMiddleware,
-      uploader("AVATAR", "avatars").single("image"),
+      uploader("AVATAR", "avatars").single("image_src"),
       this.authController.updateProfile
     );
   }

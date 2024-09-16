@@ -4,7 +4,7 @@ export interface User {
   gender: "pria" | "wanita" | undefined;
   email: string | undefined;
   name: string | undefined;
-  image?: string;
+  image_src?: string | undefined;
   user_role?: string | undefined;
   access_token?: string;
 }

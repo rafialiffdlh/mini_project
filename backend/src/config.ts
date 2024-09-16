@@ -19,3 +19,8 @@ export const DB_USER = process.env.DB_USER || "root";
 export const DB_PASS = process.env.DB_PASS || "passsword";
 
 export const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
+
+export const NODEMAILER_EMAIL =
+  process.env.NODEMAILER_EMAIL || "jcwd2902@gmail.com";
+export const NODEMAILER_PASSWORD =
+  process.env.NODEMAILER_PASSWORD || "dsefbavzyajmaqkr";

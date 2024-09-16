@@ -15,6 +15,7 @@ import { PurchaseRouter } from "./routers/purchase.router";
 import { OrganizerRouter } from "./routers/organizer.router";
 import { AuthOrganizerMiddleware } from "./middlewares/authOrganizer.middleware";
 import { AuthMiddleware } from "./middlewares/auth.middleware";
+import { join } from "path";
 
 export default class App {
   private app: Express;
@@ -29,8 +30,11 @@ export default class App {
   private configure(): void {
     this.app.use("/favicon.ico", express.static("/images/favicon.ico"));
     this.app.use(cors());
-    this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
+    this.app.use(json());
+
+    // this.app.use(urlencoded());
+    this.app.use(express.static(join(__dirname, "/public/images")));
   }
 
   private handleError(): void {

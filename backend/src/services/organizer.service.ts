@@ -13,18 +13,18 @@ export class OrganizerService {
       start_time,
       end_time,
       category_id,
-      image_src,
       venue,
       tickets,
       default_discount,
       default_discount_date,
     } = req.body;
     let venue_id: number;
-    const { user_id } = req.user;
-    console.log("ticket", tickets);
+    const { id } = req.user;
     let _image_src: string;
+    console.log("image", req.file);
     if (req.file) {
       _image_src = req.file.filename;
+      console.log("image", req.file.filename);
     }
     const isVenueId = typeof venue === "string" || typeof venue === "number";
     console.log(isVenueId, typeof venue);
@@ -39,10 +39,12 @@ export class OrganizerService {
       },
     };
     const ticketsData = JSON.parse(tickets) as ITicketModel[];
-    ticketsData.map((ticket) => {
+    ticketsData.map(({ action, ...ticket }) => {
       delete ticket.id;
       ticketQuery.createMany?.data.push({
         ...ticket,
+        rest: 0,
+        paidTicket: Number(ticket.price) != 0,
       });
     });
     const result = await prisma.$transaction(async (trx) => {
@@ -52,12 +54,12 @@ export class OrganizerService {
             title,
             description,
             event_date: new Date(event_date).toISOString(),
-            end_date: new Date(end_date).toISOString(),
+            end_date: end_date ? new Date(end_date).toISOString() : undefined,
             start_time,
             end_time,
-            image_src: _image_src ?? image_src,
-            category_id,
-            user_id,
+            image_src: _image_src,
+            category_id: Number(category_id),
+            user_id: id,
             default_discount,
             default_discount_date,
           },
@@ -79,12 +81,14 @@ export class OrganizerService {
                 title,
                 description,
                 event_date: new Date(event_date).toISOString(),
-                end_date: new Date(end_date).toISOString(),
+                end_date: end_date
+                  ? new Date(end_date).toISOString()
+                  : undefined,
                 start_time,
                 end_time,
-                image_src: _image_src ?? image_src,
+                image_src: _image_src,
                 category_id,
-                user_id,
+                user_id: id,
                 default_discount,
                 default_discount_date,
               },
@@ -117,13 +121,13 @@ export class OrganizerService {
       start_time,
       end_time,
       category_id,
-      image_src,
       venue,
       tickets,
       default_discount,
       default_discount_date,
     } = req.body;
     const { id } = req.user;
+    let _image_src = req.file ? req.file.filename : undefined;
     if (
       (await prisma.events.findUnique({
         where: { id: Number(event_id) },
@@ -148,7 +152,7 @@ export class OrganizerService {
                 end_date: new Date(event_date).toISOString(),
                 start_time,
                 end_time,
-                image_src,
+                image_src: _image_src,
                 category_id,
               },
             },

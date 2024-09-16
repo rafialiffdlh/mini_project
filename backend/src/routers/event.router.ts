@@ -13,7 +13,7 @@ export class EventRouter {
     this.router.get("/", this.eventController.getBySearch);
     this.router.get("/category", this.eventController.getCategories);
     this.router.get("/venue", this.eventController.getVenues);
-    this.router.get("/location", this.eventController.getBySearch);
+    // this.router.get("/location", this.eventController.getLocations);
     this.router.get("/:id", this.eventController.getById);
   }
   public getRouter(): Router {

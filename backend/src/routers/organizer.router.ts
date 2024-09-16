@@ -10,15 +10,19 @@ export class OrganizerRouter {
   }
 
   private routes(): void {
-    this.router.post("/", this.organizerController.create);
+    this.router.post(
+      "/",
+      uploader("EVENT", "_events").single("image_src"),
+      this.organizerController.create
+    );
     this.router.patch(
       "/:event_id",
-      uploader("EVENTS", "event").single("image"),
+      uploader("EVENT", "_events").single("image_src"),
       this.organizerController.update
     );
     this.router.put(
       "/:event_id",
-      uploader("EVENTS", "event").single("image"),
+      uploader("EVENT", "_events").single("image_src"),
       this.organizerController.update
     );
     this.router.delete("/:event_id", this.organizerController.delete);

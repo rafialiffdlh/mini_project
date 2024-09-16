@@ -1,12 +1,13 @@
 import { Decimal } from "@prisma/client/runtime/library";
 
 interface ITicketModel {
-  action: "update" | "create" | "delete";
+  action?: "update" | "create" | "delete";
   price?: Decimal;
   maxNumber?: number;
   paidTicket?: boolean;
   name?: string;
   id?: number;
+  rest?: number;
 }
 
 interface ITicketQuery {
