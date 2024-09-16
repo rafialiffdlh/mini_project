@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { SessionContextValue } from "next-auth/react";
 import { actionLogout } from "@/actions/auth.action";
 import { FaShoppingCart, FaSignOutAlt, FaUser } from "react-icons/fa";
@@ -45,63 +45,48 @@ export default function ProfileBarComponent({ session }: Props) {
   };
 
   return (
-    <div className="grid grid-cols-2 items-center">
-      <div className="flex justify-center">
-        <Link href="/purchases" title="Cart" className="p-3">
-          <button
-            title="CartButton"
-            type="button"
-            className="text-3xl text-white hover:text-gray-400"
-          >
-            <FaShoppingCart />
-          </button>
-        </Link>
-      </div>
+    <div className=" items-center justify-between  ">
+      <div className="flex items-center space-x-4">
+        {session ? (
+          <>
+            <Link
+              href="/purchases"
+              className="text-2xl text-white transition-colors flex items-center justify-center hover:text-gray-400"
+              title="CartButton"
+            >
+              <FaShoppingCart />
+            </Link>
 
-      <div className="text-right">
-        {session && (
-          <div>
-            <div className="flex flex-row items-end text-right">
-              <Link href="/profile" title="Profile" className="p-3">
-                {session.data?.user.image ? (
-                  <div className="avatar">
-                    <div className="w-24 rounded-full">
-                      <img title="avatar" src={session.data?.user.image} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-gray-200 p-3 rounded-full">
-                    <FaUser className="text-gray-500 hover:text-gray-700" />
-                  </div>
-                )}
-              </Link>
-              <button
-                type="button"
-                title="Logout"
-                className="bg-gray-200 p-3 rounded-full"
-                onClick={() => logout()}
-              >
-                <FaSignOutAlt className="text-red-700 hover:text-red-900" />
-              </button>
-            </div>
-            <div className="text-right">
-              <label className="swap">
-                <input type="checkbox" />
-                <div className="swap-on">
-                  {" "}
-                  <span className=" text-white px-2 text-sm mb-1 ">
-                    Hi, {session.data?.user.name}
-                  </span>{" "}
+            <Link href="/profile" title="Profile">
+              {session.data?.user.image ? (
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300">
+                  <img
+                    title="avatar"
+                    src={session.data?.user.image}
+                    alt="User Avatar"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div className="swap-off">
-                  {" "}
-                  <span className=" text-white px-2 text-sm mb-1 truncate">
-                    Hi, {session.data?.user.name}
-                  </span>{" "}
-                </div>
-              </label>
+              ) : (
+                <FaUser className="text-gray-500 text-2xl hover:text-gray-700 transition-colors" />
+              )}
+            </Link>
+
+            <div className="text-white text-sm">
+              <span className="truncate">Hi, {session.data?.user.name}</span>
             </div>
-          </div>
+
+            <button
+              type="button"
+              title="Logout"
+              className="text-red-700 hover:text-red-900 transition-colors"
+              onClick={logout}
+            >
+              <FaSignOutAlt className="text-2xl" />
+            </button>
+          </>
+        ) : (
+          <div className="text-white">Loading...</div>
         )}
       </div>
     </div>
