@@ -332,7 +332,7 @@ export default function EventFormComponent({ params }: Props) {
                   <div className="flex items-center space-x-2">
                     <DatePickerOne
                       name="Akhir Event"
-                      placeholder="Tanggal Akhir Event (opsional)"
+                      placeholder="Tanggal Akhir Event"
                       register={register("end_date")}
                     />
                   </div>
