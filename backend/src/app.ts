@@ -57,9 +57,9 @@ export default class App {
   }
 
   private routes(): void {
-    this.app.get("/", (req: Request, res: Response) => {
-      res.redirect("/api/");
-    });
+    // this.app.get("/", (req: Request, res: Response) => {
+    //   res.redirect("/api/");
+    // });
     this.app.get("/api", (req: Request, res: Response) => {
       res.send(`Hello, this is Mini Project API!`);
     });

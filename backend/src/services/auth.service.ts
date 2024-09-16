@@ -2,6 +2,7 @@ import prisma from "../prisma";
 import { gender, Prisma, user_roles_role } from "@prisma/client";
 import { compare, hash } from "bcrypt";
 import { Request } from "express";
+import fs from "fs";
 import { IUser, userRole, IUserModel } from "../interfaces/user.interface";
 import { ErrorHandler } from "../helpers/response.helper";
 import { generateToken } from "../libs/token.lib";
@@ -17,6 +18,8 @@ export class AuthService {
         email: true,
         name: true,
         phone_number: true,
+        gender: true,
+        image_src: true,
         user_role: { select: { role: true } },
         password: true,
       },
@@ -31,6 +34,8 @@ export class AuthService {
       const user = {
         ...data,
         user_role: userRole[data.user_role[0].role || "user"],
+        image: data.image_src,
+        gender: gender[data.gender || "pria"],
       } as IUser;
       delete user.password;
       return generateToken(user);
@@ -96,10 +101,13 @@ export class AuthService {
   static async updateProfile(req: Request) {
     const data = req.body as IUserModel;
     delete data.user_roles;
+    if (req.file) {
+      data.image_src = req.file.filename;
+    }
     console.log(req);
     if (req.user) {
       const { id } = req.user;
-      const exist = await prisma.users.count({
+      const exist = await prisma.users.findUnique({
         where: { id: id },
       });
       if (!exist) {
@@ -117,8 +125,30 @@ export class AuthService {
           phone_number: data.phone_number,
           birthDate: data.birthDate,
           gender: (data.gender as unknown as gender) || undefined,
+          image_src: data.image_src,
         },
       });
+
+      if (
+        exist.image_src &&
+        data.image_src &&
+        exist.image_src !== data.image_src
+      )
+        fs.unlink(
+          __dirname + "/../public/images/avatars/" + exist.image_src,
+          (err: unknown) => {
+            if (err) console.log(err);
+          }
+        );
+
+      const user = (await prisma.users.findUnique({
+        where: {
+          id,
+        },
+      })) as IUser;
+      delete user.password;
+      const token = generateToken(user);
+      return token;
     } else {
       throw new ErrorHandler("Unauthorized", 401);
     }

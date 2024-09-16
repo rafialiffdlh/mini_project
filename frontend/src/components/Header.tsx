@@ -107,7 +107,7 @@ const Header: React.FC = () => {
                 width={64}
                 height={64}
               />
-              <a href="#">Buat Event</a>
+              <a href="/e/create">Buat Event</a>
             </div>
             <div className="flex items-center gap-1">
               <img
@@ -117,7 +117,7 @@ const Header: React.FC = () => {
                 width={64}
                 height={64}
               />
-              <a href="#">Jelajah</a>
+              <a href="/events">Jelajah</a>
             </div>
           </div>
 

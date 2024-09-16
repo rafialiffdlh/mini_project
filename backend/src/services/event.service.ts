@@ -74,8 +74,11 @@ export class EventService {
             id: true,
             title: true,
             event_date: true,
+
+            end_date: true,
             description: true,
-            duration: true,
+            start_time: true,
+            end_time: true,
             image_src: true,
             category: {
               select: {

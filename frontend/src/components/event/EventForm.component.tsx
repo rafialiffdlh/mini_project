@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import { FiUser, FiCalendar, FiClock, FiMapPin } from "react-icons/fi";
 import DatePickerOne from "../dashboard/FormElements/DatePicker/DatePickerOne";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { event_src } from "@/config/image.config";
 
 const MySwal = withReactContent(Swal);
 type Props = { params?: { id?: number } };
@@ -33,10 +34,9 @@ export default function EventFormComponent({ params }: Props) {
   const [venues, setVenues] = useState<ICategoryItem[]>([]);
   const [tickets, setTickets] = useState<ITicket[]>([]);
   const [event, setEvent] = useState<IEvent>();
-  const form = useForm<z.infer<typeof createEventSchema>>({
-    resolver: zodResolver(createEventSchema),
-    defaultValues: {},
-  });
+  const ref = useRef<HTMLInputElement>(null);
+  const session = useSession();
+  const router = useRouter();
 
   const onTicketChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -80,15 +80,13 @@ export default function EventFormComponent({ params }: Props) {
       _id: randomId,
       name: "",
       description: "",
-      maxNumber: 0,
+      maxNumber: 1,
       price,
       action: "create",
     });
     setTickets(newTickets);
   };
 
-  const session = useSession();
-  const router = useRouter();
   useEffect(() => {
     async function fetchData() {
       console.log("fetch data category");
@@ -112,7 +110,27 @@ export default function EventFormComponent({ params }: Props) {
     }
     return time;
   };
+  const form = useForm<z.infer<typeof createEventSchema>>({
+    resolver: zodResolver(createEventSchema),
+    defaultValues: {},
+  });
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      form.setValue("image_src", file);
+    }
+  };
+  const handleBlobImage = (blobData: any) => {
+    const reader = new FileReader();
+    let BgImage;
+    reader.onload = () => {
+      BgImage = `url(${reader.result})`;
+    };
+
+    reader.readAsDataURL(blobData);
+    return BgImage;
+  };
   const {
     register,
     formState: { errors, isSubmitting },
@@ -124,64 +142,85 @@ export default function EventFormComponent({ params }: Props) {
     formCreate.append("title", values.title);
     formCreate.append("description", values.description);
     formCreate.append("event_date", values.event_date.toString());
-    formCreate.append("duration", values.duration.toString());
+    if (values.end_date)
+      formCreate.append("end_date", values.end_date.toString());
+    formCreate.append("start_time", values.start_time.toString());
+    formCreate.append("end_time", values.end_time.toString());
     formCreate.append("category_id", values.category_id.toString());
     formCreate.append("image_src", values.image_src[0]);
-    formCreate.append("venue_id", values.venue_id.toString());
+    formCreate.append("venue", values.venue_id.toString());
+    console.log("tickets",tickets);
     formCreate.append(
       "tickets",
       JSON.stringify(tickets.map(({ _id, ...rest }) => rest))
     );
-    if (params) {
-      formCreate.append("id", String(params.id));
-      await api
-        .patch(`/organizer/${params.id}`, values, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${session?.data?.user.access_token}`,
-          },
-        })
-        .then((res) => {
-          form.reset();
-          router.push("/e");
-          Toast.fire({
-            icon: "success",
-            title: res.data.message,
-          });
-        })
-        .catch((err) => {
-          if (err instanceof Error) {
-            Toast.fire({
-              icon: "error",
-              title: err.message,
-            });
-          }
+    if (values.default_discount)
+      formCreate.append("default_discount", values.default_discount.toString());
+    if (values.default_discount_date)
+      formCreate.append(
+        "default_discount_date",
+        values.default_discount_date.toString()
+      );
+    console.log(
+      Object.values(formCreate).reduce((obj, field) => {
+        obj[field.name] = field.value;
+        return obj;
+      }, {})
+    );
+    Toast.fire({
+      icon: "success",
+      title: "All Data",
+    });
+    // if (params) {
+    //   formCreate.append("id", String(params.id));
+    //   await api
+    //     .patch(`/organizer/${params.id}`, values, {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //         Authorization: `Bearer ${session?.data?.user.access_token}`,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       form.reset();
+    //       router.push("/e");
+    //       Toast.fire({
+    //         icon: "success",
+    //         title: res.data.message,
+    //       });
+    //     })
+    //     .catch((err) => {
+    //       if (err instanceof Error) {
+    //         Toast.fire({
+    //           icon: "error",
+    //           title: err.message,
+    //         });
+    //       }
+    //     });
+    // } else {
+    await api
+      .post("/organizer", values, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${session?.data?.user.access_token}`,
+        },
+      })
+      .then((res) => {
+        form.reset();
+        router.push("/e");
+        Toast.fire({
+          icon: "success",
+          title: res.data.message,
         });
-    } else {
-      await api
-        .post("/organizer", values, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${session?.data?.user.access_token}`,
-          },
-        })
-        .then((res) => {
-          form.reset();
-          router.push("/e");
+      })
+      .catch((err) => {
+        if (err instanceof Error) {
           Toast.fire({
-            icon: "success",
-            title: res.data.message,
+            icon: "error",
+            title: err.message,
           });
-        })
-        .catch((err) => {
-          if (err instanceof Error) {
-            Toast.fire({
-              icon: "error",
-              title: err.message,
-            });
-          }
-        });
-    }
+        }
+      });
+    // }
   };
 
   return (
@@ -193,8 +232,35 @@ export default function EventFormComponent({ params }: Props) {
         <div className="card-body items-center text-center">
           <div className="flex flex-col items-center justify-center">
             <div className="w-full">
-              <div className="border-dashed border-2 border-gray-300 p-6 text-center">
-                <button className="text-blue-500">
+              <div
+                className={`border-dashed border-2 border-gray-300 p-6 text-center  rounded-lg`}
+              >
+                <img
+                  src={
+                    form.watch("image_src") instanceof File
+                      ? URL.createObjectURL(form.watch("image_src"))
+                      : form.watch("image_src")
+                      ? event_src + event?.events.image_src
+                      : ""
+                  }
+                  alt="Profile Picture"
+                  className="w-full h-full"
+                  onClick={() => ref.current?.click()}
+                />
+                <input
+                  type="file"
+                  {...register("image_src")}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                  ref={ref}
+                />
+                <button
+                  className="text-blue-500"
+                  type="button"
+                  title="gambar"
+                  onClick={() => ref.current?.click()}
+                >
                   Unggah gambar/poster/banner
                 </button>
                 <p className="text-gray-500 mt-2 text-sm">
@@ -207,19 +273,25 @@ export default function EventFormComponent({ params }: Props) {
                 type="text"
                 placeholder="Nama Event"
                 className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                defaultValue={event ? event.events.title : ""}
                 {...register("title")}
               />
-
+              <div className="text-red-500 text-sm mt-1">
+                <ErrorMessage errors={errors} name={"title"} />
+              </div>
               <textarea
                 className="w-full mt-3 border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                 placeholder="Deskripsi Event"
                 rows={4}
+                defaultValue={event ? event.events.description : ""}
                 {...register("description")}
               />
-
+              <div className="text-red-500 text-sm mt-1">
+                <ErrorMessage errors={errors} name={"description"} />
+              </div>
               <select
                 title="Pilih Kategori"
-                defaultValue={""}
+                defaultValue={event ? event.events.category.id : ""}
                 className="w-full mt-3 border border-gray-300 p-3 rounded-md"
                 {...register("category_id")}
               >
@@ -232,9 +304,12 @@ export default function EventFormComponent({ params }: Props) {
                   </option>
                 ))}
               </select>
+              <div className="text-red-500 text-sm mt-1">
+                <ErrorMessage errors={errors} name={"category_id"} />
+              </div>
               <div className="flex flex-col md:flex-row justify-around bg-grey-200 p-4 rounded-lg shadow-md mt-4">
                 {/* Organizer */}
-                <div className="flex flex-col items-center space-x-2">
+                <div className="flex flex-col items-center md:mr-2">
                   <div className="flex items-center space-x-2">
                     <div className="bg-gray-200 p-3 rounded-full">
                       <FiUser className="text-gray-500" />
@@ -243,13 +318,15 @@ export default function EventFormComponent({ params }: Props) {
                       <p className="text-sm text-gray-500">
                         Diselenggarakan Oleh
                       </p>
-                      <p className="font-medium">{session.data?.user.name}</p>
+                      <p className="font-medium truncate">
+                        {event ? event.users.name : session.data?.user.name}
+                      </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Date & Time */}
-                <div className="flex flex-col items-center space-x-2">
+                <div className="flex flex-col items-center">
                   <div className="flex items-center space-x-2">
                     <DatePickerOne
                       name="Tanggal Event"
@@ -257,12 +334,18 @@ export default function EventFormComponent({ params }: Props) {
                       register={register("event_date")}
                     />
                   </div>
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"event_date"} />
+                  </div>
                   <div className="flex items-center space-x-2">
                     <DatePickerOne
                       name="Akhir Event"
                       placeholder="Tanggal Akhir Event (opsional)"
                       register={register("end_date")}
                     />
+                  </div>
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"end_date"} />
                   </div>
                   <div className="flex items-center space-x-2 mt-2">
                     <FiClock className="text-gray-500" />
@@ -273,7 +356,9 @@ export default function EventFormComponent({ params }: Props) {
                       title="starttime"
                       defaultValue={""}
                       className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                      {...register("start_time")}
                     >
+                      <option value={""}></option>
                       {timeRange().map((time) => {
                         return (
                           <option key={`${time}`} value={`${time}`}>
@@ -287,8 +372,10 @@ export default function EventFormComponent({ params }: Props) {
                       title="endtime"
                       defaultValue={""}
                       className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                      {...register("end_time")}
                     >
                       {" "}
+                      <option value={""}></option>
                       {timeRange().map((time) => {
                         return (
                           <option key={`${time}`} value={`${time}`}>
@@ -298,12 +385,21 @@ export default function EventFormComponent({ params }: Props) {
                       })}
                     </select>
                   </div>
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"start_time"} />
+                  </div>
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"end_time"} />
+                  </div>
                 </div>
 
                 {/* Location */}
-                <div className="flex flex-col items-center space-x-2">
-                  <FiMapPin className="text-gray-500" />
-                  <p>Venue</p>
+                <div className="flex flex-col items-center md:ml-2">
+                  <div className="flex items-center space-x-2">
+                    <FiMapPin className="text-gray-500" />
+                    <p>Venue</p>
+                  </div>
+
                   <div className="flex items-center space-x-2">
                     <select
                       title="Pilih Venue"
@@ -320,6 +416,9 @@ export default function EventFormComponent({ params }: Props) {
                         </option>
                       ))}
                     </select>
+                  </div>
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"venue_id"} />
                   </div>
                 </div>
               </div>
@@ -424,7 +523,7 @@ export default function EventFormComponent({ params }: Props) {
                       )}
                       <input
                         value={ticket.maxNumber}
-                        type="text"
+                        type="number"
                         name="maxNumber"
                         placeholder="Max. Pemesanan:"
                         className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"

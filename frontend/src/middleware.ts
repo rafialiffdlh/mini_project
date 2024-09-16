@@ -28,8 +28,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/", request.url));
     }
   } else if (
-    (!user?.id && pathname.includes("/purchases/")) ||
-    pathname.endsWith("/purchases")
+    !user?.id &&
+    (pathname.includes("/purchases/") || pathname.endsWith("/purchases"))
   ) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }

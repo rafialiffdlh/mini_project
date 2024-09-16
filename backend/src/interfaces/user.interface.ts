@@ -4,8 +4,8 @@ export interface IUser {
   email: string;
   password?: string;
   phone_number: string;
-  user_role?: userRole | null;
-  image?: string | null;
+  user_role?: userRole | undefined;
+  image_src?: string | undefined;
 }
 
 interface IUserModel {
@@ -16,6 +16,7 @@ interface IUserModel {
   phone_number?: string;
   birthDate?: Date;
   gender?: userGender;
+  image_src?: string | undefined;
   user_roles?: UserRoles | string;
 }
 

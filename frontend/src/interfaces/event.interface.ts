@@ -36,5 +36,20 @@ interface ITicket {
   price: number;
   action?: "update" | "create" | "delete";
 }
+interface ITicketPurchase {
+  id?: number;
+  name: string;
+  description: string;
+  quantity: number;
+  price: number;
+  image?: string;
+}
 
-export type { ITicket, IVenueItem, IEventItem, IEvent, ICategoryItem };
+export type {
+  ITicket,
+  ITicketPurchase,
+  IVenueItem,
+  IEventItem,
+  IEvent,
+  ICategoryItem,
+};

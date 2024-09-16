@@ -9,17 +9,26 @@ export class OrganizerService {
       title,
       description,
       event_date,
-      duration,
+      end_date,
+      start_time,
+      end_time,
       category_id,
       image_src,
       venue,
       tickets,
+      default_discount,
+      default_discount_date,
     } = req.body;
     let venue_id: number;
     const { user_id } = req.user;
-
+    console.log("ticket", tickets);
+    let _image_src: string;
+    if (req.file) {
+      _image_src = req.file.filename;
+    }
     const isVenueId = typeof venue === "string" || typeof venue === "number";
     console.log(isVenueId, typeof venue);
+
     if (isVenueId) {
       venue_id = Number(venue);
     }
@@ -29,7 +38,7 @@ export class OrganizerService {
         data: [],
       },
     };
-    const ticketsData = tickets as ITicketModel[];
+    const ticketsData = JSON.parse(tickets) as ITicketModel[];
     ticketsData.map((ticket) => {
       delete ticket.id;
       ticketQuery.createMany?.data.push({
@@ -43,10 +52,14 @@ export class OrganizerService {
             title,
             description,
             event_date: new Date(event_date).toISOString(),
-            duration,
-            image_src,
+            end_date: new Date(end_date).toISOString(),
+            start_time,
+            end_time,
+            image_src: _image_src ?? image_src,
             category_id,
             user_id,
+            default_discount,
+            default_discount_date,
           },
         });
         const result = await trx.event_venue.create({
@@ -66,10 +79,14 @@ export class OrganizerService {
                 title,
                 description,
                 event_date: new Date(event_date).toISOString(),
-                duration,
-                image_src,
+                end_date: new Date(end_date).toISOString(),
+                start_time,
+                end_time,
+                image_src: _image_src ?? image_src,
                 category_id,
                 user_id,
+                default_discount,
+                default_discount_date,
               },
             },
             venues: {
@@ -96,11 +113,15 @@ export class OrganizerService {
       title,
       description,
       event_date,
-      duration,
+      end_date,
+      start_time,
+      end_time,
       category_id,
       image_src,
       venue,
       tickets,
+      default_discount,
+      default_discount_date,
     } = req.body;
     const { id } = req.user;
     if (
@@ -124,7 +145,9 @@ export class OrganizerService {
                 title,
                 description,
                 event_date: new Date(event_date).toISOString(),
-                duration,
+                end_date: new Date(event_date).toISOString(),
+                start_time,
+                end_time,
                 image_src,
                 category_id,
               },

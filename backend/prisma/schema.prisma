@@ -30,14 +30,16 @@ model events {
   id          Int           @id @default(autoincrement())
   title       String        @db.Text
   category_id Int
-  duration    Int
+  start_time String
+  end_time String
   event_date  DateTime      @db.Date
   end_date DateTime? @db.Date
   image_src   String?       @db.VarChar(255)
   description String?       @db.Text
   user_id Int @default(1)
   event_venue event_venue[]
-  
+  default_discount Decimal? 
+  default_discount_date DateTime? @db.Date
   category    category      @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "events_ibfk_1")
   user users @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "events_ibfk_2")
 

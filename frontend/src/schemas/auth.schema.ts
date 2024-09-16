@@ -14,9 +14,7 @@ export const registerSchema = z
       .refine(validator.isMobilePhone, {
         message: "Nomor telepon tidak valid",
       }),
-    // gender: z.enum(["pria", "wanita"], {
-    //   message: "Silahkan Pilih Jenis Kelamin",
-    // }),
+
     // date: z.number({ message: "Masukan Tanggal Lahir" }).min(1).max(31),
     // month: z
     //   .number({ message: "Masukan Bulan Lahir" })
@@ -82,4 +80,17 @@ export const loginSchema = z.object({
         "Mohon masukan kata sandi anda sebagai Kata sandi minimal harus 6 karakter, berisi huruf dan angka",
     })
     .trim(),
+});
+
+export const profileSchema = z.object({
+  gender: z.enum(["pria", "wanita"], {
+    message: "Silahkan Pilih Jenis Kelamin",
+  }),
+  birthDate: z.string({ message: "Masukan Tanggal Lahir" }).min(1, {
+    message: "Masukan Tanggal Lahir",
+  }),
+  name: z.string().min(5, {
+    message: "Silahkan masukan nama lengkap anda",
+  }),
+  image: z.any().optional(),
 });
