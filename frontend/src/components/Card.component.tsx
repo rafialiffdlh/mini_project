@@ -20,7 +20,7 @@ const EventCard: React.FC = () => {
       const response = await api.get("/event");
       console.log(response);
       const data = (await response.data.data) as IEvent[];
-      console.log(data[0].tickets);
+
       setEvents(data);
     };
     fetchEvents();
@@ -44,7 +44,7 @@ const EventCard: React.FC = () => {
   // };
 
   return (
-    <div className="px-2 mt-8 mx-auto max-w-screen-xl">
+    <div className=" mt-8 mx-auto max-w-screen-xl">
       <h2 className="text-2xl font-semibold mb-8 text-center">Events</h2>
 
       {/* Movie cards */}
@@ -109,7 +109,9 @@ const EventCard: React.FC = () => {
             </div>
           ))
         ) : (
-          <p className="text-center">No events found.</p>
+          <div className="flex justify-center items-center w-full">
+            <p className="text-right ml-auto w-full ">No events found.</p>
+          </div>
         )}
       </div>
     </div>

@@ -16,9 +16,9 @@ const PurchaseItem = ({ item, register }: ProductProps) => {
           alt={item.name}
           className="w-20 h-20 mr-4"
         />
-        <div>
+        <div className="flex flex-col mr-2 ">
           <p className="text-lg font-medium">{item.name}</p>
-          <p className="text-gray-500">Rp{item.price}</p>
+          <p className="text-black">Rp{item.price}</p>
         </div>
       </div>
       <div className="flex items-center">
@@ -29,9 +29,7 @@ const PurchaseItem = ({ item, register }: ProductProps) => {
           {...register(`items.${item.id}.quantity`)}
           className="w-12 border p-2"
         />
-        <button className="bg-gray-200 text-gray-500 px-2 py-1 rounded">
-          Remove
-        </button>
+        <button className=" text-black px-2 py-1 rounded">Remove</button>
       </div>
     </li>
   );

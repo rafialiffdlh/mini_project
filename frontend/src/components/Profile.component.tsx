@@ -43,7 +43,7 @@ export default function ProfileComponent() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 max-w-screen-xl">
       <h1 className="text-2xl font-bold mb-4">Update Profile</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-4">
