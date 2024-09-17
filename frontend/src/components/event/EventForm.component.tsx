@@ -74,6 +74,24 @@ export default function EventFormComponent({ params }: Props) {
 
   const createTickets = (type: "free" | "paid") => {
     const newTickets = [...tickets];
+
+    // Check if there's already a ticket of the same type
+    if (type === "paid" && newTickets.some((ticket) => ticket.price > 0)) {
+      Toast.fire({
+        icon: "info",
+        title: "Hanya satu tiket berbayar yang diperbolehkan.",
+      });
+      return;
+    }
+
+    if (type === "free" && newTickets.some((ticket) => ticket.price === 0)) {
+      Toast.fire({
+        icon: "info",
+        title: "Hanya satu tiket gratis yang diperbolehkan.",
+      });
+      return;
+    }
+
     const randomId = Math.random().toString(36).slice(2, 10);
     const price = type === "paid" ? 1000 : 0;
     newTickets.push({
