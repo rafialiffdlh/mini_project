@@ -92,5 +92,21 @@ export const profileSchema = z.object({
   name: z.string().min(5, {
     message: "Silahkan masukan nama lengkap anda",
   }),
-  image: z.any().optional(),
+  password: z
+    .string({ message: "masukan kata sandi" })
+    .min(6, {
+      message:
+        "Mohon masukan kata sandi anda sebagai Kata sandi minimal harus 6 karakter, berisi huruf dan angka",
+    })
+    .regex(/[a-zA-Z]/, {
+      message:
+        "Mohon masukan kata sandi anda sebagai Kata sandi minimal harus 6 karakter, berisi huruf dan angka",
+    })
+    .regex(/[0-9]/, {
+      message:
+        "Mohon masukan kata sandi anda sebagai Kata sandi minimal harus 6 karakter, berisi huruf dan angka",
+    })
+    .trim()
+    .optional(),
+  image_src: z.any().optional(),
 });

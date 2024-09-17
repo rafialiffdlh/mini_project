@@ -114,8 +114,9 @@ export default function EventFormComponent({ params }: Props) {
       setVenues(response.data.data);
       if (params) {
         response = await api.get(`/event/${params.id}`);
+        console.log(event?.events.event_date);
         setEvent(response.data.data);
-        setTickets(response.data.data.tickets);
+        setTickets(response.data.data.ticket_type);
       }
     }
     fetchData();
@@ -130,7 +131,38 @@ export default function EventFormComponent({ params }: Props) {
   };
   const form = useForm<z.infer<typeof createEventSchema>>({
     resolver: zodResolver(createEventSchema),
-    defaultValues: {},
+    defaultValues: {
+      title: event?.events.title,
+      description: event?.events.description,
+      event_date: new Date(event?.events.event_date ?? "").toLocaleDateString(
+        "en-us",
+        {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }
+      ),
+      end_date: event?.events.end_date
+        ? new Date(event?.events.end_date).toLocaleDateString("en-us", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : undefined,
+      start_time: event?.events.start_time.toString(),
+      end_time: event?.events.end_time.toString(),
+      category_id: event?.events.category.id?.toString(),
+      venue_id: event?.venues.id?.toString(),
+      image_src: event?.events.image_src,
+      default_discount: event?.events?.default_discount ?? 0,
+      default_discount_date: event?.events?.default_discount_date
+        ? new Date().toLocaleDateString("en-us", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : undefined,
+    },
   });
 
   const {
@@ -166,66 +198,60 @@ export default function EventFormComponent({ params }: Props) {
         "default_discount_date",
         values.default_discount_date.toString()
       );
-    console.log(
-      Object.values(formCreate).reduce((obj, field) => {
-        obj[field.name] = field.value;
-        return obj;
-      }, {})
-    );
     Toast.fire({
       icon: "success",
       title: "All Data",
     });
-    // if (params) {
-    //   formCreate.append("id", String(params.id));
-    //   await api
-    //     .patch(`/organizer/${params.id}`, formCreate, {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //         Authorization: `Bearer ${session?.data?.user.access_token}`,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       form.reset();
-    //       router.push("/e");
-    //       Toast.fire({
-    //         icon: "success",
-    //         title: res.data.message,
-    //       });
-    //     })
-    //     .catch((err) => {
-    //       if (err instanceof Error) {
-    //         Toast.fire({
-    //           icon: "error",
-    //           title: err.message,
-    //         });
-    //       }
-    //     });
-    // } else {
-    await api
-      .post("/organizer", formCreate, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${session?.data?.user.access_token}`,
-        },
-      })
-      .then((res) => {
-        form.reset();
-        router.push("/e");
-        Toast.fire({
-          icon: "success",
-          title: res.data.message,
-        });
-      })
-      .catch((err) => {
-        if (err instanceof Error) {
+    if (params) {
+      formCreate.append("id", String(params.id));
+      await api
+        .patch(`/organizer/${params.id}`, formCreate, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${session?.data?.user.access_token}`,
+          },
+        })
+        .then((res) => {
+          form.reset();
+          router.push("/e");
           Toast.fire({
-            icon: "error",
-            title: err.message,
+            icon: "success",
+            title: res.data.message,
           });
-        }
-      });
-    // }
+        })
+        .catch((err) => {
+          if (err instanceof Error) {
+            Toast.fire({
+              icon: "error",
+              title: err.message,
+            });
+          }
+        });
+    } else {
+      await api
+        .post("/organizer", formCreate, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${session?.data?.user.access_token}`,
+          },
+        })
+        .then((res) => {
+          form.reset();
+          router.push("/e");
+          Toast.fire({
+            icon: "success",
+            title: res.data.message,
+          });
+        })
+        .catch((err) => {
+          if (err instanceof Error) {
+            Toast.fire({
+              icon: "error",
+              title: err.message,
+            });
+          }
+        });
+    }
   };
 
   return (
