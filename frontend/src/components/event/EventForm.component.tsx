@@ -255,347 +255,351 @@ export default function EventFormComponent({ params }: Props) {
   };
 
   return (
-    <div className="py-4 mx-auto max-w-screen-xl">
-      <form
-        className="flex flex-col items-center justify-center"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className="card  dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
-          <div className="card-body items-center text-center">
-            <div className="flex flex-col items-center justify-center">
-              <div className="w-full">
-                <div
-                  className={`border-dashed border-2 border-gray-300 p-6 text-center  rounded-lg`}
-                >
-                  <img
-                    src={
-                      form.watch("image_src") instanceof File
-                        ? URL.createObjectURL(form.watch("image_src"))
-                        : form.watch("image_src")
-                        ? event_src + event?.events.image_src
-                        : ""
-                    }
-                    alt="Profile Picture"
-                    className="w-full h-full"
-                    onClick={() => ref.current?.click()}
-                  />
-                  <input
-                    type="file"
-                    {...register("image_src")}
-                    onChange={(e) => {
-                      if (e.target.files) {
-                        const file = e.target.files[0];
-                        form.setValue("image_src", file);
-                      }
-                    }}
-                    className="hidden"
-                    accept="image/*"
-                    ref={ref}
-                  />
-                  <button
-                    className="text-blue-500"
-                    type="button"
-                    title="gambar"
-                    onClick={() => ref.current?.click()}
+    <div className="py-4 px-2">
+      <div className="mx-auto max-w-screen-xl">
+        <form
+          className="flex flex-col items-center justify-center"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="card  dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
+            <div className="card-body items-center text-center">
+              <div className="flex flex-col items-center justify-center">
+                <div className="w-full">
+                  <div
+                    className={`border-dashed border-2 border-gray-300 p-6 text-center  rounded-lg`}
                   >
-                    Unggah gambar/poster/banner
-                  </button>
-                  <p className="text-gray-500 mt-2 text-sm">
-                    Direkomendasikan 724 x 340px dan tidak lebih dari 2MB
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 w-full">
-                <input
-                  type="text"
-                  placeholder="Nama Event"
-                  className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  defaultValue={event ? event.events.title : ""}
-                  {...register("title")}
-                />
-                <div className="text-red-500 text-sm mt-1">
-                  <ErrorMessage errors={errors} name={"title"} />
-                </div>
-                <textarea
-                  className="w-full mt-3 border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                  placeholder="Deskripsi Event"
-                  rows={4}
-                  defaultValue={event ? event.events.description : ""}
-                  {...register("description")}
-                />
-                <div className="text-red-500 text-sm mt-1">
-                  <ErrorMessage errors={errors} name={"description"} />
-                </div>
-                <select
-                  title="Pilih Kategori"
-                  defaultValue={event ? event.events.category.id : ""}
-                  className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                  {...register("category_id")}
-                >
-                  <option value={""} disabled>
-                    Pilih Kategori
-                  </option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="text-red-500 text-sm mt-1">
-                  <ErrorMessage errors={errors} name={"category_id"} />
-                </div>
-                <div className="flex flex-col md:flex-row justify-around bg-grey-200 p-4 rounded-lg shadow-md mt-4">
-                  {/* Organizer */}
-                  <div className="flex flex-col items-center md:mr-2">
-                    <div className="flex items-center space-x-2">
-                      <div className="bg-gray-200 p-3 rounded-full">
-                        <FiUser className="text-gray-500" />
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-500">
-                          Diselenggarakan Oleh
-                        </p>
-                        <p className="font-medium truncate">
-                          {event
-                            ? event.events.user.name
-                            : session.data?.user.name}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Date & Time */}
-                  <div className="flex flex-col items-center">
-                    <div className="flex items-center space-x-2">
-                      <DatePickerOne
-                        name="Tanggal Event"
-                        placeholder="Tanggal Event"
-                        register={register("event_date")}
-                      />
-                    </div>
-                    <div className="text-red-500 text-sm mt-1">
-                      <ErrorMessage errors={errors} name={"event_date"} />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <DatePickerOne
-                        name="Akhir Event"
-                        placeholder="Tanggal Akhir Event"
-                        register={register("end_date")}
-                      />
-                    </div>
-                    <div className="text-red-500 text-sm mt-1">
-                      <ErrorMessage errors={errors} name={"end_date"} />
-                    </div>
-                    <div className="flex items-center space-x-2 mt-2">
-                      <FiClock className="text-gray-500" />
-                      <p className="text-sm text-gray-500">Pilih Waktu</p>
-                    </div>
-                    <div className="flex  items-center space-x-2">
-                      <select
-                        title="starttime"
-                        defaultValue={""}
-                        className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                        {...register("start_time")}
-                      >
-                        <option value={""}></option>
-                        {timeRange().map((time) => {
-                          return (
-                            <option key={`${time}`} value={`${time}`}>
-                              {time < 10 ? `0${time}:00` : `${time}:00`}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      {" s/d "}
-                      <select
-                        title="endtime"
-                        defaultValue={""}
-                        className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                        {...register("end_time")}
-                      >
-                        {" "}
-                        <option value={""}></option>
-                        {timeRange().map((time) => {
-                          return (
-                            <option key={`${time}`} value={`${time}`}>
-                              {time < 10 ? `0${time}:00` : `${time}:00`}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                    <div className="text-red-500 text-sm mt-1">
-                      <ErrorMessage errors={errors} name={"start_time"} />
-                    </div>
-                    <div className="text-red-500 text-sm mt-1">
-                      <ErrorMessage errors={errors} name={"end_time"} />
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex flex-col items-center md:ml-2">
-                    <div className="flex items-center space-x-2">
-                      <FiMapPin className="text-gray-500" />
-                      <p>Venue</p>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <select
-                        title="Pilih Venue"
-                        defaultValue={""}
-                        className="w-full mt-3 border border-gray-300 p-3 rounded-md"
-                        {...register("venue_id")}
-                      >
-                        <option value={""} disabled>
-                          Pilih Venue
-                        </option>
-                        {venues.map((venue) => (
-                          <option key={venue.id} value={venue.id}>
-                            {venue.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="text-red-500 text-sm mt-1">
-                      <ErrorMessage errors={errors} name={"venue_id"} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="card dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
-          <div className="card-body items-center text-center">
-            <h3 className="text-lg font-semibold card-title">Kategori Tiket</h3>
-            <div className="flex justify-between space-x-4 mt-4">
-              {(tickets.length > 0 && tickets[0].price) ||
-              tickets.length == 0 ? (
-                <button
-                  className="border border-gray-300 p-3 w-full rounded-md hover:bg-gray-100"
-                  type="button"
-                  onClick={() => createTickets("paid")}
-                >
-                  {tickets.length > 0 ? "Tambah" : "Buat"} Tiket Berbayar
-                </button>
-              ) : (
-                ""
-              )}
-              {!(tickets.length > 0 && tickets[0].price) ||
-              tickets.length == 0 ? (
-                <button
-                  className="border border-gray-300 p-3 w-full rounded-md hover:bg-gray-100"
-                  type="button"
-                  onClick={() => createTickets("free")}
-                >
-                  Buat Tiket Gratis
-                </button>
-              ) : (
-                ""
-              )}
-            </div>
-          </div>
-          <div className="card-body flex flex-col md:flex-row items-center text-center">
-            {tickets.length > 0
-              ? tickets.map((ticket) => {
-                  return (
-                    <div
-                      key={ticket._id}
-                      className="card bg-base-100 dark:bg-gray-500 w-auto md:w-1/3 shadow-xl"
+                    <img
+                      src={
+                        form.watch("image_src") instanceof File
+                          ? URL.createObjectURL(form.watch("image_src"))
+                          : form.watch("image_src")
+                          ? event_src + event?.events.image_src
+                          : ""
+                      }
+                      alt="Profile Picture"
+                      className="w-full h-full"
+                      onClick={() => ref.current?.click()}
+                    />
+                    <input
+                      type="file"
+                      {...register("image_src")}
+                      onChange={(e) => {
+                        if (e.target.files) {
+                          const file = e.target.files[0];
+                          form.setValue("image_src", file);
+                        }
+                      }}
+                      className="hidden"
+                      accept="image/*"
+                      ref={ref}
+                    />
+                    <button
+                      className="text-blue-500"
+                      type="button"
+                      title="gambar"
+                      onClick={() => ref.current?.click()}
                     >
-                      <div>
-                        {" "}
-                        <div className="card-actions justify-end">
-                          <button
-                            title="closeTicket"
-                            className="btn btn-square btn-sm"
-                            value={ticket._id}
-                            onClick={(e) => onTicketDelete(e)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-6 w-6"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
+                      Unggah gambar/poster/banner
+                    </button>
+                    <p className="text-gray-500 mt-2 text-sm">
+                      Direkomendasikan 724 x 340px dan tidak lebih dari 2MB
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 w-full">
+                  <input
+                    type="text"
+                    placeholder="Nama Event"
+                    className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    defaultValue={event ? event.events.title : ""}
+                    {...register("title")}
+                  />
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"title"} />
+                  </div>
+                  <textarea
+                    className="w-full mt-3 border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                    placeholder="Deskripsi Event"
+                    rows={4}
+                    defaultValue={event ? event.events.description : ""}
+                    {...register("description")}
+                  />
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"description"} />
+                  </div>
+                  <select
+                    title="Pilih Kategori"
+                    defaultValue={event ? event.events.category.id : ""}
+                    className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                    {...register("category_id")}
+                  >
+                    <option value={""} disabled>
+                      Pilih Kategori
+                    </option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="text-red-500 text-sm mt-1">
+                    <ErrorMessage errors={errors} name={"category_id"} />
+                  </div>
+                  <div className="flex flex-col md:flex-row justify-around bg-grey-200 p-4 rounded-lg shadow-md mt-4">
+                    {/* Organizer */}
+                    <div className="flex flex-col items-center md:mr-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="bg-gray-200 p-3 rounded-full">
+                          <FiUser className="text-gray-500" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">
+                            Diselenggarakan Oleh
+                          </p>
+                          <p className="font-medium truncate">
+                            {event
+                              ? event.events.user.name
+                              : session.data?.user.name}
+                          </p>
                         </div>
                       </div>
-                      <div className="card-body">
-                        <input
-                          value={ticket.name}
-                          name="name"
-                          type="text"
-                          placeholder="Nama Tiket:"
-                          className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                          onChange={(e) =>
-                            onTicketChange(e, String(ticket._id))
-                          }
+                    </div>
+
+                    {/* Date & Time */}
+                    <div className="flex flex-col items-center">
+                      <div className="flex items-center space-x-2">
+                        <DatePickerOne
+                          name="Tanggal Event"
+                          placeholder="Tanggal Event"
+                          register={register("event_date")}
                         />
-                        <input
-                          value={ticket.description}
-                          name="description"
-                          type="text"
-                          placeholder="Deskripsi Tiket:"
-                          className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                          onChange={(e) =>
-                            onTicketChange(e, String(ticket._id))
-                          }
+                      </div>
+                      <div className="text-red-500 text-sm mt-1">
+                        <ErrorMessage errors={errors} name={"event_date"} />
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <DatePickerOne
+                          name="Akhir Event"
+                          placeholder="Tanggal Akhir Event"
+                          register={register("end_date")}
                         />
-                        {ticket.price ? (
+                      </div>
+                      <div className="text-red-500 text-sm mt-1">
+                        <ErrorMessage errors={errors} name={"end_date"} />
+                      </div>
+                      <div className="flex items-center space-x-2 mt-2">
+                        <FiClock className="text-gray-500" />
+                        <p className="text-sm text-gray-500">Pilih Waktu</p>
+                      </div>
+                      <div className="flex  items-center space-x-2">
+                        <select
+                          title="starttime"
+                          defaultValue={""}
+                          className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                          {...register("start_time")}
+                        >
+                          <option value={""}></option>
+                          {timeRange().map((time) => {
+                            return (
+                              <option key={`${time}`} value={`${time}`}>
+                                {time < 10 ? `0${time}:00` : `${time}:00`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        {" s/d "}
+                        <select
+                          title="endtime"
+                          defaultValue={""}
+                          className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                          {...register("end_time")}
+                        >
+                          {" "}
+                          <option value={""}></option>
+                          {timeRange().map((time) => {
+                            return (
+                              <option key={`${time}`} value={`${time}`}>
+                                {time < 10 ? `0${time}:00` : `${time}:00`}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="text-red-500 text-sm mt-1">
+                        <ErrorMessage errors={errors} name={"start_time"} />
+                      </div>
+                      <div className="text-red-500 text-sm mt-1">
+                        <ErrorMessage errors={errors} name={"end_time"} />
+                      </div>
+                    </div>
+
+                    {/* Location */}
+                    <div className="flex flex-col items-center md:ml-2">
+                      <div className="flex items-center space-x-2">
+                        <FiMapPin className="text-gray-500" />
+                        <p>Venue</p>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <select
+                          title="Pilih Venue"
+                          defaultValue={""}
+                          className="w-full mt-3 border border-gray-300 p-3 rounded-md"
+                          {...register("venue_id")}
+                        >
+                          <option value={""} disabled>
+                            Pilih Venue
+                          </option>
+                          {venues.map((venue) => (
+                            <option key={venue.id} value={venue.id}>
+                              {venue.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="text-red-500 text-sm mt-1">
+                        <ErrorMessage errors={errors} name={"venue_id"} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
+            <div className="card-body items-center text-center">
+              <h3 className="text-lg font-semibold card-title">
+                Kategori Tiket
+              </h3>
+              <div className="flex justify-between space-x-4 mt-4">
+                {(tickets.length > 0 && tickets[0].price) ||
+                tickets.length == 0 ? (
+                  <button
+                    className="border border-gray-300 p-3 w-full rounded-md hover:bg-gray-100"
+                    type="button"
+                    onClick={() => createTickets("paid")}
+                  >
+                    {tickets.length > 0 ? "Tambah" : "Buat"} Tiket Berbayar
+                  </button>
+                ) : (
+                  ""
+                )}
+                {!(tickets.length > 0 && tickets[0].price) ||
+                tickets.length == 0 ? (
+                  <button
+                    className="border border-gray-300 p-3 w-full rounded-md hover:bg-gray-100"
+                    type="button"
+                    onClick={() => createTickets("free")}
+                  >
+                    Buat Tiket Gratis
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
+            </div>
+            <div className="card-body flex flex-col md:flex-row items-center text-center">
+              {tickets.length > 0
+                ? tickets.map((ticket) => {
+                    return (
+                      <div
+                        key={ticket._id}
+                        className="card bg-base-100 dark:bg-gray-500 w-auto md:w-1/3 shadow-xl"
+                      >
+                        <div>
+                          {" "}
+                          <div className="card-actions justify-end">
+                            <button
+                              title="closeTicket"
+                              className="btn btn-square btn-sm"
+                              value={ticket._id}
+                              onClick={(e) => onTicketDelete(e)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div className="card-body">
                           <input
-                            value={ticket.price}
-                            name="price"
-                            type="number"
-                            placeholder="Harga:"
+                            value={ticket.name}
+                            name="name"
+                            type="text"
+                            placeholder="Nama Tiket:"
                             className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
                             onChange={(e) =>
                               onTicketChange(e, String(ticket._id))
                             }
                           />
-                        ) : (
-                          <p className="text-sm text-black dark:text-white">
-                            Harga: Gratis
-                          </p>
-                        )}
-                        <input
-                          value={ticket.maxNumber}
-                          type="number"
-                          name="maxNumber"
-                          placeholder="Max. Pemesanan:"
-                          className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
-                          onChange={(e) =>
-                            onTicketChange(e, String(ticket._id))
-                          }
-                        />
+                          <input
+                            value={ticket.description}
+                            name="description"
+                            type="text"
+                            placeholder="Deskripsi Tiket:"
+                            className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                            onChange={(e) =>
+                              onTicketChange(e, String(ticket._id))
+                            }
+                          />
+                          {ticket.price ? (
+                            <input
+                              value={ticket.price}
+                              name="price"
+                              type="number"
+                              placeholder="Harga:"
+                              className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                              onChange={(e) =>
+                                onTicketChange(e, String(ticket._id))
+                              }
+                            />
+                          ) : (
+                            <p className="text-sm text-black dark:text-white">
+                              Harga: Gratis
+                            </p>
+                          )}
+                          <input
+                            value={ticket.maxNumber}
+                            type="number"
+                            name="maxNumber"
+                            placeholder="Max. Pemesanan:"
+                            className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                            onChange={(e) =>
+                              onTicketChange(e, String(ticket._id))
+                            }
+                          />
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
-              : ""}
-          </div>
-          <div className="card-body items-center text-center">
-            <div className="card-actions">
-              <button
-                type="submit"
-                disabled={isSubmitting || tickets.length == 0}
-                className="btn btn-primary"
-              >
-                Simpan
-              </button>
+                    );
+                  })
+                : ""}
+            </div>
+            <div className="card-body items-center text-center ">
+              <div className="card-actions">
+                <button
+                  type="submit"
+                  disabled={isSubmitting || tickets.length == 0}
+                  className="btn btn-primary"
+                >
+                  Simpan
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

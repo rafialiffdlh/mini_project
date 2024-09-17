@@ -34,14 +34,6 @@ const SidebarFilter: React.FC = () => {
     { id: "7", name: "Workshop" },
   ];
 
-  const topics: FilterOption[] = [
-    { id: "all-topic", name: "Semua Topik" },
-    { id: "1", name: "Anak, Keluarga" },
-    { id: "2", name: "Bisnis" },
-    { id: "3", name: "Desain, Foto, Video" },
-    { id: "4", name: "Fashion, Kecantikan" },
-  ];
-
   const times: FilterOption[] = [
     { id: "today", name: "Hari Ini" },
     { id: "tomorrow", name: "Besok" },
@@ -57,7 +49,7 @@ const SidebarFilter: React.FC = () => {
   ];
 
   return (
-    <div className="p-4  rounded-md">
+    <div className="p-4 rounded-md lg:px-6 lg:py-6 bg-white w-full overflow-y-auto lg:overflow-hidden">
       <div className="flex justify-between items-center mb-4">
         <div className="text-lg font-semibold">Filter</div>
         <a className="text-blue-500 hover:underline" href="/discover">
@@ -120,14 +112,14 @@ const Accordion: React.FC<AccordionProps> = ({
   return (
     <div className="border-b border-gray-200 py-2">
       <div
-        className="flex justify-between cursor-pointer"
+        className="flex justify-between items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="font-medium">{title}</div>
-        <div className="text-gray-500">{value}</div>
+        <div className="font-medium text-gray-700">{title}</div>
+        <div className="text-gray-500 text-sm">{value}</div>
       </div>
       {isOpen && (
-        <div className="mt-2">
+        <div className="mt-2 transition-all duration-300 ease-in-out">
           <ul className="space-y-1">
             {options.map((option) => (
               <li
