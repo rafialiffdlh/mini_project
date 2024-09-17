@@ -17,6 +17,8 @@ interface IEventItem {
   start_time: number;
   end_time: number;
   user: User;
+  default_discount?: number;
+  default_discount_date?: Date;
 }
 interface IVenueItem {
   id?: number;

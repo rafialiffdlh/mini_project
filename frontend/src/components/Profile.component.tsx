@@ -14,9 +14,10 @@ export default function ProfileComponent() {
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.name,
-      gender: user?.gender,
-      image: user?.image,
+      name: user?.name!,
+      gender: user?.gender!,
+      image_src: user?.image_src!,
+      password: "",
     },
   });
   const {
@@ -29,16 +30,18 @@ export default function ProfileComponent() {
 
   const onSubmit = async (values: z.infer<typeof profileSchema>) => {
     const form = new FormData();
-    form.append("full_name", values.name);
+    form.append("name", values.name);
+    form.append("birthDate", values.birthDate);
     form.append("gender", values.gender);
-    form.append("image", values.image);
+    form.append("image_src", values.image_src);
+    form.append("password", values.password?.length ? values.password : "");
     console.log(Form);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
-      form.setValue("image", file);
+      form.setValue("image_src", file);
     }
   };
 
@@ -50,10 +53,10 @@ export default function ProfileComponent() {
           <div className="flex items-center justify-center">
             <img
               src={
-                watch("image") instanceof File
-                  ? URL.createObjectURL(watch("image"))
-                  : watch("image")
-                  ? avatar_src + user?.image
+                watch("image_src") instanceof File
+                  ? URL.createObjectURL(watch("image_src"))
+                  : watch("image_src")
+                  ? avatar_src + user?.image_src
                   : ""
               }
               alt="Profile Picture"
@@ -61,7 +64,7 @@ export default function ProfileComponent() {
             />
             <input
               type="file"
-              {...register("image")}
+              {...register("image_src")}
               onChange={handleFileChange}
               className="hidden"
               accept="image/*"
@@ -88,7 +91,53 @@ export default function ProfileComponent() {
               <p className="text-red-500">{errors.name.message}</p>
             )}
           </div>
-          {/* ... other form fields */}
+          <div className="flex flex-col">
+            <label htmlFor="birthDate" className="text-gray-700">
+              Tanggal Lahir:
+            </label>
+            <input
+              type="text"
+              id="birthDate"
+              {...register("birthDate", { required: "Birth Date is required" })}
+              className="border p-2"
+            />
+            {errors.birthDate && (
+              <p className="text-red-500">{errors.birthDate.message}</p>
+            )}
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="gender" className="text-gray-700">
+              Gender:
+            </label>
+            <select
+              id="gender"
+              {...register("gender", { required: "gender is required" })}
+              className="border p-2"
+            >
+              <option value={""} disabled>
+                Pilih:
+              </option>
+              <option value={"pria"}>Pria</option>
+              <option value={"wanita"}>Wanita</option>
+              {errors.gender && (
+                <p className="text-red-500">{errors.gender.message}</p>
+              )}
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-gray-700">
+              Password:
+            </label>
+            <input
+              type="text"
+              id="name"
+              {...register("password")}
+              className="border p-2"
+            />
+            {errors.password && (
+              <p className="text-red-500">{errors.password.message}</p>
+            )}
+          </div>
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded"

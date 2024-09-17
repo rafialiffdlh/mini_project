@@ -2,9 +2,10 @@
 import { api } from "@/config/axios.config";
 import { loginSchema, registerSchema } from "@/schemas/auth.schema";
 import { z } from "zod";
-import { signIn, signOut } from "@/auth";
+import { signIn, signOut, unstable_update } from "@/auth";
 import { AuthError } from "next-auth";
 import { AxiosError } from "axios";
+import { redirect } from "next/navigation";
 export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   try {
     await signIn("credentials", {
@@ -19,6 +20,18 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   }
 };
 
+export const updateAction = async (values: z.infer<typeof loginSchema>) => {
+  try {
+    //masukin apinya tembak
+    //hasil user
+    await unstable_update({
+      //data user terbaru
+    });
+    redirect("/");
+  } catch (error) {
+    throw error;
+  }
+};
 export const actionLogout = async () => {
   return await signOut({ redirect: false });
 };
