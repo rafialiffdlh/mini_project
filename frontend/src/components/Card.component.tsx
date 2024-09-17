@@ -44,11 +44,11 @@ const EventCard: React.FC = () => {
   // };
 
   return (
-    <div className=" mt-8 mx-auto max-w-screen-xl">
-      <h2 className="text-2xl font-semibold mb-8 text-center">Events</h2>
+    <div>
+      <h2 className="text-2xl font-semibold py-4 text-center">Events</h2>
 
       {/* Movie cards */}
-      <div className="grid px-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid px-2 py-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {events.length > 0 ? (
           events.map((event) => (
             <div
@@ -101,7 +101,7 @@ const EventCard: React.FC = () => {
                   target="_blank"
                   href={`/events/${event.id}`}
                   rel="noopener noreferrer"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                 >
                   Lihat Event
                 </Link>

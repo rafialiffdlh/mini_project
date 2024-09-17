@@ -121,6 +121,7 @@ export class OrganizerService {
       default_discount,
       default_discount_date,
     } = req.body;
+    console.log("cek id event", req.params, req.query);
     const { id } = req.user;
     let _image_src = req.file ? req.file.filename : undefined;
     const dataEvent = await prisma.event_venue.findUnique({

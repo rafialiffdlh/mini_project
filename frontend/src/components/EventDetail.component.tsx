@@ -61,7 +61,7 @@ const EventDetail = ({ event_name }: Props) => {
   };
 
   return (
-    <div className="container">
+    <div className="container mx-auto max-w-screen-xl">
       <div className="top">
         <div className="breadcrumbs">
           <ul className="flex items-center space-x-2">
@@ -94,21 +94,15 @@ const EventDetail = ({ event_name }: Props) => {
           </ul>
         </div>
 
-        <div className="event-detail-banner my-4">
-          <Image
-            src={
-              event
-                ? event_src + (event.events.image_src || "")
-                : "https://assets.loket.com/neo/production/images/banner/20240423043810.jpg"
-            }
-            alt="Pertamina Grand Prix of Indonesia 2024"
+        <div className="event-detail-banner my-4 flex justify-center items-center">
+          <img
+            src={event ? event_src + (event.events.image_src || "") : ""}
+            alt=""
             onError={(e) =>
               (e.currentTarget.src =
                 "https://assets.loket.com/images/banner-event?.jpg")
             }
-            className="w-full h-auto"
-            width={64}
-            height={64}
+            className="w-64 h-64"
           />
         </div>
 
