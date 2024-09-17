@@ -198,10 +198,6 @@ export default function EventFormComponent({ params }: Props) {
         "default_discount_date",
         values.default_discount_date.toString()
       );
-    Toast.fire({
-      icon: "success",
-      title: "All Data",
-    });
     if (params) {
       formCreate.append("id", String(params.id));
       await api

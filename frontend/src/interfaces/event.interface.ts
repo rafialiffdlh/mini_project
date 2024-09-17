@@ -37,21 +37,33 @@ interface ITicket {
   name: string;
   description: string;
   maxNumber: number;
+  rest?: number;
   price: number;
+  event_venue?: IEvent;
   action?: "update" | "create" | "delete";
 }
 interface ITicketPurchase {
   id?: number;
-  name: string;
+  purchase_id: number;
+  ticket_type: ITicket;
   description: string;
   quantity: number;
   price: number;
   image?: string;
 }
 
+interface IPurchase {
+  id?: number;
+  user_id: number;
+  total_price: number;
+  isPurchased: boolean;
+  tickets: ITicketPurchase[];
+}
+
 export type {
   ITicket,
   ITicketPurchase,
+  IPurchase,
   IVenueItem,
   IEventItem,
   IEvent,

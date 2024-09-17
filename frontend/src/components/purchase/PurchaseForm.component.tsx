@@ -7,17 +7,25 @@ import { purchaseSchema } from "@/schemas/purchase.schema";
 import { z } from "zod";
 import { ITicketPurchase } from "@/interfaces/event.interface";
 import { api } from "@/config/axios.config";
+import { useSession } from "next-auth/react";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+const MySwal = withReactContent(Swal);
 
-type Props = {
-  data?: ITicketPurchase[];
-};
-
-export default function PurchaseFormComponent({ data }: Props) {
+export default function PurchaseFormComponent() {
+  const session = useSession();
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
   const [tickets, setTickets] = React.useState<ITicketPurchase[]>([]);
-  React.useEffect(() => {
-    async function fetchData() {}
-    fetchData();
-  }, []);
 
   const form = useForm<z.infer<typeof purchaseSchema>["items"][number]>({
     resolver: zodResolver(purchaseSchema),
@@ -34,37 +42,35 @@ export default function PurchaseFormComponent({ data }: Props) {
       const item = { ...ticket, quantity: values.quantity };
       return item;
     });
-    await api.post("/purchase", data);
+    await api.patch("/purchase", data, {
+      headers: {
+        Authorization: `Bearer ${session?.data?.user.access_token}`,
+      },
+    });
   };
 
-  const cartItems =
-    data && data.length > 0
-      ? data
-      : [
-          {
-            id: 1,
-            name: "Product 1",
-            price: 10,
-            quantity: 2,
-            image: "",
-            description: "Product 1 Description",
-          },
-          {
-            id: 2,
-            name: "Product 2",
-            price: 20,
-            quantity: 1,
-            image: "",
-            description: "Product 2 Description",
-          },
-        ];
+  React.useEffect(() => {
+    async function fetchData() {
+      const token = session?.data?.user.access_token;
+
+      console.log("start purchase api:" + token);
+      const response = await api.get("/purchase", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data.data);
+      setTickets(response.data.data as ITicketPurchase[]);
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="container mx-auto max-w-screen-xl">
       <h1 className="text-2xl font-bold mb-4 ">Shopping Cart</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ul>
-          {cartItems.map((item: ITicketPurchase) => (
+          {tickets.map((item: ITicketPurchase) => (
             <PurchaseItem key={item.id} item={item} register={register} />
           ))}
         </ul>

@@ -10,6 +10,8 @@ export const AuthMiddleware = (
 ) => {
   try {
     const { authorization } = req.headers;
+    console.log(req.headers);
+    console.log(authorization);
     const token = authorization?.replace("Bearer ", "");
     console.log(token);
 

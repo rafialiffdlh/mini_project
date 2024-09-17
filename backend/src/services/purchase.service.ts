@@ -6,12 +6,34 @@ export class PurchasesService {
     const user_id = req.user.id;
     const data = await prisma.purchases.findMany({
       where: {
-        user_id,
+        AND: [
+          {
+            user_id,
+          },
+          {
+            isPurchased: false,
+          },
+        ],
       },
       include: {
-        tickets: true,
+        tickets: {
+          select: {
+            id: true,
+            quantity: true,
+            ticket_type: {
+              include: {
+                event_venue: {
+                  include: {
+                    events: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
+    console.log(data);
     return data;
   }
   static async buyTicketService(req: Request) {
@@ -43,9 +65,11 @@ export class PurchasesService {
   }
 
   static async addCartService(req: Request) {
-    const { purchase_id = "", tickets } = req.body;
+    const { tickets } = req.body;
+    console.log(req.body);
+    console.log(tickets);
     const user_id = req.user.id;
-    const ticket_types = JSON.parse(tickets) as ITicketPurchase[];
+    const ticket_types = tickets as ITicketPurchase[];
     let prevPurchase = await prisma.purchases.findFirst({
       include: { tickets: true },
       where: {

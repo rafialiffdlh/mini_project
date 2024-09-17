@@ -20,12 +20,7 @@ export class OrganizerService {
     } = req.body;
     let venue_id: number;
     const { id } = req.user;
-    let _image_src: string;
-    console.log("image", req.file);
-    if (req.file) {
-      _image_src = req.file.filename;
-      console.log("image", req.file.filename);
-    }
+    let _image_src = req.file ? req.file.filename : undefined;
     const isVenueId = typeof venue === "string" || typeof venue === "number";
     console.log(isVenueId, typeof venue);
 
@@ -112,7 +107,7 @@ export class OrganizerService {
   }
 
   static async updateService(req: Request) {
-    const { event_id } = req.params;
+    const { event_venue_id } = req.params;
     const {
       title,
       description,
@@ -128,42 +123,58 @@ export class OrganizerService {
     } = req.body;
     const { id } = req.user;
     let _image_src = req.file ? req.file.filename : undefined;
-    if (
-      (await prisma.events.findUnique({
-        where: { id: Number(event_id) },
-        select: { user_id: true },
-      })) === id
-    ) {
-      let ticketQuery: ITicketQuery = {
-        createMany: {
-          data: [],
+    const dataEvent = await prisma.event_venue.findUnique({
+      where: { id: Number(event_venue_id) },
+      include: {
+        events: {
+          include: { user: true },
         },
-      };
+        venues: { include: { location: true } },
+        ticket_type: true,
+      },
+    });
+    if (dataEvent) {
       const ticketsData = tickets as ITicketModel[];
       await prisma.$transaction(async (trx) => {
+        let venue_id;
+        if (typeof venue === "string" || typeof venue === "number") {
+          venue_id = Number(venue);
+        }
         await trx.event_venue.update({
-          where: { id: Number(event_id) },
+          where: { id: Number(event_venue_id) },
           data: {
             events: {
               update: {
                 title,
                 description,
                 event_date: new Date(event_date).toISOString(),
-                end_date: new Date(event_date).toISOString(),
+                end_date: end_date
+                  ? new Date(end_date).toISOString()
+                  : undefined, //new Date(event_date).toISOString(),
                 start_time,
                 end_time,
                 image_src: _image_src,
                 category_id,
+                default_discount,
+                default_discount_date,
               },
             },
           },
         });
+        await trx.event_venue.update({
+          where: { id: Number(event_venue_id) },
+          data: {
+            venue_id: venue_id,
+          },
+        });
 
         ticketsData.map((ticket) => {
-          if (ticket.action === "create") {
+          const prevTiket = dataEvent.ticket_type.find(
+            (x) => x.id === ticket.id
+          );
+          if (ticket.id) {
           }
           delete ticket.id;
-          const query: ITicketQuery = {};
         });
       });
     } else {

@@ -1,4 +1,6 @@
 "use client";
+import { actionUpdateProfile } from "@/actions/auth.action";
+import { api } from "@/config/axios.config";
 import { avatar_src } from "@/config/image.config";
 import { User } from "@/interfaces/user.interface";
 import { profileSchema } from "@/schemas/auth.schema";
@@ -6,11 +8,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
 import { Form, useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { z } from "zod";
+const MySwal = withReactContent(Swal);
 
 export default function ProfileComponent() {
-  const { data: session } = useSession();
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
   const [user, setUser] = useState<User | null>(null);
+  const session = useSession();
+  React.useEffect(() => {
+    async function fetchData() {
+      const response = await api.get("/user/profile", {
+        headers: {
+          Authorization: `Bearer ${session?.data?.user.access_token}`,
+        },
+      });
+      setUser(response.data.data as User);
+    }
+    fetchData();
+  }, [session]);
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -36,6 +63,19 @@ export default function ProfileComponent() {
     form.append("image_src", values.image_src);
     form.append("password", values.password?.length ? values.password : "");
     console.log(Form);
+    await actionUpdateProfile(form)
+      .then((res) => {
+        Toast.fire({
+          icon: "success",
+          title: "Profil diperbarui",
+        });
+      })
+      .catch((err) => {
+        Toast.fire({
+          icon: "error",
+          title: err.message,
+        });
+      });
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,9 +180,10 @@ export default function ProfileComponent() {
           </div>
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded"
+            className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-700 disabled:cursor-not-allowed"
+            disabled={isSubmitting}
           >
-            Save Changes
+            Simpan
           </button>
         </div>
       </form>

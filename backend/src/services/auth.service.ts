@@ -38,7 +38,7 @@ export class AuthService {
         gender: gender[data.gender || "pria"],
       } as IUser;
       delete user.password;
-      return generateToken(user);
+      return generateToken(user, "2d");
     }
   }
   static async register(req: Request) {
@@ -147,7 +147,7 @@ export class AuthService {
         },
       })) as IUser;
       delete user.password;
-      const token = generateToken(user);
+      const token = generateToken(user, "2d");
       return token;
     } else {
       throw new ErrorHandler("Unauthorized", 401);

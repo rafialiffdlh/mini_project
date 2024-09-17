@@ -1,11 +1,16 @@
 "use server";
 import { api } from "@/config/axios.config";
-import { loginSchema, registerSchema } from "@/schemas/auth.schema";
+import {
+  loginSchema,
+  profileSchema,
+  registerSchema,
+} from "@/schemas/auth.schema";
 import { z } from "zod";
-import { signIn, signOut, unstable_update } from "@/auth";
-import { AuthError } from "next-auth";
+import { auth, signIn, signOut, unstable_update } from "@/auth";
+import { AuthError, User } from "next-auth";
 import { AxiosError } from "axios";
 import { redirect } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
 export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   try {
     await signIn("credentials", {
@@ -20,18 +25,34 @@ export const loginAction = async (values: z.infer<typeof loginSchema>) => {
   }
 };
 
-export const updateAction = async (values: z.infer<typeof loginSchema>) => {
+export const actionUpdateProfile = async (values: FormData) => {
   try {
-    //masukin apinya tembak
-    //hasil user
-    await unstable_update({
-      //data user terbaru
+    const session = await auth();
+
+    const res = await api.patch("/auth/profile", values, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${session?.user.access_token}`,
+      },
     });
+
+    if (res.data.data) {
+      const user = jwtDecode(res.data.data) as User;
+
+      user.access_token = res.data.data;
+      await unstable_update({ ...session, ...user });
+    }
     redirect("/");
+    return {
+      message: res.data.message,
+    };
   } catch (error) {
-    throw error;
+    if (error instanceof AxiosError)
+      throw new Error(error.response?.data.message);
+    throw new Error("Update Profil Gagal");
   }
 };
+
 export const actionLogout = async () => {
   return await signOut({ redirect: false });
 };

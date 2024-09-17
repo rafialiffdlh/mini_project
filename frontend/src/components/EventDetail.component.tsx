@@ -12,12 +12,29 @@ import {
   FaUser,
 } from "react-icons/fa";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 type Props = {
   event_name: string;
 };
 
 const EventDetail = ({ event_name }: Props) => {
+  const session = useSession();
+  const Toast = MySwal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
   const [event, setEvent] = React.useState<IEvent | null>(null);
 
   console.log(`/event/${event_name}`);
@@ -32,6 +49,16 @@ const EventDetail = ({ event_name }: Props) => {
     };
     fetchEvents();
   }, []);
+
+  const onAddCart = async (id: number) => {
+    const response = await api.post(`/purchase`, [{ id, quantity: 1 }], {
+      headers: {
+        Authorization: `Bearer ${session?.data?.user.access_token}`,
+      },
+    });
+    const data = await response.data.data;
+    console.log(data);
+  };
 
   return (
     <div className="container">
@@ -164,31 +191,40 @@ const EventDetail = ({ event_name }: Props) => {
             </div>
           </div>
 
-          {/* <div className="info-organizer mt-6">
-            <div className="flex items-center space-x-2">
-              <div className="organizer-avatar">
-                <Image
-                  className="rounded-full h-8 w-8"
-                  src={
-                    event
-                      ? avatar_src + (event.users.image_src || "")
-                      : "https://assets.loket.com/neo/production/images/organization/20240403052709.jpg"
-                  }
-                  alt="organizer"
-                  onError={(e) =>
-                    (e.currentTarget.src =
-                      "https://assets.loket.com/images/default-logo-organization.png")
-                  }
-                  width={64}
-                  height={64}
-                />
-              </div>
-              <div className="organizer-name">
-                <span className="text-gray-600">Diselenggarakan oleh: </span>
-                <span className="text-blue-500">{event?.users.name}</span>
-              </div>
-            </div>
-          </div> */}
+          <div>
+            <p className="text-gray-600">{event?.events.description}</p>
+          </div>
+          <div className="">
+            {event?.ticket_type.map((ticket) => {
+              return (
+                <div
+                  key={ticket.id}
+                  className="card bg-base-100 w-96 shadow-xl"
+                >
+                  <div className="card-body">
+                    <h2 className="card-title">{ticket.name}</h2>
+                    <p>{ticket.description}</p>
+                    <p>{`Harga: ${ticket.price ? ticket.price : "Gratis"}`}</p>
+                    <p>
+                      {`Sisa: ${
+                        ticket.rest ? ticket.rest : ticket.maxNumber
+                      } / ${ticket.maxNumber}`}
+                    </p>
+                    <div className="card-actions justify-end">
+                      <button
+                        title="Add to cart"
+                        type="button"
+                        onClick={(e) => onAddCart(Number(ticket.id))}
+                        className="btn btn-primary"
+                      >
+                        Tambah ke keranjang
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
