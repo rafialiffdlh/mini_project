@@ -57,7 +57,7 @@ const SidebarFilter: React.FC = () => {
   ];
 
   return (
-    <div className="p-4 bg-gray-100 rounded-md">
+    <div className="p-4  rounded-md">
       <div className="flex justify-between items-center mb-4">
         <div className="text-lg font-semibold">Filter</div>
         <a className="text-blue-500 hover:underline" href="/discover">

@@ -9,7 +9,7 @@ import "./Banner.css";
 
 const Banner = () => {
   return (
-    <div className="px-2 mt-8 mx-auto max-w-screen-xl">
+    <div className="px-2 py-2 mx-auto max-w-screen-xl">
       <Swiper
         spaceBetween={30}
         centeredSlides={true}

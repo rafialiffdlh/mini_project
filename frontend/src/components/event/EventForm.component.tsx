@@ -255,12 +255,12 @@ export default function EventFormComponent({ params }: Props) {
   };
 
   return (
-    <div className="py-4">
+    <div className="py-4 mx-auto max-w-screen-xl">
       <form
         className="flex flex-col items-center justify-center"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="card bg-slate-400 dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
+        <div className="card  dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
           <div className="card-body items-center text-center">
             <div className="flex flex-col items-center justify-center">
               <div className="w-full">
@@ -466,7 +466,7 @@ export default function EventFormComponent({ params }: Props) {
           </div>
         </div>
 
-        <div className="card bg-slate-400 dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
+        <div className="card dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
           <div className="card-body items-center text-center">
             <h3 className="text-lg font-semibold card-title">Kategori Tiket</h3>
             <div className="flex justify-between space-x-4 mt-4">

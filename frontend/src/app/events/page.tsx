@@ -8,8 +8,8 @@ type Props = {};
 
 export default function EventsPage({}: Props) {
   return (
-    <div>
-      <div className="breadcrumbs text-sm">
+    <div className="px-2 py-2 mx-auto max-w-screen-xl">
+      <div className="breadcrumbs text-sm px-2">
         <ul>
           <li>
             <Link href="/">Home</Link>
@@ -35,7 +35,7 @@ export default function EventsPage({}: Props) {
               aria-label="close sidebar"
               className="drawer-overlay"
             ></label>
-            <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+            <ul className="menu text-base-content min-h-full w-80 p-4">
               <SidebarFilter />
             </ul>
           </div>
