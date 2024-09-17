@@ -2,45 +2,46 @@
 import Image from "next/image";
 import { api } from "@/config/axios.config";
 import React, { useState, useEffect } from "react";
-import { Event } from "@/interfaces/event.interface";
+import { IEvent } from "@/interfaces/event.interface";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { event_src } from "@/config/image.config";
 
 interface CartItem {
-  event: Event;
+  event: IEvent;
   quantity: number;
 }
 
 const EventCard: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-
   useEffect(() => {
     const fetchEvents = async () => {
       const response = await api.get("/event");
       console.log(response);
-      const data = (await response.data.data) as Event[];
-      console.log(data);
+      const data = (await response.data.data) as IEvent[];
+      console.log(data[0].tickets);
       setEvents(data);
     };
     fetchEvents();
   }, []);
 
-  const addToCart = (event: Event) => {
-    const existingCartItem = cart.find(
-      (cartItem) => cartItem.event.id === event.id
-    );
+  // const addToCart = (event: IEvent) => {
+  //   const existingCartItem = cart.find(
+  //     (cartItem) => cartItem.event.id === event.id
+  //   );
 
-    if (existingCartItem) {
-      const updatedCart = cart.map((cartItem) =>
-        cartItem.event.id === event.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      );
-      setCart(updatedCart);
-    } else {
-      setCart([...cart, { event, quantity: 1 }]);
-    }
-  };
+  //   if (existingCartItem) {
+  //     const updatedCart = cart.map((cartItem) =>
+  //       cartItem.event.id === event.id
+  //         ? { ...cartItem, quantity: cartItem.quantity + 1 }
+  //         : cartItem
+  //     );
+  //     setCart(updatedCart);
+  //   } else {
+  //     setCart([...cart, { event, quantity: 1 }]);
+  //   }
+  // };
 
   return (
     <div className="px-2 mt-8 mx-auto max-w-screen-xl">
@@ -56,7 +57,11 @@ const EventCard: React.FC = () => {
             >
               {/* Poster image */}
               <Image
-                src={event.events.image_src ?? ""}
+                src={
+                  event.events.image_src
+                    ? event_src + event.events.image_src
+                    : ""
+                }
                 alt={event.events.title}
                 className="w-full h-48 object-cover"
                 width={100}
@@ -71,31 +76,35 @@ const EventCard: React.FC = () => {
                 </p>
                 <p className="text-gray-700 mt-2 font-semibold">
                   Price:{" "}
-                  {event.tickets.length > 0
-                    ? event.tickets.length > 1
+                  {event.ticket_type.length > 0
+                    ? event.ticket_type.length > 1
                       ? `Rp ${Math.min
                           .apply(
                             Math,
-                            event.tickets.map((o) => o.price)
+                            event.ticket_type.map((o) => o.price)
                           )
                           .toLocaleString()} - ${Math.max
                           .apply(
                             Math,
-                            event.tickets.map((o) => o.price)
+                            event.ticket_type.map((o) => o.price)
                           )
                           .toLocaleString()}`
-                      : `Rp ${event.tickets[0].price}`
-                    : "Free"}
+                      : event.ticket_type[0].price == 0
+                      ? "Gratis"
+                      : `Rp ${event.ticket_type[0].price}`
+                    : ""}
                 </p>
               </div>
               {/* Buy button */}
               <div className="absolute bottom-4 right-4">
-                <button
+                <Link
+                  target="_blank"
+                  href={`/events/${event.id}`}
+                  rel="noopener noreferrer"
                   className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-                  onClick={() => addToCart(event)} // Add to cart when clicked
                 >
-                  Buy Now
-                </button>
+                  Lihat Event
+                </Link>
               </div>
             </div>
           ))

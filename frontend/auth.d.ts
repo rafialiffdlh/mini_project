@@ -2,11 +2,13 @@ declare module "next-auth" {
   interface User {
     id: number | undefined;
     phone_number: string | undefined;
+    gender: "pria" | "wanita" | undefined;
     email: string | undefined;
     name: string | undefined;
-    image?: string;
+    image: string | undefined;
+    image_src?: string | undefined;
     user_role?: string | undefined;
-    access_token?: string;
+    access_token?: string | undefined;
   }
   interface Session {
     user: User;

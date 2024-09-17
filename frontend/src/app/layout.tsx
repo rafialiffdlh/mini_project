@@ -19,7 +19,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider refetchInterval={59 * 60}>{children}</SessionProvider>
       </body>
     </html>
   );

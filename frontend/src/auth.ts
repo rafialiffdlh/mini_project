@@ -12,6 +12,7 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
   session: {
     strategy: "jwt",
     maxAge: 60 * 60,
+    updateAge: 59 * 60,
   },
   providers: [
     Credential({
@@ -50,7 +51,8 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
         session.user.phone_number = token.phone_number as string;
         session.user.email = token.email as string;
         session.user.name = token.name as string;
-        session.user.image = token.image as string;
+        session.user.gender = token.gender as "pria" | "wanita" | undefined;
+        session.user.image_src = token.image_src as string;
         session.user.user_role = token.user_role as string;
         session.user.access_token = token.access_token as string;
       }
@@ -60,9 +62,10 @@ export const { signIn, signOut, handlers, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.name = user.name;
+        token.gender = user.gender;
         token.phone_number = user.phone_number;
         token.email = user.email;
-        token.image = user.image;
+        token.image_src = user.image_src;
         token.user_role = user.user_role as string;
         token.access_token = user.access_token as string;
       }

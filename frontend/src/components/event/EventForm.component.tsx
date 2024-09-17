@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { ICategoryItem, IEvent, ITicket } from "@/interfaces/event.interface";
 import { ErrorMessage } from "@hookform/error-message";
@@ -133,22 +133,6 @@ export default function EventFormComponent({ params }: Props) {
     defaultValues: {},
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      form.setValue("image_src", file);
-    }
-  };
-  const handleBlobImage = (blobData: any) => {
-    const reader = new FileReader();
-    let BgImage;
-    reader.onload = () => {
-      BgImage = `url(${reader.result})`;
-    };
-
-    reader.readAsDataURL(blobData);
-    return BgImage;
-  };
   const {
     register,
     formState: { errors, isSubmitting },
@@ -157,6 +141,7 @@ export default function EventFormComponent({ params }: Props) {
 
   const onSubmit = async (values: z.infer<typeof createEventSchema>) => {
     const formCreate = new FormData();
+    formCreate.append("image_src", values.image_src);
     formCreate.append("title", values.title);
     formCreate.append("description", values.description);
     formCreate.append("event_date", values.event_date.toString());
@@ -165,9 +150,11 @@ export default function EventFormComponent({ params }: Props) {
     formCreate.append("start_time", values.start_time.toString());
     formCreate.append("end_time", values.end_time.toString());
     formCreate.append("category_id", values.category_id.toString());
-    formCreate.append("image_src", values.image_src[0]);
     formCreate.append("venue", values.venue_id.toString());
-    console.log("tickets", tickets);
+    console.log(
+      "tickets",
+      tickets.map(({ _id, ...rest }) => rest)
+    );
     formCreate.append(
       "tickets",
       JSON.stringify(tickets.map(({ _id, ...rest }) => rest))
@@ -192,7 +179,7 @@ export default function EventFormComponent({ params }: Props) {
     // if (params) {
     //   formCreate.append("id", String(params.id));
     //   await api
-    //     .patch(`/organizer/${params.id}`, values, {
+    //     .patch(`/organizer/${params.id}`, formCreate, {
     //       headers: {
     //         "Content-Type": "multipart/form-data",
     //         Authorization: `Bearer ${session?.data?.user.access_token}`,
@@ -216,7 +203,7 @@ export default function EventFormComponent({ params }: Props) {
     //     });
     // } else {
     await api
-      .post("/organizer", values, {
+      .post("/organizer", formCreate, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${session?.data?.user.access_token}`,
@@ -247,7 +234,7 @@ export default function EventFormComponent({ params }: Props) {
         className="flex flex-col items-center justify-center"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="card  dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
+        <div className="card bg-slate-400 dark:bg-gray-700 text-black dark:text-white  w-full md:w-3/4 rounded-lg shadow-md">
           <div className="card-body items-center text-center">
             <div className="flex flex-col items-center justify-center">
               <div className="w-full">
@@ -269,7 +256,12 @@ export default function EventFormComponent({ params }: Props) {
                   <input
                     type="file"
                     {...register("image_src")}
-                    onChange={handleFileChange}
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        const file = e.target.files[0];
+                        form.setValue("image_src", file);
+                      }
+                    }}
                     className="hidden"
                     accept="image/*"
                     ref={ref}
@@ -338,7 +330,9 @@ export default function EventFormComponent({ params }: Props) {
                           Diselenggarakan Oleh
                         </p>
                         <p className="font-medium truncate">
-                          {event ? event.users.name : session.data?.user.name}
+                          {event
+                            ? event.events.user.name
+                            : session.data?.user.name}
                         </p>
                       </div>
                     </div>
@@ -446,7 +440,7 @@ export default function EventFormComponent({ params }: Props) {
           </div>
         </div>
 
-        <div className="card  dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
+        <div className="card bg-slate-400 dark:bg-gray-700 text-black dark:text-white mt-2 w-full md:w-3/4 shadow-xl">
           <div className="card-body items-center text-center">
             <h3 className="text-lg font-semibold card-title">Kategori Tiket</h3>
             <div className="flex justify-between space-x-4 mt-4">
@@ -543,7 +537,9 @@ export default function EventFormComponent({ params }: Props) {
                             }
                           />
                         ) : (
-                          <p className="text-sm text-gray-500">Harga: Gratis</p>
+                          <p className="text-sm text-black dark:text-white">
+                            Harga: Gratis
+                          </p>
                         )}
                         <input
                           value={ticket.maxNumber}

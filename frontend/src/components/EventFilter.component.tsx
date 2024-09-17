@@ -66,20 +66,6 @@ const SidebarFilter: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        {/* Event Online */}
-        <div className="flex justify-between items-center">
-          <div>Event Online</div>
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              className="form-checkbox"
-              checked={onlineEvent}
-              onChange={() => setOnlineEvent(!onlineEvent)}
-            />
-            <span className="ml-2">Online</span>
-          </label>
-        </div>
-
         {/* Location Filter */}
         <Accordion
           title="Lokasi"
@@ -90,18 +76,10 @@ const SidebarFilter: React.FC = () => {
 
         {/* Format Filter */}
         <Accordion
-          title="Format"
+          title="Kategori"
           value={selectedFormat}
           onSelect={(value) => setSelectedFormat(value)}
           options={formats}
-        />
-
-        {/* Topic Filter */}
-        <Accordion
-          title="Topik"
-          value={selectedTopic}
-          onSelect={(value) => setSelectedTopic(value)}
-          options={topics}
         />
 
         {/* Time Filter */}
