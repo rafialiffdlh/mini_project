@@ -2,6 +2,7 @@ declare module "next-auth" {
   interface User {
     id: number | undefined;
     phone_number: string | undefined;
+    birthDate: string | undefined;
     gender: "pria" | "wanita" | undefined;
     email: string | undefined;
     name: string | undefined;

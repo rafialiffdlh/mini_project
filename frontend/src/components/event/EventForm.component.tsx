@@ -14,11 +14,17 @@ import DatePickerOne from "../dashboard/FormElements/DatePicker/DatePickerOne";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { event_src } from "@/config/image.config";
+import { User } from "next-auth";
 
 const MySwal = withReactContent(Swal);
 type Props = { params?: { id?: number } };
 
 export default function EventFormComponent({ params }: Props) {
+  const [user, setUser] = useState<User | null>(null);
+  const { data: session } = useSession();
+  useEffect(() => {
+    if (session?.user) setUser(session?.user);
+  }, [session]);
   const Toast = MySwal.mixin({
     toast: true,
     position: "top-end",
@@ -35,7 +41,7 @@ export default function EventFormComponent({ params }: Props) {
   const [tickets, setTickets] = useState<ITicket[]>([]);
   const [event, setEvent] = useState<IEvent>();
   const ref = useRef<HTMLInputElement>(null);
-  const session = useSession();
+
   const router = useRouter();
 
   const onTicketChange = (
@@ -204,7 +210,7 @@ export default function EventFormComponent({ params }: Props) {
         .patch(`/organizer/${params.id}`, formCreate, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${session?.data?.user.access_token}`,
+            Authorization: `Bearer ${session?.user.access_token}`,
           },
         })
         .then((res) => {
@@ -228,7 +234,7 @@ export default function EventFormComponent({ params }: Props) {
         .post("/organizer", formCreate, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${session?.data?.user.access_token}`,
+            Authorization: `Bearer ${session?.user.access_token}`,
           },
         })
         .then((res) => {
@@ -355,7 +361,7 @@ export default function EventFormComponent({ params }: Props) {
                           <p className="font-medium truncate">
                             {event
                               ? event.events.user.name
-                              : session.data?.user.name}
+                              : session?.user.name}
                           </p>
                         </div>
                       </div>

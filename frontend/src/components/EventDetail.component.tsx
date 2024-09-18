@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { User } from "next-auth";
 
 const MySwal = withReactContent(Swal);
 
@@ -23,7 +24,11 @@ type Props = {
 };
 
 const EventDetail = ({ event_name }: Props) => {
-  const session = useSession();
+  const { data: session } = useSession();
+  const [user, setUser] = React.useState<User | null>(null);
+  React.useEffect(() => {
+    if (session?.user) setUser(session?.user);
+  }, [session]);
   const Toast = MySwal.mixin({
     toast: true,
     position: "top-end",
@@ -53,7 +58,7 @@ const EventDetail = ({ event_name }: Props) => {
   const onAddCart = async (id: number) => {
     const response = await api.post(`/purchase`, [{ id, quantity: 1 }], {
       headers: {
-        Authorization: `Bearer ${session?.data?.user.access_token}`,
+        Authorization: `Bearer ${session?.user.access_token}`,
       },
     });
     const data = await response.data.data;

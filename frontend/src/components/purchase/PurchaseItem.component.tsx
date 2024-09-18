@@ -1,6 +1,6 @@
 "use client";
 import { avatar_src } from "@/config/image.config";
-import { ITicketPurchase } from "@/interfaces/event.interface";
+import { ITicket, ITicketPurchase } from "@/interfaces/event.interface";
 import React from "react";
 
 interface ProductProps {
@@ -14,16 +14,29 @@ const PurchaseItem = ({ item, register }: ProductProps) => {
       <div className="flex items-center">
         <img
           src={
-            item.ticket_type.event_venue
-              ? avatar_src + item.ticket_type.event_venue?.events.image_src
+            item.tickets.event_venue?.events.image_src
+              ? avatar_src + item.tickets.event_venue?.events.image_src
               : ""
           }
-          alt={item.ticket_type.name}
+          alt={item.tickets.name}
           className="w-20 h-20 mr-4"
         />
         <div className="flex flex-col mr-2 ">
-          <p className="text-lg font-medium">{item.ticket_type.name}</p>
-          <p className="text-black">Rp{item.price}</p>
+          <p className="text-lg font-medium">{item.tickets.name}</p>
+          <p className="text-black">
+            {item.tickets.event_venue?.events.default_discount_date
+              ? item.tickets.event_venue?.events.default_discount_date <=
+                new Date()
+                ? `Rp ${
+                    item.tickets.price -
+                    (item.tickets.price *
+                      (item.tickets.event_venue?.events.default_discount ??
+                        0)) /
+                      100
+                  }`
+                : `Rp ${item.tickets.price}`
+              : `Rp ${item.tickets.price}`}
+          </p>
         </div>
       </div>
       <div className="flex items-center">

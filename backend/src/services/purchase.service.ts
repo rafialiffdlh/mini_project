@@ -20,6 +20,7 @@ export class PurchasesService {
           select: {
             id: true,
             quantity: true,
+            purchase_id: true,
             ticket_type: {
               include: {
                 event_venue: {

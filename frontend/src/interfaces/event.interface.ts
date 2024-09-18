@@ -45,11 +45,8 @@ interface ITicket {
 interface ITicketPurchase {
   id?: number;
   purchase_id: number;
-  ticket_type: ITicket;
-  description: string;
+  tickets: ITicket;
   quantity: number;
-  price: number;
-  image?: string;
 }
 
 interface IPurchase {

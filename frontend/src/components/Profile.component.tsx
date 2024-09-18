@@ -2,7 +2,7 @@
 import { actionUpdateProfile } from "@/actions/auth.action";
 import { api } from "@/config/axios.config";
 import { avatar_src } from "@/config/image.config";
-import { User } from "@/interfaces/user.interface";
+import { User } from "next-auth";
 import { profileSchema } from "@/schemas/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSession } from "next-auth/react";
@@ -14,6 +14,11 @@ import { z } from "zod";
 const MySwal = withReactContent(Swal);
 
 export default function ProfileComponent() {
+  const { data: session } = useSession();
+  const [user, setUser] = useState<User | null>(null);
+  React.useEffect(() => {
+    if (session?.user) setUser(session?.user);
+  }, [session]);
   const Toast = MySwal.mixin({
     toast: true,
     position: "top-end",
@@ -25,26 +30,27 @@ export default function ProfileComponent() {
       toast.addEventListener("mouseleave", Swal.resumeTimer);
     },
   });
-  const [user, setUser] = useState<User | null>(null);
-  const session = useSession();
+
   React.useEffect(() => {
     async function fetchData() {
-      const response = await api.get("/user/profile", {
+      const response = await api.get("/auth/profile", {
         headers: {
-          Authorization: `Bearer ${session?.data?.user.access_token}`,
+          Authorization: `Bearer ${session?.user.access_token}`,
         },
       });
       setUser(response.data.data as User);
     }
     fetchData();
-  }, [session]);
+  }, []);
+
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user?.name!,
+      birthDate: user?.birthDate!,
       gender: user?.gender!,
       image_src: user?.image_src!,
-      password: "",
+      password: undefined,
     },
   });
   const {
@@ -101,6 +107,7 @@ export default function ProfileComponent() {
               }
               alt="Profile Picture"
               className="w-24 h-24 rounded-full"
+              onClick={() => ref.current?.click()}
             />
             <input
               type="file"
@@ -113,6 +120,7 @@ export default function ProfileComponent() {
             <label
               htmlFor="profilePicture"
               className="cursor-pointer text-blue-500"
+              onClick={(e) => ref.current?.click()}
             >
               Upload
             </label>
@@ -135,9 +143,11 @@ export default function ProfileComponent() {
             <label htmlFor="birthDate" className="text-gray-700">
               Tanggal Lahir:
             </label>
+
             <input
               type="text"
               id="birthDate"
+              placeholder="YYYY-MM-DD"
               {...register("birthDate", { required: "Birth Date is required" })}
               className="border p-2"
             />

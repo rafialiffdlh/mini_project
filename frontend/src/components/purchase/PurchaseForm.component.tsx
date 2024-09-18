@@ -5,15 +5,20 @@ import PurchaseItem from "./PurchaseItem.component"; // Import your product comp
 import { zodResolver } from "@hookform/resolvers/zod";
 import { purchaseSchema } from "@/schemas/purchase.schema";
 import { z } from "zod";
-import { ITicketPurchase } from "@/interfaces/event.interface";
+import { ITicket, ITicketPurchase } from "@/interfaces/event.interface";
 import { api } from "@/config/axios.config";
 import { useSession } from "next-auth/react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { User } from "next-auth";
 const MySwal = withReactContent(Swal);
 
 export default function PurchaseFormComponent() {
-  const session = useSession();
+  const { data: session } = useSession();
+  const [user, setUser] = React.useState<User | null>(null);
+  React.useEffect(() => {
+    if (session?.user) setUser(session?.user);
+  }, [session]);
   const Toast = MySwal.mixin({
     toast: true,
     position: "top-end",
@@ -42,21 +47,32 @@ export default function PurchaseFormComponent() {
       const item = { ...ticket, quantity: values.quantity };
       return item;
     });
-    await api.patch("/purchase", data, {
-      headers: {
-        Authorization: `Bearer ${session?.data?.user.access_token}`,
-      },
-    });
+    await api
+      .patch("/purchase", data, {
+        headers: {
+          Authorization: `Bearer ${session?.user.access_token}`,
+        },
+      })
+      .then((response) => {
+        Toast.fire({
+          icon: "success",
+          title: "Checkout success",
+        });
+      })
+      .catch((error) => {
+        console.log(error.message);
+        Toast.fire({
+          icon: "error",
+          title: error.message,
+        });
+      });
   };
 
   React.useEffect(() => {
     async function fetchData() {
-      const token = session?.data?.user.access_token;
-
-      console.log("start purchase api:" + token);
       const response = await api.get("/purchase", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${session?.user.access_token}`,
         },
       });
       console.log(response.data.data);

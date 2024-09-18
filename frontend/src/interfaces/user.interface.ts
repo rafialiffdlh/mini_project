@@ -1,5 +1,6 @@
 export interface User {
   id: number | undefined;
+  birthDate: string | undefined;
   phone_number: string | undefined;
   gender: "pria" | "wanita" | undefined;
   email: string | undefined;
