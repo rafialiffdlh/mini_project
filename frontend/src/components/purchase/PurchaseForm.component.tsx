@@ -72,7 +72,6 @@ export default function PurchaseFormComponent() {
   };
 
   React.useEffect(() => {
-    
     async function fetchData() {
       await api
         .get("/purchase", {
@@ -88,19 +87,16 @@ export default function PurchaseFormComponent() {
         })
         .catch((error) => {
           console.log(error.message);
-          Toast.fire({
-            icon: "error",
-            title: error.message,
-          });
         });
     }
-   
-    const timer = setTimeout(() => fetchData() , 2000);
+    if (user) {
+      const timer = setTimeout(() => fetchData(), 2000);
 
-    return () => {
-      clearTimeout(timer);
-    }; 
-  }, []);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [user]);
 
   return (
     <div className="container mx-auto max-w-screen-xl">
@@ -111,7 +107,7 @@ export default function PurchaseFormComponent() {
             ? tickets.map((item: ITicketPurchase) => (
                 <PurchaseItem key={item.id} item={item} register={register} />
               ))
-            : ""}
+            : "Loading..."}
         </ul>
         <div className="mt-4">
           <button
