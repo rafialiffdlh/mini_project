@@ -56,13 +56,24 @@ const EventDetail = ({ event_name }: Props) => {
   }, []);
 
   const onAddCart = async (id: number) => {
-    const response = await api.post(`/purchase`, [{ id, quantity: 1 }], {
-      headers: {
-        Authorization: `Bearer ${session?.user.access_token}`,
-      },
-    });
-    const data = await response.data.data;
-    console.log(data);
+    await api
+      .post(`/purchase`, [{ id, quantity: 1 }], {
+        headers: {
+          Authorization: `Bearer ${session?.user.access_token}`,
+        },
+      })
+      .then((res) => {
+        Toast.fire({
+          icon: "success",
+          title: "Add to cart success",
+        });
+      })
+      .catch((error) => {
+        Toast.fire({
+          icon: "error",
+          title: error.message,
+        });
+      });
   };
 
   return (
@@ -133,6 +144,7 @@ const EventDetail = ({ event_name }: Props) => {
             <h1 id="gt-event-name" className="text-2xl font-bold">
               {event?.events.title}
             </h1>
+            <p className="">{event?.events.description}</p>
           </div>
 
           <div className="info-additional space-y-4">
@@ -148,7 +160,15 @@ const EventDetail = ({ event_name }: Props) => {
 
             <div className="event-time flex items-center space-x-2">
               <FaClock />
-              <label className="text-gray-600">{`${event?.events.start_time} - ${event?.events.end_time}`}</label>
+              <label className="text-gray-600">{`${
+                event?.events.start_time ?? 0 > 9
+                  ? event?.events.start_time
+                  : `0${event?.events.start_time}`
+              }:00 - ${
+                event?.events.end_time ?? 0 > 9
+                  ? event?.events.end_time
+                  : `0${event?.events.end_time}`
+              }:00`}</label>
             </div>
 
             <div className="event-venue flex items-center space-x-2">
@@ -191,9 +211,9 @@ const EventDetail = ({ event_name }: Props) => {
           </div>
 
           <div>
-            <p className="text-gray-600">{event?.events.description}</p>
+            <h2>Tiket</h2>
           </div>
-          <div className="">
+          <div className="flex flex-col md:flex-row justify-center md:justify-start">
             {event?.ticket_type.map((ticket) => {
               return (
                 <div

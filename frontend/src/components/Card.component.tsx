@@ -7,11 +7,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { event_src } from "@/config/image.config";
 
-interface CartItem {
-  event: IEvent;
-  quantity: number;
-}
-
 const EventCard: React.FC = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,23 +20,6 @@ const EventCard: React.FC = () => {
     };
     fetchEvents();
   }, []);
-
-  // const addToCart = (event: IEvent) => {
-  //   const existingCartItem = cart.find(
-  //     (cartItem) => cartItem.event.id === event.id
-  //   );
-
-  //   if (existingCartItem) {
-  //     const updatedCart = cart.map((cartItem) =>
-  //       cartItem.event.id === event.id
-  //         ? { ...cartItem, quantity: cartItem.quantity + 1 }
-  //         : cartItem
-  //     );
-  //     setCart(updatedCart);
-  //   } else {
-  //     setCart([...cart, { event, quantity: 1 }]);
-  //   }
-  // };
 
   return (
     <div>

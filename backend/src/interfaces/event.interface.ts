@@ -2,6 +2,7 @@ import { Decimal } from "@prisma/client/runtime/library";
 
 interface ITicketModel {
   action?: "update" | "create" | "delete";
+  description?: string;
   price?: Decimal;
   maxNumber?: number;
   paidTicket?: boolean;

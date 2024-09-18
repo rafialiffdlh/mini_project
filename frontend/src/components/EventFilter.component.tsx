@@ -73,22 +73,6 @@ const SidebarFilter: React.FC = () => {
           onSelect={(value) => setSelectedFormat(value)}
           options={formats}
         />
-
-        {/* Time Filter */}
-        <Accordion
-          title="Waktu"
-          value={selectedTime}
-          onSelect={(value) => setSelectedTime(value)}
-          options={times}
-        />
-
-        {/* Price Filter */}
-        <Accordion
-          title="Harga"
-          value={selectedPrice}
-          onSelect={(value) => setSelectedPrice(value)}
-          options={prices}
-        />
       </div>
     </div>
   );

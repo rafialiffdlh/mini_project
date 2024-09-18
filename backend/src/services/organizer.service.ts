@@ -107,8 +107,9 @@ export class OrganizerService {
   }
 
   static async updateService(req: Request) {
-    const { event_venue_id } = req.params;
+    const event_venue_id = req.params.id;
     const {
+      id,
       title,
       description,
       event_date,
@@ -121,28 +122,29 @@ export class OrganizerService {
       default_discount,
       default_discount_date,
     } = req.body;
-    console.log("cek id event", req.params, req.query);
-    const { id } = req.user;
+    console.log("cek id event", req.params.id, req.query.id, req.body.id);
+    const user_id = req.user.id;
     let _image_src = req.file ? req.file.filename : undefined;
     const dataEvent = await prisma.event_venue.findUnique({
-      where: { id: Number(event_venue_id) },
+      where: { id: Number(id) },
       include: {
         events: {
-          include: { user: true },
+          include: { user: true, category: true },
         },
         venues: { include: { location: true } },
         ticket_type: true,
       },
     });
     if (dataEvent) {
-      const ticketsData = tickets as ITicketModel[];
+      console.log(tickets);
+      const ticketsData = JSON.parse(tickets) as ITicketModel[];
       await prisma.$transaction(async (trx) => {
         let venue_id;
         if (typeof venue === "string" || typeof venue === "number") {
           venue_id = Number(venue);
         }
         await trx.event_venue.update({
-          where: { id: Number(event_venue_id) },
+          where: { id: Number(id) },
           data: {
             events: {
               update: {
@@ -155,7 +157,7 @@ export class OrganizerService {
                 start_time,
                 end_time,
                 image_src: _image_src,
-                category_id,
+                category_id: Number(category_id),
                 default_discount,
                 default_discount_date,
               },
@@ -163,19 +165,45 @@ export class OrganizerService {
           },
         });
         await trx.event_venue.update({
-          where: { id: Number(event_venue_id) },
+          where: { id: Number(id) },
           data: {
             venue_id: venue_id,
           },
         });
 
-        ticketsData.map((ticket) => {
+        ticketsData.map(async (ticket) => {
           const prevTiket = dataEvent.ticket_type.find(
             (x) => x.id === ticket.id
           );
-          if (ticket.id) {
+          if (prevTiket) {
+            delete ticket.action;
+            await trx.ticket_type.update({
+              where: { id: ticket.id },
+              data: {
+                ...ticket,
+              },
+            });
+          } else {
+            if (ticket.id) {
+              await trx.ticket_type.delete({
+                where: { id: ticket.id },
+              });
+            } else {
+              delete ticket.action;
+              delete ticket.id;
+              await trx.ticket_type.create({
+                data: {
+                  description: ticket.description,
+                  maxNumber: Number(ticket.maxNumber),
+                  price: Number(ticket.price),
+                  event_venue_id: id,
+                  name: ticket.name,
+                  rest: 0,
+                  paidTicket: Number(ticket.price) != 0,
+                },
+              });
+            }
           }
-          delete ticket.id;
         });
       });
     } else {

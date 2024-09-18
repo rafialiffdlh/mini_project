@@ -41,6 +41,11 @@ export default function OrgDashboardComponent() {
               Calendar
             </a>
           </li>
+          <li>
+            <a href="/e/create" className="">
+              Create Event
+            </a>
+          </li>
         </ul>
       </div>
     </div>
