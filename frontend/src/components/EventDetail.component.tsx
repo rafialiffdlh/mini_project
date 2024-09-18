@@ -57,11 +57,15 @@ const EventDetail = ({ event_name }: Props) => {
 
   const onAddCart = async (id: number) => {
     await api
-      .post(`/purchase`, [{ id, quantity: 1 }], {
-        headers: {
-          Authorization: `Bearer ${session?.user.access_token}`,
-        },
-      })
+      .post(
+        `/purchase`,
+        { id, quantity: 1 },
+        {
+          headers: {
+            Authorization: `Bearer ${session?.user.access_token}`,
+          },
+        }
+      )
       .then((res) => {
         Toast.fire({
           icon: "success",

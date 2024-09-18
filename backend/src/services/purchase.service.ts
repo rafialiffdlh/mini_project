@@ -66,11 +66,11 @@ export class PurchasesService {
   }
 
   static async addCartService(req: Request) {
-    const { tickets } = req.body;
+    const { id, quantity, event_venue_id } = req.body;
     console.log(req.body);
-    console.log(tickets);
+
     const user_id = req.user.id;
-    const ticket_types = tickets as ITicketPurchase[];
+
     let prevPurchase = await prisma.purchases.findFirst({
       include: { tickets: true },
       where: {
@@ -84,49 +84,42 @@ export class PurchasesService {
     });
     if (prevPurchase) {
       await prisma.$transaction(async (trx) => {
-        for (const ticket in ticket_types) {
-          const prevTicket = prevPurchase.tickets.find(
-            (t) => t.type_id === ticket_types[ticket].ticket_type_id
-          );
-          if (prevTicket) {
-            await trx.tickets.update({
-              where: {
-                id: prevTicket.id,
-              },
-              data: {
-                quantity:
-                  ticket_types[ticket].quantity +
-                  (prevTicket ? prevTicket?.quantity : 0),
-              },
-            });
-          } else {
-            await trx.tickets.create({
-              data: {
-                quantity: ticket_types[ticket].quantity,
-                purchase_id: prevPurchase.id,
-                type_id: ticket_types[ticket].ticket_type_id,
-              },
-            });
-          }
+        const prevTicket = prevPurchase.tickets.find((t) => t.type_id === id);
+        if (prevTicket) {
+          await trx.tickets.update({
+            where: {
+              id: prevTicket.id,
+            },
+            data: {
+              quantity: quantity + (prevTicket ? prevTicket?.quantity : 0),
+            },
+          });
+        } else {
+          await trx.tickets.create({
+            data: {
+              quantity: quantity,
+              purchase_id: prevPurchase.id,
+              type_id: id,
+            },
+          });
         }
       });
     } else {
+      console.log(Number(id), Number(quantity));
       await prisma.$transaction(async (trx) => {
-        await trx.purchases.create({
+        const data = await trx.purchases.create({
           data: {
             user_id,
             isPurchased: false,
             total_price: 0,
-            tickets: {
-              createMany: {
-                data: ticket_types.map((ticket) => {
-                  return {
-                    quantity: ticket.quantity,
-                    type_id: ticket.ticket_type_id,
-                  };
-                }),
-              },
-            },
+          },
+        });
+        await trx.tickets.create({
+          data: {
+            type_id: id,
+            purchase_id: data.id,
+            quantity: quantity,
+            isPurchased: false,
           },
         });
       });

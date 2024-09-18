@@ -72,13 +72,8 @@ export default function PurchaseFormComponent() {
   };
 
   React.useEffect(() => {
+    
     async function fetchData() {
-      Toast.fire({
-        icon: "info",
-        title: user?.access_token + " ::::::::: " + session?.user.access_token,
-      });
-      console.log(user, session);
-
       await api
         .get("/purchase", {
           headers: {
@@ -89,7 +84,7 @@ export default function PurchaseFormComponent() {
         })
         .then((response) => {
           console.log(response.data.data);
-          setTickets(response.data.data as ITicketPurchase[]);
+          setTickets(response.data.data.tickets as ITicketPurchase[]);
         })
         .catch((error) => {
           console.log(error.message);
@@ -99,7 +94,12 @@ export default function PurchaseFormComponent() {
           });
         });
     }
-    fetchData();
+   
+    const timer = setTimeout(() => fetchData() , 2000);
+
+    return () => {
+      clearTimeout(timer);
+    }; 
   }, []);
 
   return (
@@ -107,9 +107,11 @@ export default function PurchaseFormComponent() {
       <h1 className="text-2xl font-bold mb-4 ">Shopping Cart</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ul>
-          {tickets.map((item: ITicketPurchase) => (
-            <PurchaseItem key={item.id} item={item} register={register} />
-          ))}
+          {tickets
+            ? tickets.map((item: ITicketPurchase) => (
+                <PurchaseItem key={item.id} item={item} register={register} />
+              ))
+            : ""}
         </ul>
         <div className="mt-4">
           <button
