@@ -1,187 +1,212 @@
 "use client";
+import Image from "next/image";
+import { api } from "@/config/axios.config";
 import React, { useState, useEffect } from "react";
+import { IEvent } from "@/interfaces/event.interface";
+import Link from "next/link";
+import { event_src } from "@/config/image.config";
 
-interface Movie {
-  id: number;
-  movie_name: string;
-  description: string;
-  poster: string;
-  release_date: string;
-  price: number;
-}
-
-interface CartItem {
-  movie: Movie;
-  quantity: number;
-}
-
-const SkeletonCard: React.FC = () => (
-  <div className="flex w-52 flex-col gap-4 animate-pulse">
-    <div className="skeleton h-32 w-full bg-gray-300"></div>
-    <div className="skeleton h-4 w-28 bg-gray-300"></div>
-    <div className="skeleton h-4 w-full bg-gray-300"></div>
-    <div className="skeleton h-4 w-full bg-gray-300"></div>
-  </div>
-);
-
-const Card: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [cart, setCart] = useState<CartItem[]>([]);
+const EventCard: React.FC = () => {
+  const [events, setEvents] = useState<IEvent[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const itemsPerPage = 3; // Number of events per page
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get("/event");
+        const data = (await response.data.data) as IEvent[];
+        setEvents(data);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      } finally {
+        setLoading(false); // Set loading to false when data is fetched
+      }
     };
+    fetchEvents();
+  }, []);
+
+  // Debouncing
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      if (searchTerm.trim() === "") {
+        fetchAllEvents();
+      } else {
+        handleSearch(searchTerm);
+      }
+    }, 1000);
+
+    return () => clearTimeout(timerId);
   }, [searchTerm]);
 
-  useEffect(() => {
-    const fetchMovies = async () => {
+  // fetching all events
+  const fetchAllEvents = async () => {
+    try {
       setLoading(true);
-      const response = await fetch(`/api/movies?search=${debouncedSearchTerm}`);
-      const data = await response.json();
-      setMovies(data);
+      const response = await api.get("/event");
+      const data = (await response.data.data) as IEvent[];
+      setEvents(data);
+    } catch (error) {
+      console.error("Error fetching all events:", error);
+    } finally {
       setLoading(false);
-    };
-
-    fetchMovies();
-  }, [debouncedSearchTerm, currentPage]);
-
-  const addToCart = (movie: Movie) => {
-    const existingCartItem = cart.find(
-      (cartItem) => cartItem.movie.id === movie.id
-    );
-
-    if (existingCartItem) {
-      const updatedCart = cart.map((cartItem) =>
-        cartItem.movie.id === movie.id
-          ? { ...cartItem, quantity: cartItem.quantity + 1 }
-          : cartItem
-      );
-      setCart(updatedCart);
-    } else {
-      setCart([...cart, { movie, quantity: 1 }]);
     }
   };
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+  // handle the API search
+  const handleSearch = async (term: string) => {
+    try {
+      setLoading(true);
+      const response = await api.get(`/event?search=${term}`);
+      const data = (await response.data.data) as IEvent[];
+      setEvents(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Pagination logic
+  const indexOfLastEvent = currentPage * itemsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
+  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(events.length / itemsPerPage);
+
+  // Skeleton component
+  const SkeletonCard = () => (
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden relative animate-pulse">
+      <div className="skeleton h-48 w-full bg-gray-200"></div>
+      <div className="p-4">
+        <div className="skeleton h-6 w-3/4 bg-gray-200 mb-2"></div>
+        <div className="skeleton h-4 w-full bg-gray-200 mb-2"></div>
+        <div className="skeleton h-4 w-1/2 bg-gray-200 mb-2"></div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="py-4">
-      <div className="px-2 mt-8 mx-auto max-w-screen-xl">
-        <h2 className="text-2xl font-semibold mb-8 text-center">Movies</h2>
+    <div>
+      <h2 className="text-2xl font-semibold py-4 text-center">Events</h2>
 
-        {/* Search input */}
-        <div className="relative flex mt-8 justify-center mb-6">
-          <input
-            type="text"
-            placeholder="Search movies..."
-            className="w-full max-w-md px-4 py-2 border rounded-md shadow-md"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+      {/* Search bar */}
+      <div className="flex justify-center my-4">
+        <input
+          type="text"
+          placeholder="Search events..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border border-gray-300 rounded-lg p-2 w-full max-w-md"
+        />
+      </div>
 
-        {/* skeleton */}
-        <div className="grid px-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {loading ? (
-            <>
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-            </>
-          ) : movies.length > 0 ? (
-            movies.map((movie) => (
-              <div
-                key={movie.id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden relative"
-              >
-                <img
-                  src={movie.poster}
-                  alt={movie.movie_name}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4 pb-16">
-                  <h3 className="text-lg font-semibold">{movie.movie_name}</h3>
-                  <p className="text-gray-600 mt-2">{movie.description}</p>
-                  <p className="text-gray-500 mt-2">
-                    Release Date: {movie.release_date}
-                  </p>
-                  <p className="text-gray-700 mt-2 font-semibold">
-                    Price: ${movie.price.toLocaleString()}
-                  </p>
-                </div>
-                <div className="absolute bottom-4 right-4">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
-                    onClick={() => addToCart(movie)}
-                  >
-                    Buy Now
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center">No movies found.</p>
-          )}
-        </div>
-
-        {/* pagination */}
-        <div className="flex justify-center mt-6">
-          <div className="join">
-            {Array.from({ length: 5 }, (_, i) => (
-              <input
-                key={i + 1}
-                className="join-item btn btn-square"
-                type="radio"
-                name="options"
-                aria-label={`${i + 1}`}
-                checked={currentPage === i + 1}
-                onChange={() => handlePageChange(i + 1)}
+      {/* Event cards */}
+      <div className="grid px-2 py-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {loading ? (
+          // Show skeletons while loading
+          Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))
+        ) : currentEvents.length > 0 ? (
+          currentEvents.map((event) => (
+            <div
+              key={event.id}
+              className="bg-white shadow-lg rounded-lg overflow-hidden relative"
+            >
+              {/* Poster image */}
+              <Image
+                src={
+                  event.events.image_src
+                    ? event_src + event.events.image_src
+                    : ""
+                }
+                alt={event.events.title}
+                className="w-full h-48 object-cover"
+                width={100}
+                height={48}
               />
-            ))}
-          </div>
-        </div>
-
-        {/* add card*/}
-        <div className="mt-8">
-          <h3 className="text-xl font-semibold mb-4">Cart</h3>
-          {cart.length > 0 ? (
-            <ul className="space-y-4">
-              {cart.map((cartItem) => (
-                <li
-                  key={cartItem.movie.id}
-                  className="flex justify-between items-center"
+              {/* Event details */}
+              <div className="p-4 pb-16">
+                <h3 className="text-lg font-semibold">{event.events.title}</h3>
+                <p className="text-gray-600 mt-2">{event.events.description}</p>
+                <p className="text-gray-500 mt-2">
+                  Event Date: {event.events.event_date.toString()}
+                </p>
+                <p className="text-gray-700 mt-2 font-semibold">
+                  Price:{" "}
+                  {event.ticket_type.length > 0
+                    ? event.ticket_type.length > 1
+                      ? `Rp ${Math.min
+                          .apply(
+                            Math,
+                            event.ticket_type.map((o) => o.price)
+                          )
+                          .toLocaleString()} - ${Math.max
+                          .apply(
+                            Math,
+                            event.ticket_type.map((o) => o.price)
+                          )
+                          .toLocaleString()}`
+                      : event.ticket_type[0].price == 0
+                      ? "Gratis"
+                      : `Rp ${event.ticket_type[0].price}`
+                    : ""}
+                </p>
+              </div>
+              {/* Buy button */}
+              <div className="absolute bottom-4 right-4">
+                <Link
+                  target="_blank"
+                  href={`/events/${event.id}`}
+                  rel="noopener noreferrer"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                 >
-                  <span>
-                    {cartItem.movie.movie_name} (x{cartItem.quantity})
-                  </span>
-                  <span>
-                    $
-                    {(
-                      cartItem.movie.price * cartItem.quantity
-                    ).toLocaleString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Your cart is empty.</p>
-          )}
-        </div>
+                  Lihat Event
+                </Link>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex justify-center items-center w-full">
+            <p className="text-right ml-auto w-full">No events found.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Pagination controls */}
+      <div className="flex justify-center mt-6 space-x-4">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          className={`px-4 py-2 rounded-md ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+        >
+          Previous
+        </button>
+        <span className="flex items-center">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          className={`px-4 py-2 rounded-md ${
+            currentPage === totalPages
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
 };
 
-export default Card;
+export default EventCard;

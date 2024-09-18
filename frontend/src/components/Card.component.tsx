@@ -11,6 +11,8 @@ const EventCard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const itemsPerPage = 3; // Number of events per page
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -69,6 +71,12 @@ const EventCard: React.FC = () => {
     }
   };
 
+  // Pagination logic
+  const indexOfLastEvent = currentPage * itemsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
+  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(events.length / itemsPerPage);
+
   // Skeleton component
   const SkeletonCard = () => (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden relative animate-pulse">
@@ -103,8 +111,8 @@ const EventCard: React.FC = () => {
           Array.from({ length: 8 }).map((_, index) => (
             <SkeletonCard key={index} />
           ))
-        ) : events.length > 0 ? (
-          events.map((event) => (
+        ) : currentEvents.length > 0 ? (
+          currentEvents.map((event) => (
             <div
               key={event.id}
               className="bg-white shadow-lg rounded-lg overflow-hidden relative"
@@ -167,6 +175,35 @@ const EventCard: React.FC = () => {
             <p className="text-right ml-auto w-full">No events found.</p>
           </div>
         )}
+      </div>
+
+      {/* Pagination controls */}
+      <div className="flex justify-center mt-6 space-x-4">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          className={`px-4 py-2 rounded-md ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+        >
+          Previous
+        </button>
+        <span className="flex items-center">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          className={`px-4 py-2 rounded-md ${
+            currentPage === totalPages
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
