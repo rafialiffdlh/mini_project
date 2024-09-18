@@ -1,4 +1,7 @@
-import { ITicketPurchase } from "@/interfaces/purchase.interface";
+import {
+  ITicketPurchase,
+  ITicketPurchaseModel,
+} from "@/interfaces/purchase.interface";
 import prisma from "../prisma";
 import { Request } from "express";
 export class PurchasesService {
@@ -38,23 +41,30 @@ export class PurchasesService {
     return data;
   }
   static async buyTicketService(req: Request) {
-    const { referal_id, purchase_id, total_price } = req.body;
+    const data = req.body as ITicketPurchaseModel[];
     const user_id = req.user.id;
+    console.log(data[0].ticket_type);
     await prisma.$transaction(async (trx) => {
+      const total = data.reduce(
+        (total, curr) =>
+          curr.quantity * Number(Number(curr.ticket_type.price ?? 0)) + total,
+        0
+      );
+
       const result = await trx.purchases.update({
         where: {
-          id: purchase_id,
+          id: data[0].purchase_id,
         },
         data: {
           user_id,
           isPurchased: true,
-          total_price,
-          referal_id,
-          invoice_no: `INV_${new Date().getTime()}_${purchase_id}`,
+          // referal_id,
+          total_price: total,
+          invoice_no: `INV_${new Date().getTime()}_${data[0].purchase_id}`,
         },
       });
       await trx.tickets.updateMany({
-        where: { purchase_id: purchase_id },
+        where: { purchase_id: data[0].purchase_id },
         data: {
           isPurchased: true,
         },
@@ -112,16 +122,24 @@ export class PurchasesService {
             user_id,
             isPurchased: false,
             total_price: 0,
+            tickets: {
+              create: {
+                type_id: id,
+
+                quantity: quantity,
+                isPurchased: false,
+              },
+            },
           },
         });
-        await trx.tickets.create({
-          data: {
-            type_id: id,
-            purchase_id: data.id,
-            quantity: quantity,
-            isPurchased: false,
-          },
-        });
+        // await trx.tickets.create({
+        //   data: {
+        //     type_id: id,
+        //     purchase_id: data.id,
+        //     quantity: quantity,
+        //     isPurchased: false,
+        //   },
+        // });
       });
     }
 

@@ -12,7 +12,7 @@ const EventCard: React.FC = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const itemsPerPage = 3; // Number of events per page
+  const itemsPerPage = 4; // Number of events per page
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -57,6 +57,11 @@ const EventCard: React.FC = () => {
     }
   };
 
+  // Pagination logic
+  const indexOfLastEvent = currentPage * itemsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
+  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
+  const totalPages = Math.ceil(events.length / itemsPerPage);
   // handle the API search
   const handleSearch = async (term: string) => {
     try {
@@ -71,12 +76,6 @@ const EventCard: React.FC = () => {
     }
   };
 
-  // Pagination logic
-  const indexOfLastEvent = currentPage * itemsPerPage;
-  const indexOfFirstEvent = indexOfLastEvent - itemsPerPage;
-  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
-  const totalPages = Math.ceil(events.length / itemsPerPage);
-
   // Skeleton component
   const SkeletonCard = () => (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden relative animate-pulse">
@@ -90,7 +89,7 @@ const EventCard: React.FC = () => {
   );
 
   return (
-    <div>
+    <div className="py-2">
       <h2 className="text-2xl font-semibold py-4 text-center">Events</h2>
 
       {/* Search bar */}
@@ -105,7 +104,7 @@ const EventCard: React.FC = () => {
       </div>
 
       {/* Event cards */}
-      <div className="grid px-2 py-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid px-2 py-2 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
         {loading ? (
           // Show skeletons while loading
           Array.from({ length: 8 }).map((_, index) => (
@@ -130,7 +129,7 @@ const EventCard: React.FC = () => {
                 height={48}
               />
               {/* Event details */}
-              <div className="p-4 pb-16">
+              <div className="p-4 pb-16 ">
                 <h3 className="text-lg font-semibold">{event.events.title}</h3>
                 <p className="text-gray-600 mt-2">{event.events.description}</p>
                 <p className="text-gray-500 mt-2">
