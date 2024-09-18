@@ -19,6 +19,7 @@ export default function PurchaseFormComponent() {
   React.useEffect(() => {
     if (session?.user) setUser(session?.user);
   }, [session]);
+
   const Toast = MySwal.mixin({
     toast: true,
     position: "top-end",
@@ -50,7 +51,9 @@ export default function PurchaseFormComponent() {
     await api
       .patch("/purchase", data, {
         headers: {
-          Authorization: `Bearer ${session?.user.access_token}`,
+          Authorization: `Bearer ${
+            user ? user.access_token : session?.user.access_token
+          }`,
         },
       })
       .then((response) => {
@@ -70,13 +73,31 @@ export default function PurchaseFormComponent() {
 
   React.useEffect(() => {
     async function fetchData() {
-      const response = await api.get("/purchase", {
-        headers: {
-          Authorization: `Bearer ${session?.user.access_token}`,
-        },
+      Toast.fire({
+        icon: "info",
+        title: user?.access_token + " ::::::::: " + session?.user.access_token,
       });
-      console.log(response.data.data);
-      setTickets(response.data.data as ITicketPurchase[]);
+      console.log(user, session);
+
+      await api
+        .get("/purchase", {
+          headers: {
+            Authorization: `Bearer ${
+              user ? user.access_token : session?.user.access_token
+            }`,
+          },
+        })
+        .then((response) => {
+          console.log(response.data.data);
+          setTickets(response.data.data as ITicketPurchase[]);
+        })
+        .catch((error) => {
+          console.log(error.message);
+          Toast.fire({
+            icon: "error",
+            title: error.message,
+          });
+        });
     }
     fetchData();
   }, []);
