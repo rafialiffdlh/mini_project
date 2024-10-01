@@ -42,13 +42,31 @@ export class AuthService {
     }
   }
   static async register(req: Request) {
-    const { name, email, password, phone_number, role } = req.body;
+    const { name, email, password, phone_number, role, referral_number } =
+      req.body;
     const hashPassword = await hash(password, 10);
+    if (referral_number) {
+      const data = await prisma.users.findFirst({ where: { referral_number } });
+      if (data)
+        await prisma.$transaction(async (trx) => {
+          await trx.referral_discount.create({
+            data: {
+              user_id: data.id,
+              isActive: true,
+              expiredAt: new Date(
+                new Date().setDate(new Date().getDate() + 90)
+              ),
+              points: 10000,
+            },
+          });
+        });
+    }
     const data: Prisma.usersCreateInput = {
       name,
       email,
       password: hashPassword,
       phone_number,
+      referral_number: new Date().getTime(),
     };
 
     // if (req?.file) {
@@ -58,6 +76,15 @@ export class AuthService {
 
     await prisma.$transaction(async (trx) => {
       const newData = await trx.users.create({ data });
+      // const newData = await trx.users.create({
+      //   data: {
+      //     name,
+      //     email,
+      //     password: hashPassword,
+      //     phone_number,
+      //     referral_number: new Date().getTime(),
+      //   },
+      // });
 
       const newRole = await trx.user_roles.create({
         data: {

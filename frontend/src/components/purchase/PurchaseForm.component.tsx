@@ -103,7 +103,7 @@ export default function PurchaseFormComponent() {
       <h1 className="text-2xl font-bold mb-4 ">Shopping Cart</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ul>
-          {tickets
+          {tickets.length > 0
             ? tickets.map((item: ITicketPurchase) => (
                 <PurchaseItem key={item.id} item={item} register={register} />
               ))
