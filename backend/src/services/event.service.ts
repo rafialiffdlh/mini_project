@@ -79,7 +79,7 @@ export class EventService {
   }
 
   static async getBySearchService(req: Request) {
-    const { search = "", limit = 10, page = 1 } = req.query;
+    const { search = "", limit = 8, page = 1 } = req.query;
     const data = await prisma.event_venue.findMany({
       include: {
         events: {

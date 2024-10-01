@@ -12,7 +12,7 @@ const EventCard: React.FC = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const itemsPerPage = 3; // Number of events per page
+  const itemsPerPage = 4; // Number of events per page
 
   useEffect(() => {
     const fetchEvents = async () => {

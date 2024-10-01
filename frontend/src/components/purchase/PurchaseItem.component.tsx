@@ -5,37 +5,38 @@ import React from "react";
 
 interface ProductProps {
   item: ITicketPurchase;
+  index: number;
   register: any;
 }
 
-const PurchaseItem = ({ item, register }: ProductProps) => {
+const PurchaseItem = ({ item, index, register }: ProductProps) => {
   return (
     <li className="flex justify-between items-center mb-2">
       <div className="flex items-center">
         <img
           src={
-            item.tickets.event_venue?.events.image_src
-              ? avatar_src + item.tickets.event_venue?.events.image_src
+            item.ticket_type.event_venue?.events.image_src
+              ? avatar_src + item.ticket_type.event_venue?.events.image_src
               : ""
           }
-          alt={item.tickets.name}
+          alt={item.ticket_type.name}
           className="w-20 h-20 mr-4"
         />
         <div className="flex flex-col mr-2 ">
-          <p className="text-lg font-medium">{item.tickets.name}</p>
+          <p className="text-lg font-medium">{item.ticket_type.name}</p>
           <p className="text-black">
-            {item.tickets.event_venue?.events.default_discount_date
-              ? item.tickets.event_venue?.events.default_discount_date <=
+            {item.ticket_type.event_venue?.events.default_discount_date
+              ? item.ticket_type.event_venue?.events.default_discount_date <=
                 new Date()
                 ? `Rp ${
-                    item.tickets.price -
-                    (item.tickets.price *
-                      (item.tickets.event_venue?.events.default_discount ??
+                    item.ticket_type.price -
+                    (item.ticket_type.price *
+                      (item.ticket_type.event_venue?.events.default_discount ??
                         0)) /
                       100
                   }`
-                : `Rp ${item.tickets.price}`
-              : `Rp ${item.tickets.price}`}
+                : `Rp ${item.ticket_type.price}`
+              : `Rp ${item.ticket_type.price}`}
           </p>
         </div>
       </div>
@@ -44,7 +45,8 @@ const PurchaseItem = ({ item, register }: ProductProps) => {
           type="number"
           min="1"
           defaultValue={item.quantity}
-          {...register(`items.${item.id}.quantity`)}
+          value={item.quantity}
+          {...register(`items.${index}.quantity`)}
           className="w-12 border p-2"
         />
         {/* <button className=" text-black px-2 py-1 rounded">Remove</button> */}

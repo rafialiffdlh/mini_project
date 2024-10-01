@@ -5,7 +5,11 @@ import PurchaseItem from "./PurchaseItem.component"; // Import your product comp
 import { zodResolver } from "@hookform/resolvers/zod";
 import { purchaseSchema } from "@/schemas/purchase.schema";
 import { z } from "zod";
-import { ITicket, ITicketPurchase } from "@/interfaces/event.interface";
+import {
+  IPurchase,
+  ITicket,
+  ITicketPurchase,
+} from "@/interfaces/event.interface";
 import { api } from "@/config/axios.config";
 import { useSession } from "next-auth/react";
 import withReactContent from "sweetalert2-react-content";
@@ -33,20 +37,19 @@ export default function PurchaseFormComponent() {
   });
   const [tickets, setTickets] = React.useState<ITicketPurchase[]>([]);
 
-  const form = useForm<z.infer<typeof purchaseSchema>["items"][number]>({
+  const form = useForm<z.infer<typeof purchaseSchema>>({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: {},
+    defaultValues: { items: [{ quantity: 0 }] },
   });
   const { register, handleSubmit, watch } = form;
 
-  const onSubmit = async (
-    values: z.infer<typeof purchaseSchema>["items"][number]
-  ) => {
+  const onSubmit = async (values: z.infer<typeof purchaseSchema>) => {
     // Handle form submission (e.g., send data to server)
     console.log(values);
     const data = tickets.map((ticket) => {
-      const item = { ...ticket, quantity: values.quantity };
-      return item;
+      // const item = { ...ticket, quantity: values[itme] };
+      // return item;
+      return ticket;
     });
     await api
       .patch("/purchase", data, {
@@ -82,15 +85,15 @@ export default function PurchaseFormComponent() {
           },
         })
         .then((response) => {
-          console.log(response.data.data);
-          setTickets(response.data.data.tickets as ITicketPurchase[]);
+          console.log(response.data.data.map((x: any) => x.tickets).tickets);
+          setTickets((response.data.data as IPurchase[])[0].tickets);
         })
         .catch((error) => {
           console.log(error.message);
         });
     }
     if (user) {
-      const timer = setTimeout(() => fetchData(), 2000);
+      const timer = setTimeout(() => fetchData(), 1000);
 
       return () => {
         clearTimeout(timer);
@@ -103,9 +106,14 @@ export default function PurchaseFormComponent() {
       <h1 className="text-2xl font-bold mb-4 ">Shopping Cart</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ul>
-          {tickets.length > 0
-            ? tickets.map((item: ITicketPurchase) => (
-                <PurchaseItem key={item.id} item={item} register={register} />
+          {tickets
+            ? tickets.map((item: ITicketPurchase, index) => (
+                <PurchaseItem
+                  key={item.id}
+                  item={item}
+                  index={index}
+                  register={register}
+                />
               ))
             : "Loading..."}
         </ul>

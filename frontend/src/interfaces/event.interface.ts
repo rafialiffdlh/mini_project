@@ -45,7 +45,7 @@ interface ITicket {
 interface ITicketPurchase {
   id?: number;
   purchase_id: number;
-  tickets: ITicket;
+  ticket_type: ITicket;
   quantity: number;
 }
 

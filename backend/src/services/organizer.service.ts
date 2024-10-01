@@ -170,41 +170,74 @@ export class OrganizerService {
             venue_id: venue_id,
           },
         });
-
-        ticketsData.map(async (ticket) => {
+        for (let index = 0; index < ticketsData.length; index++) {
           const prevTiket = dataEvent.ticket_type.find(
-            (x) => x.id === ticket.id
+            (x) => x.id === ticketsData[index].id
           );
           if (prevTiket) {
-            delete ticket.action;
+            delete ticketsData[index].action;
             await trx.ticket_type.update({
-              where: { id: ticket.id },
+              where: { id: ticketsData[index].id },
               data: {
-                ...ticket,
+                ...ticketsData[index],
               },
             });
           } else {
-            if (ticket.id) {
+            if (ticketsData[index].id) {
               await trx.ticket_type.delete({
-                where: { id: ticket.id },
+                where: { id: ticketsData[index].id },
               });
             } else {
-              delete ticket.action;
-              delete ticket.id;
+              delete ticketsData[index].action;
+              delete ticketsData[index].id;
               await trx.ticket_type.create({
                 data: {
-                  description: ticket.description,
-                  maxNumber: Number(ticket.maxNumber),
-                  price: Number(ticket.price),
+                  description: ticketsData[index].description,
+                  maxNumber: Number(ticketsData[index].maxNumber),
+                  price: Number(ticketsData[index].price),
                   event_venue_id: id,
-                  name: ticket.name,
+                  name: ticketsData[index].name,
                   rest: 0,
-                  paidTicket: Number(ticket.price) != 0,
+                  paidTicket: Number(ticketsData[index].price) != 0,
                 },
               });
             }
           }
-        });
+        }
+        // ticketsData.map(async (ticket) => {
+        //   const prevTiket = dataEvent.ticket_type.find(
+        //     (x) => x.id === ticketsData[index].id
+        //   );
+        //   if (prevTiket) {
+        //     delete ticket.action;
+        //     await trx.ticket_type.update({
+        //       where: { id: ticket.id },
+        //       data: {
+        //         ...ticket,
+        //       },
+        //     });
+        //   } else {
+        //     if (ticket.id) {
+        //       await trx.ticket_type.delete({
+        //         where: { id: ticket.id },
+        //       });
+        //     } else {
+        //       delete ticket.action;
+        //       delete ticket.id;
+        //       await trx.ticket_type.create({
+        //         data: {
+        //           description: ticket.description,
+        //           maxNumber: Number(ticket.maxNumber),
+        //           price: Number(ticket.price),
+        //           event_venue_id: id,
+        //           name: ticket.name,
+        //           rest: 0,
+        //           paidTicket: Number(ticket.price) != 0,
+        //         },
+        //       });
+        //     }
+        //   }
+        // });
       });
     } else {
       throw new ErrorHandler("Event Not Found", 404);
